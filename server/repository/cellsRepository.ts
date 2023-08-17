@@ -3,40 +3,21 @@ import { userIdParser } from '$/service/idParsers';
 import { prismaClient } from '$/service/prismaClient';
 import type { Cell } from '@prisma/client';
 import { z } from 'zod';
-
-const toCellModel = (prismaCell: Cell) => ({
-  x: z.number().min(0).parse(prismaCell.x),
+const toCellModel = (prismaCell: Cell): CellModel => ({
+  x: z.number().min(0).parse(prismaCell),
   y: z.number().min(0).parse(prismaCell.y),
-  IsBombCell: z.boolean().parse(prismaCell.IsBombCell),
+  isBombCell: z.boolean().parse(prismaCell.isBombCell),
   cellValue: z.number().min(0).parse(prismaCell.cellValue),
-  whoOpened:
-    z
-      .array(z.string())
-      .parse(prismaCell.whoOpened)
-      .map((userId) => userIdParser.parse(userId)) ?? null,
-  whenOpened: prismaCell.whenOpened instanceof Date ? prismaCell.whenOpened.getTime() : null,
+  whoOpened: userIdParser.parse(prismaCell.whoOpened),
+  whenOpened: prismaCell.whenOpened.getTime(),
+  isUserInput: z.boolean().parse(prismaCell.isUserInput),
 });
+
 export const cellsRepository = {
   create: async (cell: CellModel): Promise<CellModel> => {
+    const newCell = { ...cell, whenOpened: new Date(cell.whenOpened) };
     const prismaCell = await prismaClient.cell.create({
-      data: {
-        x: cell.x,
-        y: cell.y,
-        IsBombCell: cell.IsBombCell,
-        cellValue: cell.cellValue,
-        whoOpened: cell.whoOpened?.map((userId) => userId.toString()),
-        whenOpened: cell.whenOpened !== null ? new Date(cell.whenOpened) : null,
-      },
-    });
-    return toCellModel(prismaCell);
-  },
-  update: async (cell: CellModel): Promise<CellModel> => {
-    const prismaCell = await prismaClient.cell.update({
-      where: { pos: { x: cell.x, y: cell.y } },
-      data: {
-        whoOpened: cell.whoOpened?.map((userId) => userId.toString()),
-        whenOpened: cell.whenOpened !== null ? new Date(cell.whenOpened) : null,
-      },
+      data: newCell,
     });
     return toCellModel(prismaCell);
   },
