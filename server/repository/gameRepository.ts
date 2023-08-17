@@ -1,4 +1,6 @@
+import type { GameModel } from '$/commonTypesWithClient/models';
 import { gameIdParser } from '$/service/idParsers';
+import { prismaClient } from '$/service/prismaClient';
 import type { Game } from '@prisma/client';
 import { z } from 'zod';
 
@@ -11,16 +13,16 @@ const toGameModel = (prismaGame: Game) => ({
 });
 
 export const gameRepository = {
-  create: () => {
-    //
+  save: async (game: GameModel): Promise<GameModel> => {
+    const prismaGame = await prismaClient.game.upsert({
+      where: { id: game.id },
+      update: { bombMap: game.bombMap, userInputs: game.userInputs },
+      create: { id: game.id, bombMap: game.bombMap, userInputs: game.userInputs },
+    });
+    return toGameModel(prismaGame);
   },
-  save: () => {
-    //
-  },
-  find: () => {
-    //
-  },
-  delete: () => {
-    //
+  find: async (): Promise<GameModel | null> => {
+    const prismaGame = await prismaClient.game.findFirst().catch(() => null);
+    return prismaGame !== null ? toGameModel(prismaGame) : null;
   },
 };
