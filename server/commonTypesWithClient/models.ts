@@ -22,10 +22,11 @@ export type GameModel = {
 export type CellModel = {
   x: number;
   y: number;
-  IsBombCell: boolean;
+  isBombCell: boolean;
   cellValue: number;
-  whoOpened: UserId[] | null;
-  whenOpened: number | null;
+  whoOpened: UserId;
+  whenOpened: number;
+  isUserInput: boolean;
 };
 
 export type PlayerModel = {
