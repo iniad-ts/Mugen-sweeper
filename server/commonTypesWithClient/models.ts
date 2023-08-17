@@ -30,6 +30,7 @@ export type CellModel = {
 
 export type PlayerModel = {
   id: UserId;
+  name: string;
   x: number;
   y: number;
   score: number;
