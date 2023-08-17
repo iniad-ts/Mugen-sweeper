@@ -25,7 +25,7 @@ export type CellModel = {
   IsBombCell: boolean;
   cellValue: number;
   whoOpened: UserId[] | null;
-  whenOpened: number;
+  whenOpened: number | null;
 };
 
 export type PlayerModel = {
