@@ -33,6 +33,7 @@ model Cell {
 
 model Player {
   id     String  @id
+  name   String
   x      Int
   y      Int
   score  Int
