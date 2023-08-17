@@ -17,18 +17,23 @@ const toCellModel = (prismaCell: Cell) => ({
   whenOpened: prismaCell.whenOpened instanceof Date ? prismaCell.whenOpened.getTime() : null,
 });
 export const cellsRepository = {
-  save: async (cell: CellModel): Promise<CellModel> => {
-    const prismaCell = await prismaClient.cell.upsert({
-      where: { pos: { x: cell.x, y: cell.y } },
-      update: {
-        whoOpened: cell.whoOpened?.map((userId) => userId.toString()),
-        whenOpened: cell.whenOpened !== null ? new Date(cell.whenOpened) : null,
-      },
-      create: {
+  create: async (cell: CellModel): Promise<CellModel> => {
+    const prismaCell = await prismaClient.cell.create({
+      data: {
         x: cell.x,
         y: cell.y,
         IsBombCell: cell.IsBombCell,
         cellValue: cell.cellValue,
+        whoOpened: cell.whoOpened?.map((userId) => userId.toString()),
+        whenOpened: cell.whenOpened !== null ? new Date(cell.whenOpened) : null,
+      },
+    });
+    return toCellModel(prismaCell);
+  },
+  update: async (cell: CellModel): Promise<CellModel> => {
+    const prismaCell = await prismaClient.cell.update({
+      where: { pos: { x: cell.x, y: cell.y } },
+      data: {
         whoOpened: cell.whoOpened?.map((userId) => userId.toString()),
         whenOpened: cell.whenOpened !== null ? new Date(cell.whenOpened) : null,
       },
