@@ -16,12 +16,25 @@ model Task {
 
 model Game {
   id         String @id //gameは一つだけどないといけない
-  bombMap    Json       //number[][]
-  userInputs Json       //number[][]
+  bombMap    Json //number[][]
+  userInputs Json //number[][]
 }
 
 model Cell {
-  where      Json      @id //{x:number,y:number}は一意
-  whoOpened  String?        //UserId
+  x          Int
+  y          Int
+  IsBombCell Boolean
+  cellValue  Int
+  whoOpened  Json? //UserId
   whenOpened DateTime?
+
+  @@id(fields: [x, y], name: "pos")
+}
+
+model Player {
+  id     String  @id
+  x      Int
+  y      Int
+  score  Int
+  isLive Boolean
 }
