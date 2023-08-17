@@ -13,3 +13,15 @@ model Task {
   done      Boolean
   createdAt DateTime
 }
+
+model Game {
+  id         String @id //gameは一つだけどないといけない
+  bombMap    Json       //number[][]
+  userInputs Json       //number[][]
+}
+
+model Cell {
+  where      Json      @id //{x:number,y:number}は一意
+  whoOpened  String?        //UserId
+  whenOpened DateTime?
+}
