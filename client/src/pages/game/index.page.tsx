@@ -22,7 +22,8 @@ const Game = () => {
     // }
   };
 
-  const fetchBombMap = async () => {//初回レンダリング時のみ
+  const fetchBombMap = async () => {
+    //初回レンダリング時のみ
     // const res = await apiClient.game.start.g$et();
     // if (res === null) fetchBombMap();
     // setBombMap(res);
