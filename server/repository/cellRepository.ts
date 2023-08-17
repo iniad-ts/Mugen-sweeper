@@ -10,6 +10,7 @@ const toCellModel = (prismaCell: Cell): CellModel => ({
   cellValue: z.number().min(0).parse(prismaCell.cellValue),
   whoOpened: userIdParser.parse(prismaCell.whoOpened),
   whenOpened: prismaCell.whenOpened.getTime(),
+  isUserInput: z.boolean().parse(prismaCell.isUserInput),
 });
 export const cellRepository = {
   create: () => {

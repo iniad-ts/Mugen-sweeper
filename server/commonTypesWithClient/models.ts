@@ -26,6 +26,7 @@ export type CellModel = {
   cellValue: number;
   whoOpened: UserId;
   whenOpened: number;
+  isUserInput: boolean;
 };
 
 export type PlayerModel = {

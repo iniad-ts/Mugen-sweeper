@@ -21,12 +21,13 @@ model Game {
 }
 
 model Cell {
-  x          Int
-  y          Int
-  isBombCell Boolean
-  cellValue  Int
-  whoOpened  String //UserId
-  whenOpened DateTime
+  x           Int
+  y           Int
+  isBombCell  Boolean
+  cellValue   Int
+  whoOpened   String //UserId
+  whenOpened  DateTime
+  isUserInput Boolean
 
   @@id(fields: [x, y], name: "pos")
 }
