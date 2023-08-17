@@ -7,7 +7,7 @@ const toGameModel = (prismaGame: Game) => ({
   bombMap: z.array(z.array(z.union([z.literal(0), z.literal(1)]))).parse(prismaGame.bombMap),
   userInputs: z
     .array(z.array(z.union([z.literal(0), z.literal(1), z.literal(2)])))
-    .parse(prismaGame.bombMap),
+    .parse(prismaGame.userInputs),
 });
 
 export const gameRepository = {
