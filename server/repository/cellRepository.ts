@@ -10,7 +10,7 @@ const toGameModel = (prismaGame: Game) => ({
     .parse(prismaGame.bombMap),
 });
 
-export const gameModelRepository = {
+export const gameRepository = {
   create: () => {
     // /
   },

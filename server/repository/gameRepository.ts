@@ -7,3 +7,17 @@ const toCellModel = (prismaCell: Cell) => ({
   whoOpened: userIdParser.parse(prismaCell.whenOpened),
   whenOpened: prismaCell.whenOpened?.getTime(),
 });
+export const cellRepository = {
+  create: () => {
+    // /
+  },
+  save: () => {
+    //
+  },
+  find: () => {
+    //
+  },
+  delete: () => {
+    //
+  },
+};
