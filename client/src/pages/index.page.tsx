@@ -1,16 +1,12 @@
 import type { TaskModel } from 'commonTypesWithClient/models';
-import { useAtom } from 'jotai';
 import type { ChangeEvent, FormEvent } from 'react';
 import { useEffect, useState } from 'react';
 import { Loading } from 'src/components/Loading/Loading';
-import { BasicHeader } from 'src/pages/@components/BasicHeader/BasicHeader';
 import { apiClient } from 'src/utils/apiClient';
 import { returnNull } from 'src/utils/returnNull';
-import { userAtom } from '../atoms/user';
 import styles from './index.module.css';
 
 const Home = () => {
-  const [user] = useAtom(userAtom);
   const [tasks, setTasks] = useState<TaskModel[]>();
   const [label, setLabel] = useState('');
   const inputLabel = (e: ChangeEvent<HTMLInputElement>) => {
@@ -41,12 +37,10 @@ const Home = () => {
   useEffect(() => {
     fetchTasks();
   }, []);
-
-  if (!tasks || !user) return <Loading visible />;
+  if (!tasks) return <Loading visible={true} />;
 
   return (
     <>
-      <BasicHeader user={user} />
       <div className={styles.title} style={{ marginTop: '160px' }}>
         Welcome to frourio!
       </div>
