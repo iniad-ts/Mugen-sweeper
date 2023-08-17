@@ -23,10 +23,10 @@ model Game {
 model Cell {
   x          Int
   y          Int
-  IsBombCell Boolean
+  isBombCell Boolean
   cellValue  Int
-  whoOpened  Json? //UserId
-  whenOpened DateTime?
+  whoOpened  String //UserId
+  whenOpened DateTime
 
   @@id(fields: [x, y], name: "pos")
 }
