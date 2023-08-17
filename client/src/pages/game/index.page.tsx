@@ -11,17 +11,18 @@ const Game = () => {
   const [userInputs, setUserInputs] = useState<(0 | 1 | 2)[][]>();
   const [board, setBoard] = useState<number[][]>();
   const [openCells, setOpenCells] = useState<pos[]>([]);
+  const [lranking, setRanking] = useState();
 
   const fetchGame = async () => {
     // await apiClient.game.post(openCells)
     // const res = await apiClient.game.get()
     // if (res !== null) {
-    //   if (bombMap === null) setBombMap(res.bombMap);
     //   setUserInputs(res.userInputs)
+    //   setRanking(res.ranking)
     // }
   };
 
-  const fetchBombMap = async () => {
+  const fetchBombMap = async () => {//初回レンダリング時のみ
     // const res = await apiClient.game.start.g$et();
     // if (res === null) fetchBombMap();
     // setBombMap(res);
@@ -38,7 +39,12 @@ const Game = () => {
     fetchBombMap();
   }, []);
 
-  return <div className={styles.container}>{/*コンテンツ*/}</div>;
+  return (
+    <div className={styles.container}>
+      <div className={styles.game} />
+      <div className={styles.ranking} />
+    </div>
+  );
 };
 
 export default Game;
