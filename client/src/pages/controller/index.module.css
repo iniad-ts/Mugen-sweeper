@@ -1,0 +1,8 @@
+.controller {
+  display: grid;
+  grid-template-columns: 3fr 2fr 3fr;
+  align-items: center;
+  height: 100dvh;
+  background-color: #eee;
+  font-family: 'Jost', 'Zen Kaku Gothic New', sans-serif;
+}
