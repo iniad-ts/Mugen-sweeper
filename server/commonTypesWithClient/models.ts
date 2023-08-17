@@ -22,6 +22,6 @@ export type GameModel = {
 
 export type Cell = {
   where: { x: number; y: number };
-  whoOpened: UserId;
-  whenOpened: number;
+  whoOpened: UserId | null;
+  whenOpened: number | null;
 };
