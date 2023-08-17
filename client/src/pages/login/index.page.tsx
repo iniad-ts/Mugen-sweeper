@@ -1,17 +1,39 @@
-import { GithubIcon } from 'src/components/icons/GithubIcon';
+import type { UserId } from 'commonTypesWithClient/branded';
+import crypto from 'crypto';
+import { useEffect, useState } from 'react';
 import { staticPath } from 'src/utils/$path';
-import { loginWithGitHub } from 'src/utils/login';
-import { useLoading } from '../@hooks/useLoading';
+import {
+  getUserIdFromLocalStorage,
+  loginWithLocalStorage,
+  logoutWithLocalStorage,
+} from 'src/utils/loginWithLocalStorage';
+import { userIdParser } from '../../../../server/service/idParsers';
 import styles from './index.module.css';
 
 const Login = () => {
-  const { addLoading, removeLoading } = useLoading();
-  const login = async () => {
-    addLoading();
-    await loginWithGitHub();
-    removeLoading();
+  const [userId, setUserId] = useState<UserId | null>(null);
+  const login = () => {
+    //FIXME ここでIDを振るのではなく、サーバー側でのプレイヤー生成時にIDを受け取って振るようにする
+    const userId = userIdParser.parse(`user-${crypto.randomBytes(16).toString('hex')}`);
+    try {
+      loginWithLocalStorage(userId);
+      setUserId(userId);
+    } catch (error) {
+      alert('すでにログインしています');
+    }
   };
 
+  const logout = () => {
+    logoutWithLocalStorage();
+    setUserId(null);
+  };
+
+  useEffect(() => {
+    const userId = getUserIdFromLocalStorage();
+    if (userId) {
+      setUserId(userIdParser.parse(userId));
+    }
+  }, []);
   return (
     <div
       className={styles.container}
@@ -21,10 +43,15 @@ const Login = () => {
         <div className={styles.title}>next-frourio-starter</div>
         <div style={{ marginTop: '16px' }} onClick={login}>
           <div className={styles.btn}>
-            <GithubIcon size={18} fill="#fff" />
-            <span>Login with GitHub</span>
+            <span>Login with LocalStorage</span>
           </div>
         </div>
+        <div style={{ marginTop: '16px' }} onClick={logout}>
+          <div className={styles.btn}>
+            <span>logout</span>
+          </div>
+        </div>
+        <div style={{ background: 'white' }}>{userId && <span>userId: {userId}</span>}</div>
       </div>
     </div>
   );
