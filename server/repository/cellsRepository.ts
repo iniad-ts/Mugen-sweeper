@@ -6,7 +6,6 @@ import { z } from 'zod';
 const toCellModel = (prismaCell: Cell): CellModel => ({
   x: z.number().min(0).parse(prismaCell),
   y: z.number().min(0).parse(prismaCell.y),
-  isBombCell: z.boolean().parse(prismaCell.isBombCell),
   cellValue: z.number().min(0).parse(prismaCell.cellValue),
   whoOpened: userIdParser.parse(prismaCell.whoOpened),
   whenOpened: prismaCell.whenOpened.getTime(),
