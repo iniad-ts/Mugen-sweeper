@@ -1,8 +1,96 @@
 .controller {
   display: grid;
-  grid-template-columns: 3fr 2fr 3fr;
-  align-items: center;
+  grid-template-columns: 1fr 256px 1fr;
   height: 100dvh;
-  background-color: #eee;
+  align-items: center;
+  background-color: white;
   font-family: 'Jost', 'Zen Kaku Gothic New', sans-serif;
+}
+
+.cross-container {
+  display: inline-block;
+  background-color: rgba(66, 86, 123, 0.5);
+  padding: 30px;
+  border-radius: 50%;
+}
+
+.cross-layout {
+  display: grid;
+  grid-template-rows: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1sfr 1fr;
+}
+
+.cross-layout-position-top {
+  grid-row: 1 / 2;
+  grid-column: 2 / 3;
+  height: 15vmin;
+  aspect-ratio: 1;
+  align-self: center;
+  justify-self: center;
+  border: 3;
+  border-radius: 30%;
+  font-size: 8vmin;
+}
+
+.cross-layout-position-bottom {
+  grid-row: 3 / 4;
+  grid-column: 2 / 3;
+  height: 15vmin;
+  aspect-ratio: 1;
+  align-self: center;
+  justify-self: center;
+  border: 3;
+  border-radius: 30%;
+  font-size: 8vmin;
+}
+
+.cross-layout-position-left {
+  grid-row: 2 / 3;
+  grid-column: 1 / 2;
+  height: 15vmin;
+  aspect-ratio: 1;
+  align-self: center;
+  justify-self: center;
+  border: 3;
+  border-radius: 30%;
+  font-size: 8vmin;
+}
+
+.cross-layout-position-right {
+  grid-row: 2 / 3;
+  grid-column: 3 / 4;
+  height: 15vmin;
+  aspect-ratio: 1;
+  align-self: center;
+  justify-self: center;
+  border: 3;
+  border-radius: 30%;
+  font-size: 8vmin;
+}
+
+.button-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.flag-button {
+  grid-column: 2 / 3;
+  height: 30vmin;
+  aspect-ratio: 1;
+  align-self: center;
+  justify-self: center;
+  border: 3;
+  border-radius: 30%;
+  font-size: 8vmin;
+}
+
+.open-button {
+  grid-column: 1 / 2;
+  height: 30vmin;
+  aspect-ratio: 1;
+  align-self: center;
+  justify-self: center;
+  border: 3;
+  border-radius: 30%;
+  font-size: 8vmin;
 }
