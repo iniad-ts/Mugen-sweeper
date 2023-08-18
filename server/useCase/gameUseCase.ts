@@ -1,6 +1,7 @@
 import type { GameModel } from '$/commonTypesWithClient/models';
 import { cellsRepository } from '$/repository/cellsRepository';
 import { gameRepository } from '$/repository/gameRepository';
+import { playersRepository } from '$/repository/playersRepository';
 import { gameIdParser } from '$/service/idParsers';
 import { make2DArray } from '$/service/make2DArray';
 import { randomUUID } from 'crypto';
@@ -39,5 +40,16 @@ export const gameUseCase = {
   getBoard: async () => {
     const res = await gameRepository.find();
     return res !== null ? res : null;
+  },
+  getRanking: async (row: number) => {
+    const res = await playersRepository.findAll();
+    const deletes = res.slice(row, res.length);
+    Promise.all(deletes.map((player) => playersRepository.delete(player.id))) //
+      .then((results) =>
+        results.forEach((result) => {
+          result;
+        })
+      );
+    return res.slice(0, row);
   },
 };
