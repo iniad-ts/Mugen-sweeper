@@ -1,4 +1,18 @@
 .container {
+  display: grid;
   width: 100vw;
   height: 100vh;
+  aspect-ratio: 16 / 9; /*一旦*/
+  grid-template-columns: 27fr 5fr; /*動画が3：2になる*/
+}
+
+.game {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+}
+
+.ranking {
+  display: flex;
+  flex-direction: row;
 }
