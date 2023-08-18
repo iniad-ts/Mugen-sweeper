@@ -1,24 +1,15 @@
 import { useEffect, useState } from 'react';
-import type { Pos, boardMOdel } from '../game/index.page';
+import { Loading } from 'src/components/Loading/Loading';
+import { minesweeperUtils } from 'src/utils/minesweeperUtils';
+import type { Pos, boardModel } from '../game/index.page';
 import styles from './index.module.css';
-
-const directions = [
-  [0, 1],
-  [1, 1],
-  [1, 0],
-  [1, -1],
-  [0, -1],
-  [-1, -1],
-  [-1, 0],
-  [-1, 1],
-];
 
 const Controller = () => {
   const [bombMap, setBombMap] = useState<(0 | 1)[][]>();
   const [board, setBoard] = useState<number[][]>();
   const [openCells, setOpenCells] = useState<Pos[]>([]);
 
-  const newBoard: boardMOdel = JSON.parse(JSON.stringify(board));
+  const newBoard: boardModel = JSON.parse(JSON.stringify(board));
   const newOpenCells: Pos[] = JSON.parse(JSON.stringify(openCells));
 
   const fetchGame = async () => {
@@ -37,29 +28,6 @@ const Controller = () => {
     // setBombMap(res);
   };
 
-  const recursion = (x: number, y: number) => {
-    newBoard[y][x] =
-      bombMap
-        ?.slice(Math.max(0, y - 1), Math.min(y + 2, bombMap.length))
-        .map((row) => row.slice(Math.max(0, x - 1), Math.min(x + 2, row.length)))
-        .flat()
-        .filter((b) => b === 1).length ?? 1 - 1;
-
-    newOpenCells.push({ x, y });
-
-    if (newBoard[y][x] === 0) {
-      directions
-        .map((direction) => ({ x: x + direction[0], y: y + direction[1] }))
-        .filter((nextPos) => newBoard[nextPos.y][nextPos.x] === -1)
-        .forEach((nextPos) => {
-          recursion(nextPos.x, nextPos.y);
-        });
-    }
-  };
-
-  setOpenCells(newOpenCells);
-  setBoard(newBoard);
-
   useEffect(() => {
     const cancelId = setInterval(() => {
       fetchGame();
@@ -70,6 +38,29 @@ const Controller = () => {
   useEffect(() => {
     fetchBombMap();
   }, []);
+
+  if (newBoard === undefined || bombMap === undefined) {
+    fetchGame();
+    return <Loading visible />;
+  }
+  const openSurroundingCells = (x: number, y: number) => {
+    newBoard[y][x] = minesweeperUtils.countAroundBombsNum(bombMap, x, y);
+
+    newOpenCells.push({ x, y });
+
+    if (newBoard[y][x] === 0) {
+      minesweeperUtils.aroundCellToArray(newBoard, x, y).forEach((nextPos) => {
+        openSurroundingCells(nextPos.x, nextPos.y);
+      });
+    }
+  };
+
+  const digCell = (x: number, y: number) => {
+    openSurroundingCells(x, y);
+  };
+
+  setOpenCells(newOpenCells);
+  setBoard(newBoard);
 
   return (
     <div className={styles.controller}>
