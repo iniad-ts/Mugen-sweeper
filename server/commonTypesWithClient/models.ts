@@ -1,4 +1,4 @@
-import type { TaskId, UserId } from './branded';
+import type { GameId, TaskId, UserId } from './branded';
 
 export type UserModel = {
   id: UserId;
@@ -12,4 +12,28 @@ export type TaskModel = {
   label: string;
   done: boolean;
   created: number;
+};
+export type GameModel = {
+  id: GameId;
+  bombMap: (1 | 0)[][];
+  userInputs: (0 | 1 | 2)[][];
+};
+
+export type CellModel = {
+  x: number;
+  y: number;
+  isBombCell: boolean;
+  cellValue: number;
+  whoOpened: UserId;
+  whenOpened: number;
+  isUserInput: boolean;
+};
+
+export type PlayerModel = {
+  id: UserId;
+  name: string;
+  x: number;
+  y: number;
+  score: number;
+  isLive: boolean;
 };
