@@ -4,7 +4,6 @@ import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { gaPageview } from 'src/utils/gtag';
 import '../styles/globals.css';
-import { AuthLoader } from './@components/AuthLoader';
 import { useLoading } from './@hooks/useLoading';
 
 function MyApp({ Component, pageProps }: AppProps) {
@@ -29,7 +28,6 @@ function MyApp({ Component, pageProps }: AppProps) {
         <Component {...pageProps} />
         {loadingElm}
       </SafeHydrate>
-      <AuthLoader />
     </>
   );
 }

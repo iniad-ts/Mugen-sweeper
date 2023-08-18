@@ -7,8 +7,8 @@ import { z } from 'zod';
 const toCellModel = (prismaCell: Cell): CellModel => ({
   x: z.number().min(0).parse(prismaCell),
   y: z.number().min(0).parse(prismaCell.y),
-  isBombCell: z.boolean().parse(prismaCell.isBombCell),
   cellValue: z.number().min(0).parse(prismaCell.cellValue),
+  isBombCell: z.boolean().parse(prismaCell.isBombCell),
   whoOpened: userIdParser.parse(prismaCell.whoOpened),
   whenOpened: prismaCell.whenOpened.getTime(),
   isUserInput: z.boolean().parse(prismaCell.isUserInput),
@@ -27,6 +27,10 @@ export const cellsRepository = {
       orderBy: { x: 'asc', y: 'asc' },
     });
     return prismaCells.map(toCellModel);
+  },
+  findAllOfPlayer: async (userId: UserId) => {
+    const prismaCells = await prismaClient.cell.findMany({ where: { whoOpened: userId } });
+    return prismaCells !== null ? prismaCells.map(toCellModel) : null;
   },
   find: async (x: number, y: number): Promise<CellModel | null> => {
     const prismaCell = await prismaClient.cell.findUnique({ where: { pos: { x, y } } });
