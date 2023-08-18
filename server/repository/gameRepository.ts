@@ -16,7 +16,7 @@ export const gameRepository = {
   save: async (game: GameModel): Promise<GameModel> => {
     const prismaGame = await prismaClient.game.upsert({
       where: { id: game.id },
-      update: { bombMap: game.bombMap, userInputs: game.userInputs },
+      update: { userInputs: game.userInputs },
       create: { id: game.id, bombMap: game.bombMap, userInputs: game.userInputs },
     });
     return toGameModel(prismaGame);

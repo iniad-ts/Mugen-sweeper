@@ -4,7 +4,7 @@ import { sliceWithTime } from '$/service/sliceWithTime';
 
 export const cellUseCase = {
   delete: async (userId: UserId) => {
-    const res = await cellsRepository.findWithUser(userId);
+    const res = await cellsRepository.findAllOfPlayer(userId);
     if (res === null) return;
     Promise.all(
       res.map((cell) => {
