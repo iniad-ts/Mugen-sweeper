@@ -41,12 +41,12 @@ const Login = () => {
     >
       <div className={styles.main}>
         <div className={styles.title}>next-frourio-starter</div>
-        <div style={{ marginTop: '16px' }} onClick={login}>
+        <div onClick={login}>
           <div className={styles.btn}>
             <span>Login with LocalStorage</span>
           </div>
         </div>
-        <div style={{ marginTop: '16px' }} onClick={logout}>
+        <div onClick={logout}>
           <div className={styles.btn}>
             <span>logout</span>
           </div>
