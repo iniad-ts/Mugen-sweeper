@@ -1,3 +1,4 @@
+import type { UserId } from '$/commonTypesWithClient/branded';
 import type { CellModel } from '$/commonTypesWithClient/models';
 import { userIdParser } from '$/service/idParsers';
 import { prismaClient } from '$/service/prismaClient';
@@ -7,6 +8,7 @@ const toCellModel = (prismaCell: Cell): CellModel => ({
   x: z.number().min(0).parse(prismaCell),
   y: z.number().min(0).parse(prismaCell.y),
   cellValue: z.number().min(0).parse(prismaCell.cellValue),
+  isBombCell: z.boolean().parse(prismaCell.isBombCell),
   whoOpened: userIdParser.parse(prismaCell.whoOpened),
   whenOpened: prismaCell.whenOpened.getTime(),
   isUserInput: z.boolean().parse(prismaCell.isUserInput),
@@ -26,8 +28,16 @@ export const cellsRepository = {
     });
     return prismaCells.map(toCellModel);
   },
+  findAllOfPlayer: async (userId: UserId) => {
+    const prismaCells = await prismaClient.cell.findMany({ where: { whoOpened: userId } });
+    return prismaCells !== null ? prismaCells.map(toCellModel) : null;
+  },
   find: async (x: number, y: number): Promise<CellModel | null> => {
     const prismaCell = await prismaClient.cell.findUnique({ where: { pos: { x, y } } });
+    return prismaCell !== null ? toCellModel(prismaCell) : null;
+  },
+  delete: async (x: number, y: number) => {
+    const prismaCell = await prismaClient.cell.delete({ where: { pos: { x, y } } });
     return prismaCell !== null ? toCellModel(prismaCell) : null;
   },
 };
