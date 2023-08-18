@@ -36,3 +36,8 @@ export type PlayerModel = {
   score: number;
   isLive: boolean;
 };
+
+export type Pos = {
+  x: number;
+  y: number;
+};

@@ -33,6 +33,7 @@
   background: #222;
   cursor: pointer;
   transition: 0.2s background;
+  margin-top: 16px;
 }
 
 .btn:hover {
