@@ -8,7 +8,6 @@ const toCellModel = (prismaCell: Cell): CellModel => ({
   x: z.number().min(0).parse(prismaCell),
   y: z.number().min(0).parse(prismaCell.y),
   cellValue: z.number().min(0).parse(prismaCell.cellValue),
-  isBombCell: z.boolean().parse(prismaCell.isBombCell),
   whoOpened: userIdParser.parse(prismaCell.whoOpened),
   whenOpened: prismaCell.whenOpened.getTime(),
   isUserInput: z.boolean().parse(prismaCell.isUserInput),
