@@ -1,6 +1,8 @@
 import type { PlayerModel } from '$/commonTypesWithClient/models';
 import { GAME_SIZE } from '$/constants/gameSize';
+import { playersRepository } from '$/repository/playersRepository';
 import { userIdParser } from '$/service/idParsers';
+import { minMax } from '$/service/minMax';
 import { randomUUID } from 'crypto';
 
 export const playerUseCase = {
@@ -13,10 +15,19 @@ export const playerUseCase = {
       score: 0,
       isLive: true,
     };
-    // const res = await playerRepository.create();
-    // if (res === null) {
-    return null;
-    // }
-    // return res
+    const res = await playersRepository.save(newPlayerModel);
+    if (res === null) {
+      return null;
+    }
+    return res;
+  },
+  move: async (player: PlayerModel) => {
+    const newPlayer = {
+      ...player,
+      x: minMax(player.x, GAME_SIZE.WIDTH),
+      y: minMax(player.y, GAME_SIZE.HEIGHT),
+    };
+    const res = await playersRepository.save(newPlayer);
+    return res;
   },
 };

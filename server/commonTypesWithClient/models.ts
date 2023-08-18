@@ -22,7 +22,6 @@ export type GameModel = {
 export type CellModel = {
   x: number;
   y: number;
-  isBombCell: boolean;
   cellValue: number;
   whoOpened: UserId;
   whenOpened: number;
@@ -36,4 +35,9 @@ export type PlayerModel = {
   y: number;
   score: number;
   isLive: boolean;
+};
+
+export type Pos = {
+  x: number;
+  y: number;
 };

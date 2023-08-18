@@ -45,6 +45,7 @@ export const playersRepository = {
     const prismaPlayer = await prismaClient.player.findUnique({ where: { id } });
     return prismaPlayer !== null ? toPlayerModel(prismaPlayer) : null;
   },
+
   delete: async (id: UserId): Promise<void> => {
     await prismaClient.player.delete({ where: { id } });
   },
