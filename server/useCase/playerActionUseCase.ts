@@ -21,10 +21,11 @@ export const playerActionUseCase = {
     return await playersRepository.save(newPlayer);
   },
   putFrug: async (userId: UserId, focusPos: Pos) => {
-    const newCell = {
+    const newCell: CellModel = {
       x: focusPos.x,
       y: focusPos.y,
       cellValue: 9,
+      isBombCell: false,
       whoOpened: userId,
       whenOpened: new Date().getTime(),
       isUserInput: true,
