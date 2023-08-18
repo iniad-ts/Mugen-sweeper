@@ -23,7 +23,6 @@ model Game {
 model Cell {
   x           Int
   y           Int
-  isBombCell  Boolean
   cellValue   Int
   whoOpened   String //UserId
   whenOpened  DateTime

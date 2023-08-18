@@ -22,7 +22,6 @@ export type GameModel = {
 export type CellModel = {
   x: number;
   y: number;
-  isBombCell: boolean;
   cellValue: number;
   whoOpened: UserId;
   whenOpened: number;
