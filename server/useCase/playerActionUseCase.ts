@@ -4,8 +4,11 @@ import { cellsRepository } from '$/repository/cellsRepository';
 import { playersRepository } from '$/repository/playersRepository';
 
 export const playerActionUseCase = {
-  dig: async (cells: CellModel[], player: PlayerModel) => {
+  dig: async (cells: CellModel[]) => {
     cells.forEach((cell) => cellsRepository.create({ ...cell }));
+    const playerId = cells[0].whoOpened;
+    const player = await playersRepository.find(playerId);
+    if (player === null) return null;
     const newPlayer = { ...player, score: player.score + cells.length };
     return await playersRepository.save(newPlayer);
   },
