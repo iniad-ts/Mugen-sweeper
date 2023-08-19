@@ -12,7 +12,43 @@
   flex-wrap: wrap;
 }
 
+.stone {
+  width: 100%;
+  height: 100%;
+  background-color: #c6c6c6;
+  border: outset 2px #c6c6c6;
+}
+
+.number {
+  background: url() no-repeat;
+}
+
 .ranking {
-  display: flex;
+  display: grid;
   flex-direction: row;
+  grid-template-rows: 3fr 2fr 2fr repeat(7, 1fr);
+}
+
+.prof {
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  grid-template-columns: 1fr 8fr 8fr 4fr;
+  grid-area: 'rank name score live';
+}
+
+.rank {
+  grid-area: rank;
+}
+
+.name {
+  grid-area: name;
+}
+
+.score {
+  grid-area: score;
+}
+
+.live {
+  grid-area: live;
 }

@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import type { PlayerModel } from 'commonTypesWithClient/models';
+import { useEffect, useMemo, useState } from 'react';
 import { Loading } from 'src/components/Loading/Loading';
 import styles from './index.module.css';
 // import { apiClient } from 'src/utils/apiClient';
@@ -19,10 +20,30 @@ const directions = [
   [-1, 1],
 ];
 
+const RANKING_COLOR = ['#FFD700', '#C0C0C0', '#C47222'];
+
+const Profile = ({ player, i }: { player: PlayerModel; i: number }) => {
+  return useMemo(
+    () => (
+      <div className={styles.prof}>
+        <div className={styles.ranking} style={{ color: i < 3 ? RANKING_COLOR[i] : '#000' }}>
+          {i}
+        </div>
+        <div className={styles.name}>{player.name}</div>
+        <div className={styles.score}>{player.score}</div>
+        <div className={styles.live} style={{ color: player.isLive ? 'green' : '#red' }}>
+          {player.isLive}
+        </div>
+      </div>
+    ),
+    [player, i]
+  );
+};
+
 const Game = () => {
   const [bombMap, setBombMap] = useState<(0 | 1)[][]>();
   const [userInputs, setUserInputs] = useState<(0 | 1 | 2)[][]>();
-  const [ranking, setRanking] = useState();
+  const [ranking, setRanking] = useState<PlayerModel[]>();
 
   const newBoard = bombMap?.map((row) => row.map(() => -1));
 
@@ -53,7 +74,12 @@ const Game = () => {
     // setBombMap(res);
   };
 
-  if (newBoard === undefined || bombMap === undefined || userInputs === undefined) {
+  if (
+    newBoard === undefined ||
+    bombMap === undefined ||
+    userInputs === undefined ||
+    ranking === undefined
+  ) {
     fetchGame();
     return <Loading visible />;
   }
@@ -79,8 +105,24 @@ const Game = () => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.game} />
-      <div className={styles.ranking} />
+      <div
+        className={styles.game}
+        style={{
+          gridTemplateColumns: `repeat(${newBoard[0].length},1fr)`,
+          gridTemplateRows: `repeat(${newBoard.length},1fr)`,
+        }}
+      >
+        {newBoard.map((row, y) =>
+          row.map((value, x) => (
+            <div className={value === -1 ? styles.stone : styles.number} key={`${y}-${x}`} />
+          ))
+        )}
+      </div>
+      <div className={styles.ranking}>
+        {ranking.map((player, i) => (
+          <Profile key={i} player={player} i={i} />
+        ))}
+      </div>
     </div>
   );
 };
