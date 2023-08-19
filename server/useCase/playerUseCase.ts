@@ -1,3 +1,4 @@
+import type { UserId } from '$/commonTypesWithClient/branded';
 import type { PlayerModel } from '$/commonTypesWithClient/models';
 import { GAME_SIZE } from '$/constants/gameSize';
 import { playersRepository } from '$/repository/playersRepository';
@@ -28,6 +29,14 @@ export const playerUseCase = {
       y: minMax(player.y, GAME_SIZE.HEIGHT),
     };
     const res = await playersRepository.save(newPlayer);
+    return res;
+  },
+  getYourState: async (userId: UserId) => {
+    const res = await playersRepository.find(userId);
+    return res;
+  },
+  findAll: async () => {
+    const res = await playersRepository.findAll();
     return res;
   },
 };
