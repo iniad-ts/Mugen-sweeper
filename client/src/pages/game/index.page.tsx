@@ -1,6 +1,7 @@
 import type { PlayerModel } from 'commonTypesWithClient/models';
 import { useEffect, useMemo, useState } from 'react';
 import { Loading } from 'src/components/Loading/Loading';
+import { minesweeperUtils } from 'src/utils/minesweeperUtils';
 import { userIdParser } from '../../../../server/service/idParsers';
 import styles from './index.module.css';
 // import { apiClient } from 'src/utils/apiClient';
@@ -8,18 +9,7 @@ export type Pos = {
   x: number;
   y: number;
 };
-export type boardMOdel = number[][];
-
-const directions = [
-  [0, 1],
-  [1, 1],
-  [1, 0],
-  [1, -1],
-  [0, -1],
-  [-1, -1],
-  [-1, 0],
-  [-1, 1],
-];
+export type boardModel = number[][];
 
 const fontsize = (n: number) => `${(8 - Math.min(n, 3) * 2) * 0.5}em`;
 
@@ -105,28 +95,18 @@ const Game = () => {
     fetchGame();
     return <Loading visible />;
   }
-  const recursion = (x: number, y: number) => {
-    newBoard[y][x] =
-      bombMap
-        .slice(Math.max(0, y - 1), Math.min(y + 2, bombMap.length))
-        .map((row) => row.slice(Math.max(0, x - 1), Math.min(x + 2, row.length)))
-        .flat()
-        .filter((b) => b === 1).length ?? 1 - 1;
+  const openSurroundingCells = (x: number, y: number) => {
+    newBoard[y][x] = minesweeperUtils.countAroundBombsNum(bombMap, x, y);
 
     if (newBoard[y][x] === 0) {
-      directions
-        .map((direction) => ({ x: x + direction[0], y: y + direction[1] }))
-        .filter(
-          (nextPos) => newBoard[nextPos.y] !== undefined && newBoard[nextPos.y][nextPos.x] === -1
-        )
-        .forEach((nextPos) => {
-          recursion(nextPos.x, nextPos.y);
-        });
+      minesweeperUtils.aroundCellToArray(newBoard, x, y).forEach((nextPos) => {
+        openSurroundingCells(nextPos.x, nextPos.y);
+      });
     }
   };
   console.table(newBoard);
 
-  userInputs.forEach((row, y) => row.forEach((val, x) => val === 1 && recursion(x, y)));
+  userInputs.forEach((row, y) => row.forEach((val, x) => val === 1 && openSurroundingCells(x, y)));
 
   return (
     <div className={styles.container}>

@@ -44,12 +44,8 @@ export const gameUseCase = {
   getRanking: async (row: number) => {
     const res = await playersRepository.findAll();
     const deletes = res.slice(row, res.length);
-    Promise.all(deletes.map((player) => playersRepository.delete(player.id))) //
-      .then((results) =>
-        results.forEach((result) => {
-          result;
-        })
-      );
+    deletes.forEach((player) => playersRepository.delete(player.id));
+
     return res.slice(0, row);
   },
 };
