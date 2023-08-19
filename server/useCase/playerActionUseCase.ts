@@ -5,11 +5,7 @@ import { playersRepository } from '$/repository/playersRepository';
 
 export const playerActionUseCase = {
   dig: async (cells: CellModel[]) => {
-    Promise.all(cells.map((cell) => cellsRepository.create({ ...cell }))).then((results) =>
-      results.forEach((result) => {
-        result;
-      })
-    );
+    cells.forEach((cell) => cellsRepository.create({ ...cell }));
     const playerId = cells[0].whoOpened;
     const player = await playersRepository.find(playerId);
     if (player === null) return null;
@@ -19,7 +15,7 @@ export const playerActionUseCase = {
   explosion: async (player: PlayerModel) => {
     const res = await cellsRepository.findAllOfPlayer(player.id);
     if (res === null) return null;
-    Promise.all(res.map((cell) => cellsRepository.delete(cell.x, cell.y)));
+    res.forEach((cell) => cellsRepository.delete(cell.x, cell.y));
     const newPlayer = { ...player, isLive: false };
     return await playersRepository.save(newPlayer);
   },
