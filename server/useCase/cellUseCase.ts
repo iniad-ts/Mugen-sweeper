@@ -6,25 +6,14 @@ export const cellUseCase = {
   delete: async (userId: UserId) => {
     const res = await cellsRepository.findAllOfPlayer(userId);
     if (res === null) return;
-    Promise.all(
-      res.map((cell) => {
-        cellsRepository.delete(cell.x, cell.y);
-      })
-    ).then((results) =>
-      results.forEach((result) => {
-        result;
-      })
-    );
+    res.forEach((cell) => {
+      cellsRepository.delete(cell.x, cell.y);
+    });
   },
   fill: async () => {
     const res = await cellsRepository.findOlder();
     if (res === null) return;
     const moreOldCells = sliceWithTime(new Date().getTime() - 1000000, res);
-    Promise.all(moreOldCells.map((cell) => cellsRepository.delete(cell.x, cell.y))).then(
-      (results) =>
-        results.forEach((result) => {
-          result;
-        })
-    );
+    moreOldCells.forEach((cell) => cellsRepository.delete(cell.x, cell.y));
   },
 };
