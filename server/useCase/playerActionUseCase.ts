@@ -25,7 +25,6 @@ export const playerActionUseCase = {
       x: focusPos.x,
       y: focusPos.y,
       cellValue: 9,
-      isBombCell: false,
       whoOpened: userId,
       whenOpened: new Date().getTime(),
       isUserInput: true,

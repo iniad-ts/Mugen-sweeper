@@ -8,7 +8,6 @@ const toCellModel = (prismaCell: Cell): CellModel => ({
   x: z.number().min(0).parse(prismaCell),
   y: z.number().min(0).parse(prismaCell.y),
   cellValue: z.number().min(0).parse(prismaCell.cellValue),
-  isBombCell: z.boolean().parse(prismaCell.isBombCell),
   whoOpened: userIdParser.parse(prismaCell.whoOpened),
   whenOpened: prismaCell.whenOpened.getTime(),
   isUserInput: z.boolean().parse(prismaCell.isUserInput),
@@ -35,6 +34,14 @@ export const cellsRepository = {
   find: async (x: number, y: number): Promise<CellModel | null> => {
     const prismaCell = await prismaClient.cell.findUnique({ where: { pos: { x, y } } });
     return prismaCell !== null ? toCellModel(prismaCell) : null;
+  },
+  findOlder: async () => {
+    const prismaCells = await prismaClient.cell.findMany({ orderBy: { whenOpened: 'desc' } });
+    return prismaCells !== null ? prismaCells.map(toCellModel) : null;
+  },
+  findAllUserInputted: async () => {
+    const prismaCells = await prismaClient.cell.findMany({ where: { isUserInput: true } });
+    return prismaCells !== null ? prismaCells.map(toCellModel) : null;
   },
   delete: async (x: number, y: number) => {
     const prismaCell = await prismaClient.cell.delete({ where: { pos: { x, y } } });
