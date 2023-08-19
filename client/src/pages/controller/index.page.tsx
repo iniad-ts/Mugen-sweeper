@@ -19,7 +19,8 @@ const Controller = () => {
     const res = await apiClient.game.$get();
     if (res !== null) {
       const currentBoard = res.bombMap.map((row) => row.map(() => -1));
-      const openSurroundingCells = (x: number, y: number) => {//TODO gameと共通化して再利用できるようにする
+      const openSurroundingCells = (x: number, y: number) => {
+        //TODO gameと共通化して再利用できるようにする
         currentBoard[y][x] = minesweeperUtils.countAroundBombsNum(res.bombMap, x, y);
         if (currentBoard[y][x] === 0) {
           minesweeperUtils.aroundCellToArray(currentBoard, x, y).forEach((nextPos) => {
@@ -38,7 +39,8 @@ const Controller = () => {
 
   const fetchBombMap = async () => {
     // 初回レンダリング時のみ;
-    const res = await apiClient.game.config.$post({//開発時のみここで作成
+    const res = await apiClient.game.config.$post({
+      //開発時のみここで作成
       body: { width: 10, height: 10, bombRatioPercent: 10 },
     });
     if (res !== null) {

@@ -27,10 +27,10 @@ export const gameUseCase = {
       bombMap: newBombMap,
       userInputs: newUserInputs,
     };
-    const oldGame = await gameRepository.find();//reactのstrictモードの回避
+    const oldGame = await gameRepository.find(); //reactのstrictモードの回避
     if (oldGame === null) {
-    const res = await gameRepository.save(newGame);
-    return res;
+      const res = await gameRepository.save(newGame);
+      return res;
     }
     return oldGame;
   },
