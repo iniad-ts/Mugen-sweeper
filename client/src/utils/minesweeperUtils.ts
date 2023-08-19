@@ -15,7 +15,7 @@ export const minesweeperUtils = {
   aroundCellToArray: (board: boardModel, x: number, y: number) =>
     directions
       .map((direction) => ({ x: x + direction[0], y: y + direction[1] }))
-      .filter((nextPos) => board[nextPos.y][nextPos.x] === -1),
+      .filter((nextPos) => board[nextPos.y] !== undefined && board[nextPos.y][nextPos.x] === -1),
   countAroundBombsNum: (bombMap: boardModel, x: number, y: number) =>
     bombMap
       .slice(Math.max(0, y - 1), Math.min(y + 2, bombMap.length))
