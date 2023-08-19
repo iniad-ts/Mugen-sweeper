@@ -35,6 +35,14 @@ export const cellsRepository = {
     const prismaCell = await prismaClient.cell.findUnique({ where: { pos: { x, y } } });
     return prismaCell !== null ? toCellModel(prismaCell) : null;
   },
+  findOlder: async () => {
+    const prismaCells = await prismaClient.cell.findMany({ orderBy: { whenOpened: 'desc' } });
+    return prismaCells !== null ? prismaCells.map(toCellModel) : null;
+  },
+  findAllUserInputted: async () => {
+    const prismaCells = await prismaClient.cell.findMany({ where: { isUserInput: true } });
+    return prismaCells !== null ? prismaCells.map(toCellModel) : null;
+  },
   delete: async (x: number, y: number) => {
     const prismaCell = await prismaClient.cell.delete({ where: { pos: { x, y } } });
     return prismaCell !== null ? toCellModel(prismaCell) : null;
