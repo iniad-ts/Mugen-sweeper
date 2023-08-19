@@ -1,12 +1,12 @@
-import type { DefineMethods } from 'aspida';
-import type { GameModel } from './../../commonTypesWithClient/models';
+import type { CellModel, GameModel, PlayerModel } from '$/commonTypesWithClient/models';
 
-export type Methods = DefineMethods<{
+export type Methods = {
   get: {
     resBody: GameModel | null;
   };
   post: {
-    reqBody: { width: number; height: number; bombRatioPercent: number };
-    resBody: GameModel;
+    reqBody: CellModel[];
+
+    resBody: PlayerModel | null;
   };
-}>;
+};
