@@ -1,4 +1,4 @@
-import type { CellModel, GameModel, PlayerModel } from '$/commonTypesWithClient/models';
+import type { CellModel, GameModel, PlayerModel } from '../../commonTypesWithClient/models';
 
 export type Methods = {
   get: {
