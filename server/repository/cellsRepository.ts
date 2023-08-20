@@ -39,8 +39,8 @@ export const cellsRepository = {
     const prismaCells = await prismaClient.cell.findMany({ where: { isUserInput: true } });
     return prismaCells !== null ? prismaCells.map(toCellModel) : null;
   },
-  delete: async (x: number, y: number, whenOpened: Date) => {
-    await prismaClient.cell.delete({ where: { uniquePos: { x, y, whenOpened } } });
+  delete: async (x: number, y: number, whoOpened: UserId) => {
+    await prismaClient.cell.delete({ where: { uniquePos: { x, y, whoOpened } } });
     return null;
   },
   deleteWithPlayer: async (userId: UserId) => {
