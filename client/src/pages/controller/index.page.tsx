@@ -1,54 +1,41 @@
-import type { CellModel } from 'commonTypesWithClient/models';
+import type { CellModel, PlayerModel } from 'commonTypesWithClient/models';
 import { useCallback, useEffect, useState } from 'react';
 import { Loading } from 'src/components/Loading/Loading';
 import { apiClient } from 'src/utils/apiClient';
-import { getUserIdFromLocalStorage } from 'src/utils/loginWithLocalStorage';
+import { deepCopy } from 'src/utils/deepCopy';
+import { RedirectToLogin, getUserIdFromLocalStorage } from 'src/utils/loginWithLocalStorage';
 import { minesweeperUtils } from 'src/utils/minesweeperUtils';
-import type { boardModel } from '../game/index.page';
+import type { BoardModel } from '../game/index.page';
 import styles from './index.module.css';
 
+type ActionModel = 'left' | 'right' | 'up' | 'down';
+
+//TODO complexity下げる
 const Controller = () => {
-  const [bombMap, setBombMap] = useState<(0 | 1)[][]>();
-  const [board, setBoard] = useState<number[][]>();
-  const [userInputs, setUserInputs] = useState<number[][]>();
+  const [bombMap, setBombMap] = useState<BoardModel>();
+  const [board, setBoard] = useState<BoardModel>();
   const [openCells, setOpenCells] = useState<CellModel[]>([]);
   const [playerId] = useState(getUserIdFromLocalStorage);
-  if (playerId === null) {
-    console.log('playerIdがありません。loginしてください.');
-  }
+  const [players, setPlayers] = useState<PlayerModel[]>();
 
   const fetchGame = useCallback(async () => {
     if (openCells.length !== 0) await apiClient.game.$post({ body: openCells });
     const res = await apiClient.game.$get();
-    if (res !== null) {
-      const currentBoard = res.bombMap.map((row) => row.map(() => -1));
-      const openSurroundingCells = (x: number, y: number) => {
-        //TODO gameと共通化して再利用できるようにする
-        currentBoard[y][x] = minesweeperUtils.countAroundBombsNum(res.bombMap, x, y);
-        if (currentBoard[y][x] === 0) {
-          minesweeperUtils.aroundCellToArray(currentBoard, x, y).forEach((nextPos) => {
-            openSurroundingCells(nextPos.x, nextPos.y);
-          });
-        }
-      };
-      res.userInputs.forEach((row, y) =>
-        row.forEach((val, x) => val === 1 && openSurroundingCells(x, y))
-      );
-      console.table(currentBoard);
-      setBoard(currentBoard);
-      setUserInputs(res.userInputs);
-    }
+    const res2 = await apiClient.player.$get();
+    if (res === null || res2 === null) return;
+    const newBoard = minesweeperUtils.makeBoard(res.bombMap, res.userInputs);
+    setBoard(newBoard);
+    setPlayers(res2);
   }, [openCells]);
 
+  // 初回レンダリング時のみ;
   const fetchBombMap = async () => {
-    // 初回レンダリング時のみ;
-    const res = await apiClient.game.config.$post({
-      //開発時のみここで作成
-      body: { width: 200, height: 150, bombRatioPercent: 20 },
+    //開発時のみここで作成
+    const res1 = await apiClient.game.config.$post({
+      body: { width: 10, height: 10, bombRatioPercent: 10 },
     });
-    if (res !== null) {
-      setBombMap(res.bombMap);
-      setUserInputs(res.userInputs);
+    if (res1 !== null) {
+      setBombMap(res1.bombMap);
     }
   };
 
@@ -64,40 +51,77 @@ const Controller = () => {
   }, []);
 
   if (playerId === null) {
-    //リダイレクト処理
+    RedirectToLogin();
     return;
   }
-
+  const player = players?.find((player) => player.id === playerId);
+  if (player === undefined) return <>did not login</>;
   if (board === undefined || bombMap === undefined) {
     return <Loading visible />;
   }
 
-  const newBoard: boardModel = JSON.parse(JSON.stringify(board));
-  const newOpenCells: CellModel[] = JSON.parse(JSON.stringify(openCells));
-
-  const openSurroundingCells = (x: number, y: number, isUserInput: boolean) => {
-    newBoard[y][x] = minesweeperUtils.countAroundBombsNum(bombMap, x, y);
-
-    newOpenCells.push({
-      x,
-      y,
-      whoOpened: playerId,
-      whenOpened: new Date().getTime(),
-      isUserInput,
-      cellValue: newBoard[y][x],
-    });
-
-    if (newBoard[y][x] === 0) {
-      minesweeperUtils.aroundCellToArray(newBoard, x, y).forEach((nextPos) => {
-        openSurroundingCells(nextPos.x, nextPos.y, false);
-      });
-    }
-  };
-
   const digCell = (x: number, y: number) => {
+    const newBoard = deepCopy<BoardModel>(board);
+    const newOpenCells = deepCopy<CellModel[]>(openCells);
+    const openSurroundingCells = (x: number, y: number, isUserInput: boolean) => {
+      newBoard[y][x] = minesweeperUtils.countAroundBombsNum(bombMap, x, y);
+
+      newOpenCells.push({
+        x,
+        y,
+        whoOpened: playerId,
+        whenOpened: new Date().getTime(),
+        isUserInput,
+        cellValue: newBoard[y][x],
+      });
+
+      if (newBoard[y][x] === 0) {
+        minesweeperUtils.aroundCellToArray(newBoard, x, y).forEach((nextPos) => {
+          openSurroundingCells(nextPos.x, nextPos.y, false);
+        });
+      }
+    };
     openSurroundingCells(x, y, true);
     setOpenCells(newOpenCells);
     setBoard(newBoard);
+  };
+
+  const move = async (moveX: number, moveY: number) => {
+    const newPlayer = { ...player, x: player.x + moveX, y: player.y + moveY };
+    const res = await apiClient.player.$post({ body: newPlayer });
+    const newPlayers = deepCopy(players);
+    (newPlayers ?? [])[
+      Math.max(
+        0,
+        (newPlayers ?? []).findIndex((onePlayer) => onePlayer.id === playerId)
+      )
+    ] = res;
+    setPlayers(newPlayers);
+  };
+
+  const frag = (x: number, y: number) => {
+    const newBoard = deepCopy<BoardModel>(board);
+    newBoard[y][x] = 9;
+    setBoard(newBoard);
+  };
+
+  const handleAction = (action: ActionModel) => {
+    if (action === 'left') {
+      move(-1, 0);
+      return;
+    }
+    if (action === 'right') {
+      move(1, 0);
+      return;
+    }
+    if (action === 'down') {
+      move(0, 1);
+      return;
+    }
+    if (action === 'up') {
+      move(0, -1);
+      return;
+    }
   };
 
   return (
