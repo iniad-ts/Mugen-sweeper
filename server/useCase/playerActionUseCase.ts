@@ -15,7 +15,7 @@ export const playerActionUseCase = {
   explosion: async (player: PlayerModel) => {
     const res = await cellsRepository.findWithPlayer(player.id);
     if (res === null) return null;
-    res.forEach((cell) => cellsRepository.delete(cell.x, cell.y, new Date(cell.whenOpened)));
+    res.forEach((cell) => cellsRepository.delete(cell.x, cell.y, cell.whoOpened));
     const newPlayer = { ...player, isLive: false };
     return await playersRepository.save(newPlayer);
   },
