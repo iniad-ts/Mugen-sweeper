@@ -13,7 +13,7 @@ const Controller = () => {
   const [userInputs, setUserInputs] = useState<number[][]>();
   const [openCells, setOpenCells] = useState<CellModel[]>([]);
   const [playerId] = useState(getUserIdFromLocalStorage);
-  if (!playerId) {
+  if (playerId === null) {
     console.log('playerIdがありません。loginしてください.');
   }
 
