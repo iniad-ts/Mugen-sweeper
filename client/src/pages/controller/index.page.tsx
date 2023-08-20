@@ -14,7 +14,7 @@ const Controller = () => {
   const [openCells, setOpenCells] = useState<CellModel[]>([]);
   const [playerId] = useState(getUserIdFromLocalStorage);
   if (!playerId) {
-    console.log('playerIdがありません。loginしてください');
+    console.log('playerIdがありません。loginしてください.');
   }
 
   const fetchGame = useCallback(async () => {
