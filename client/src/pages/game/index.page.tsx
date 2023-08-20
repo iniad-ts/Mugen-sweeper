@@ -1,6 +1,7 @@
 import type { PlayerModel } from 'commonTypesWithClient/models';
 import { useEffect, useMemo, useState } from 'react';
 import { Loading } from 'src/components/Loading/Loading';
+import { apiClient } from 'src/utils/apiClient';
 import { minesweeperUtils } from 'src/utils/minesweeperUtils';
 import { userIdParser } from '../../../../server/service/idParsers';
 import styles from './index.module.css';
@@ -37,27 +38,9 @@ const Profile = ({ player, i }: { player: PlayerModel; i: number }) => {
 };
 
 const Game = () => {
-  const [bombMap, setBombMap] = useState<(0 | 1)[][]>([
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0],
-  ]);
-  const [userInputs, setUserInputs] = useState<(0 | 1 | 2)[][]>([
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  ]);
-  const [ranking, setRanking] = useState<PlayerModel[]>([
-    { id: userIdParser.parse('a'), name: 'frouriochan', x: 0, y: 0, score: 10000000, isLive: true },
-    { id: userIdParser.parse('a'), name: 'frouriochan', x: 0, y: 0, score: 1000000, isLive: false },
-    { id: userIdParser.parse('a'), name: 'frouriochan', x: 0, y: 0, score: 10000, isLive: true },
-    { id: userIdParser.parse('a'), name: 'frouriochan', x: 0, y: 0, score: 1000, isLive: false },
-    { id: userIdParser.parse('a'), name: 'frouriochan', x: 0, y: 0, score: 100, isLive: false },
-    { id: userIdParser.parse('a'), name: 'frouriochan', x: 0, y: 0, score: 100, isLive: true },
-    { id: userIdParser.parse('a'), name: 'frouriochan', x: 0, y: 0, score: 100, isLive: true },
-    { id: userIdParser.parse('a'), name: 'frouriochan', x: 0, y: 0, score: 100, isLive: true },
-    { id: userIdParser.parse('a'), name: 'frouriochan', x: 0, y: 0, score: 100, isLive: true },
-    { id: userIdParser.parse('a'), name: 'frouriochan', x: 0, y: 0, score: 100, isLive: true },
-  ]);
-  const newBoard = bombMap?.map((row) => row.map(() => -1));
+  const [bombMap, setBombMap] = useState<(0 | 1)[][]>();
+  const [userInputs, setUserInputs] = useState<(0 | 1 | 2)[][]>();
+  const [ranking, setRanking] = useState<PlayerModel[]>();
 
   useEffect(() => {
     const cancelId = setInterval(() => {
@@ -71,42 +54,51 @@ const Game = () => {
   }, []);
 
   const fetchGame = async () => {
-    // await apiClient.game.post(openCells)
-    // const res = await apiClient.game.get()
-    // if (res !== null) {
-    //   setUserInputs(res.userInputs)
-    //   setRanking(res.ranking)
-    // }
+    const res = await apiClient.game.$get();
+    const res2 = await apiClient.game.ranking.$get();
+    if (res !== null) {
+      setUserInputs(res.userInputs);
+      setRanking(res2);
+    }
   };
 
   const fetchBombMap = async () => {
     //初回レンダリング時のみ
-    // const res = await apiClient.game.start.g$et();
-    // if (res === null) fetchBombMap();
-    // setBombMap(res);
-  };
-
-  if (
-    newBoard === undefined ||
-    bombMap === undefined ||
-    userInputs === undefined ||
-    ranking === undefined
-  ) {
-    fetchGame();
-    return <Loading visible />;
-  }
-  const openSurroundingCells = (x: number, y: number) => {
-    newBoard[y][x] = minesweeperUtils.countAroundBombsNum(bombMap, x, y);
-
-    if (newBoard[y][x] === 0) {
-      minesweeperUtils.aroundCellToArray(newBoard, x, y).forEach((nextPos) => {
-        openSurroundingCells(nextPos.x, nextPos.y);
-      });
+    //開発時のみここで作成
+    const res = await apiClient.game.config.$post({
+      body: { width: 10, height: 10, bombRatioPercent: 10 },
+    });
+    //開発用に一旦playerを作る
+    [...Array(10)].forEach((_, i) =>
+      apiClient.player.config.post({
+        body: {
+          userId: userIdParser.parse(`${Math.random()}`),
+          name: `frouriochan${i + 1}`,
+        },
+      })
+    );
+    if (res !== null) {
+      setBombMap(res.bombMap);
     }
   };
-  console.table(newBoard);
 
-  userInputs.forEach((row, y) => row.forEach((val, x) => val === 1 && openSurroundingCells(x, y)));
+  if (bombMap === undefined || userInputs === undefined || ranking === undefined) {
+    return <Loading visible />;
+  }
+  const newBoard = bombMap?.map((row) => row.map(() => -1));
+
+  const startMakeBoard = (x: number, y: number, bombMap: boardModel) =>
+    minesweeperUtils
+      .makeBoard(x, y, newBoard, bombMap)
+      .forEach((row, y) => row.forEach((val, x) => (newBoard[y][x] = val)));
+
+  userInputs.forEach((row, y) =>
+    row.forEach((val, x) => {
+      if (val === 1) {
+        startMakeBoard(x, y, bombMap);
+      }
+    })
+  );
 
   return (
     <div className={styles.container}>

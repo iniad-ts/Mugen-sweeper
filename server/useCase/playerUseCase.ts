@@ -2,14 +2,12 @@ import type { UserId } from '$/commonTypesWithClient/branded';
 import type { PlayerModel } from '$/commonTypesWithClient/models';
 import { GAME_SIZE } from '$/constants/gameSize';
 import { playersRepository } from '$/repository/playersRepository';
-import { userIdParser } from '$/service/idParsers';
 import { minMax } from '$/service/minMax';
-import { randomUUID } from 'crypto';
 
 export const playerUseCase = {
-  create: async (userName: string): Promise<PlayerModel | null> => {
+  create: async (userName: string, userId: UserId): Promise<PlayerModel | null> => {
     const newPlayerModel = {
-      id: userIdParser.parse(randomUUID()),
+      id: userId,
       x: Math.floor(Math.random() * GAME_SIZE.WIDTH),
       y: Math.floor(Math.random() * GAME_SIZE.HEIGHT),
       name: userName,
@@ -33,10 +31,6 @@ export const playerUseCase = {
   },
   getYourState: async (userId: UserId) => {
     const res = await playersRepository.find(userId);
-    return res;
-  },
-  findAll: async () => {
-    const res = await playersRepository.findAll();
     return res;
   },
 };
