@@ -25,4 +25,7 @@ export const gameRepository = {
     const prismaGame = await prismaClient.game.findFirst().catch(() => null);
     return prismaGame !== null ? toGameModel(prismaGame) : null;
   },
+  deleteAll: async () => {
+    await prismaClient.game.deleteMany();
+  },
 };

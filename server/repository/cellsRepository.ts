@@ -47,4 +47,7 @@ export const cellsRepository = {
     await prismaClient.cell.deleteMany({ where: { whenOpened: userId } });
     return null;
   },
+  deleteAll: async () => {
+    await prismaClient.cell.deleteMany();
+  },
 };

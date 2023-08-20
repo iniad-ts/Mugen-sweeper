@@ -52,4 +52,9 @@ export const gameUseCase = {
 
     return res.slice(0, row);
   },
+  deleteAll: async () => {
+    await playersRepository.deleteAll();
+    await cellsRepository.deleteAll();
+    await gameRepository.deleteAll();
+  },
 };
