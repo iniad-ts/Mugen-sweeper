@@ -22,4 +22,18 @@ export const minesweeperUtils = {
       .map((row) => row.slice(Math.max(0, x - 1), Math.min(x + 2, row.length)))
       .flat()
       .filter((b) => b === 1).length ?? 1 - 1,
+  makeBoard: (x: number, y: number, board: boardModel, bombMap: boardModel): boardModel => {
+    const newBoard = JSON.parse(JSON.stringify(board));
+    const openSurroundingCells = (x: number, y: number) => {
+      newBoard[y][x] = minesweeperUtils.countAroundBombsNum(bombMap, x, y);
+
+      if (newBoard[y][x] === 0) {
+        minesweeperUtils.aroundCellToArray(newBoard, x, y).forEach((nextPos) => {
+          openSurroundingCells(nextPos.x, nextPos.y);
+        });
+      }
+    };
+    openSurroundingCells(x, y);
+    return newBoard;
+  },
 };
