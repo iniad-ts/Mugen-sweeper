@@ -55,7 +55,7 @@ const Controller = () => {
     return;
   }
   const player = players?.find((player) => player.id === playerId);
-  if (player === undefined) return<>did not login</>;
+  if (player === undefined) return <>did not login</>;
   if (board === undefined || bombMap === undefined) {
     return <Loading visible />;
   }
