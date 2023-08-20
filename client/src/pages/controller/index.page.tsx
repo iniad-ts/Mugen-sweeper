@@ -13,31 +13,44 @@ const Controller = () => {
   const [userInputs, setUserInputs] = useState<number[][]>();
   const [openCells, setOpenCells] = useState<CellModel[]>([]);
   const [playerId] = useState(getUserIdFromLocalStorage);
+  if (playerId === null) {
+    console.log('playerIdがありません。loginしてください.');
+  }
 
-  const fetchGame = useCallback(() => {
-    async () => {
-      const res = await apiClient.game.$get();
-      await apiClient.game.$post({ body: openCells });
-      if (res !== null) {
-        setUserInputs(res.userInputs);
-      }
-    };
+  const fetchGame = useCallback(async () => {
+    if (openCells.length !== 0) await apiClient.game.$post({ body: openCells });
+    const res = await apiClient.game.$get();
+    if (res !== null) {
+      const currentBoard = res.bombMap.map((row) => row.map(() => -1));
+      const openSurroundingCells = (x: number, y: number) => {
+        //TODO gameと共通化して再利用できるようにする
+        currentBoard[y][x] = minesweeperUtils.countAroundBombsNum(res.bombMap, x, y);
+        if (currentBoard[y][x] === 0) {
+          minesweeperUtils.aroundCellToArray(currentBoard, x, y).forEach((nextPos) => {
+            openSurroundingCells(nextPos.x, nextPos.y);
+          });
+        }
+      };
+      res.userInputs.forEach((row, y) =>
+        row.forEach((val, x) => val === 1 && openSurroundingCells(x, y))
+      );
+      console.table(currentBoard);
+      setBoard(currentBoard);
+      setUserInputs(res.userInputs);
+    }
   }, [openCells]);
 
-  const fetchBombMap = useCallback(() => {
-    async () => {
-      // 初回レンダリング時のみ;
-      const res = await apiClient.game.config.$post({
-        body: { width: 10, height: 10, bombRatioPercent: 10 },
-      });
-      console.log(res);
-      if (res === null) {
-        fetchBombMap();
-      } else {
-        setBombMap(res.bombMap);
-      }
-    };
-  }, []);
+  const fetchBombMap = async () => {
+    // 初回レンダリング時のみ;
+    const res = await apiClient.game.config.$post({
+      //開発時のみここで作成
+      body: { width: 10, height: 10, bombRatioPercent: 10 },
+    });
+    if (res !== null) {
+      setBombMap(res.bombMap);
+      setUserInputs(res.userInputs);
+    }
+  };
 
   useEffect(() => {
     const cancelId = setInterval(() => {
@@ -48,18 +61,14 @@ const Controller = () => {
 
   useEffect(() => {
     fetchBombMap();
-  }, [fetchBombMap]);
+  }, []);
 
   if (playerId === null) {
     //リダイレクト処理
     return;
   }
 
-  console.log(playerId);
-
   if (board === undefined || bombMap === undefined) {
-    fetchGame();
-    console.log('a');
     return <Loading visible />;
   }
 
@@ -87,10 +96,9 @@ const Controller = () => {
 
   const digCell = (x: number, y: number) => {
     openSurroundingCells(x, y, true);
+    setOpenCells(newOpenCells);
+    setBoard(newBoard);
   };
-
-  setOpenCells(newOpenCells);
-  setBoard(newBoard);
 
   return (
     <div className={styles.controller}>

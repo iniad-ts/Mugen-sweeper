@@ -6,7 +6,7 @@ export const cellUseCase = {
   delete: async (userId: UserId) => {
     await cellsRepository.deleteWithPlayer(userId);
   },
-  fill: async () => {
+  restore: async () => {
     const res = await cellsRepository.findOlder();
     if (res === null) return;
     const moreOldCells = sliceWithTime(new Date().getTime() - 1000000, res);
