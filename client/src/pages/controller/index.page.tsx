@@ -51,7 +51,7 @@ const Controller = () => {
   }, []);
 
   if (playerId === null) {
-    RedirectToLogin;
+    RedirectToLogin();
     return;
   }
   const player = players?.find((player) => player.id === playerId);
