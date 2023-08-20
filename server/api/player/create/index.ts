@@ -6,6 +6,6 @@ export type Methods = DefineMethods<{
     reqBody: {
       name: string;
     };
-    resBody: PlayerModel | null;
+    resBody: PlayerModel;
   };
 }>;

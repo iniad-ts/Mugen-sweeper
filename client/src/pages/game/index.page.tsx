@@ -5,7 +5,6 @@ import { apiClient } from 'src/utils/apiClient';
 import { minesweeperUtils } from 'src/utils/minesweeperUtils';
 import { userIdParser } from '../../../../server/service/idParsers';
 import styles from './index.module.css';
-// import { apiClient } from 'src/utils/apiClient';
 export type Pos = {
   x: number;
   y: number;
@@ -18,7 +17,13 @@ const Profile = ({ player, i }: { player: PlayerModel; i: number }) => {
   return useMemo(() => {
     const fontsize = `${(8 - Math.min(i, 3) * 2) * 0.5}em`;
     return (
-      <div className={styles.prof} style={{ backgroundColor: player.isLive ? '#8f8' : '#f88' }}>
+      <div
+        className={styles.prof}
+        style={{
+          backgroundColor: player.isLive ? '#8f8' : '#f88',
+          borderColor: player.isLive ? '#8f8' : '#f88',
+        }}
+      >
         <div
           className={styles.rank}
           style={{
@@ -64,7 +69,7 @@ const Game = () => {
   const fetchBombMap = async () => {
     //開発時のみここで作成
     const res = await apiClient.game.config.$post({
-      body: { width: 10, height: 10, bombRatioPercent: 10 },
+      body: { width: 200, height: 150, bombRatioPercent: 20 },
     });
     //開発用に一旦playerを作る
     [...Array(10)].forEach((_, i) =>
