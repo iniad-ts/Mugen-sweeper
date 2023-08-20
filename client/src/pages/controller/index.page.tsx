@@ -44,7 +44,7 @@ const Controller = () => {
     // 初回レンダリング時のみ;
     const res = await apiClient.game.config.$post({
       //開発時のみここで作成
-      body: { width: 10, height: 10, bombRatioPercent: 10 },
+      body: { width: 200, height: 150, bombRatioPercent: 20 },
     });
     if (res !== null) {
       setBombMap(res.bombMap);
