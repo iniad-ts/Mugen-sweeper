@@ -10,7 +10,7 @@ export const cellUseCase = {
       cellsRepository.delete(cell.x, cell.y);
     });
   },
-  fill: async () => {
+  restore: async () => {
     const res = await cellsRepository.findOlder();
     if (res === null) return;
     const moreOldCells = sliceWithTime(new Date().getTime() - 1000000, res);

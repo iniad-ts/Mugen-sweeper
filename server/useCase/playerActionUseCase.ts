@@ -19,7 +19,7 @@ export const playerActionUseCase = {
     const newPlayer = { ...player, isLive: false };
     return await playersRepository.save(newPlayer);
   },
-  putFrug: async (userId: UserId, focusPos: Pos) => {
+  putFlag: async (userId: UserId, focusPos: Pos) => {
     const newCell: CellModel = {
       x: focusPos.x,
       y: focusPos.y,
