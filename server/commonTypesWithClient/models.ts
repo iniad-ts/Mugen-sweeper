@@ -13,15 +13,31 @@ export type TaskModel = {
   done: boolean;
   created: number;
 };
-
 export type GameModel = {
   id: GameId;
-  bombMap: (0 | 1)[][];
+  bombMap: (1 | 0)[][];
   userInputs: (0 | 1 | 2)[][];
 };
 
-export type Cell = {
-  where: { x: number; y: number };
-  whoOpened: UserId | null;
-  whenOpened: number | null;
+export type CellModel = {
+  x: number;
+  y: number;
+  cellValue: number;
+  whoOpened: UserId;
+  whenOpened: number;
+  isUserInput: boolean;
+};
+
+export type PlayerModel = {
+  id: UserId;
+  name: string;
+  x: number;
+  y: number;
+  score: number;
+  isLive: boolean;
+};
+
+export type Pos = {
+  x: number;
+  y: number;
 };
