@@ -28,7 +28,7 @@ model Cell {
   whenOpened  DateTime
   isUserInput Boolean
 
-  @@id(fields: [x, y], name: "pos")
+  @@id(fields: [x, y, whoOpened], name: "uniquePos")
 }
 
 model Player {
