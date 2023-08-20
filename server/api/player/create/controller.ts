@@ -3,7 +3,7 @@ import { defineController } from './$relay';
 
 export default defineController(() => ({
   post: async ({ body }) => ({
-    status: 201,
+    status: 200,
     body: await playerUseCase.create(body.name),
   }),
 }));

@@ -1,22 +1,71 @@
-.title {
-  font-size: 80px;
-  text-align: center;
-  font-weight: bold;
+.container {
+  width: 100vw;
+  height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 500px 1fr;
+  grid-template-rows: 1fr 250px 1fr;
+  grid-template-areas:
+    '. .    .'
+    '. main .'
+    '. .    .';
 }
 
-.tasks {
-  width: 300px;
-  padding: 0;
-  margin: 20px auto 0;
-  list-style-type: none;
-  text-align: left;
+.main {
+  display: grid;
+  grid-area: main;
+  grid-template-columns: 20px 1fr 1fr 1fr 20px;
+  grid-template-rows: 10px 1fr 1fr 1fr 1fr 10px;
+  grid-template-areas:
+    '. . .                . . '
+    '. width  width  width  . '
+    '. height height height . '
+    '. bomb   bomb   bomb   . '
+    '. .      create  .     . '
+    '. . .                . . ';
+  gap: 10px;
 }
 
-.tasks > li {
-  margin-top: 10px;
-  border-bottom: 1px solid #eee;
+.main * {
+  border-radius: 10px;
 }
 
-.deleteBtn {
-  float: right;
+.create {
+  grid-area: create;
+}
+
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.width,
+.height,
+.bomb {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.width,
+.height,
+.bomb * {
+  display: grid;
+}
+
+.width {
+  grid-area: width;
+}
+
+.height {
+  grid-area: height;
+}
+
+.bomb {
+  grid-area: bomb;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

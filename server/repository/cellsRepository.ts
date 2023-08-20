@@ -27,13 +27,9 @@ export const cellsRepository = {
     });
     return prismaCells.map(toCellModel);
   },
-  findAllOfPlayer: async (userId: UserId) => {
+  findWithPlayer: async (userId: UserId) => {
     const prismaCells = await prismaClient.cell.findMany({ where: { whoOpened: userId } });
     return prismaCells !== null ? prismaCells.map(toCellModel) : null;
-  },
-  find: async (x: number, y: number): Promise<CellModel | null> => {
-    const prismaCell = await prismaClient.cell.findUnique({ where: { pos: { x, y } } });
-    return prismaCell !== null ? toCellModel(prismaCell) : null;
   },
   findOlder: async () => {
     const prismaCells = await prismaClient.cell.findMany({ orderBy: { whenOpened: 'desc' } });
@@ -43,8 +39,12 @@ export const cellsRepository = {
     const prismaCells = await prismaClient.cell.findMany({ where: { isUserInput: true } });
     return prismaCells !== null ? prismaCells.map(toCellModel) : null;
   },
-  delete: async (x: number, y: number) => {
-    const prismaCell = await prismaClient.cell.delete({ where: { pos: { x, y } } });
-    return prismaCell !== null ? toCellModel(prismaCell) : null;
+  delete: async (x: number, y: number, whoOpened: UserId) => {
+    await prismaClient.cell.delete({ where: { uniquePos: { x, y, whoOpened } } });
+    return null;
+  },
+  deleteWithPlayer: async (userId: UserId) => {
+    await prismaClient.cell.deleteMany({ where: { whenOpened: userId } });
+    return null;
   },
 };
