@@ -13,6 +13,9 @@ const Controller = () => {
   const [userInputs, setUserInputs] = useState<number[][]>();
   const [openCells, setOpenCells] = useState<CellModel[]>([]);
   const [playerId] = useState(getUserIdFromLocalStorage);
+  if (!playerId) {
+    console.log('playerIdがありません。loginしてください');
+  }
 
   const fetchGame = useCallback(async () => {
     if (openCells.length !== 0) await apiClient.game.$post({ body: openCells });
