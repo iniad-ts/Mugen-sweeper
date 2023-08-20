@@ -29,8 +29,8 @@ export const playerUseCase = {
     const res = await playersRepository.save(newPlayer);
     return res;
   },
-  getYourState: async (userId: UserId) => {
-    const res = await playersRepository.find(userId);
+  get: async () => {
+    const res = await playersRepository.findAll();
     return res;
   },
 };

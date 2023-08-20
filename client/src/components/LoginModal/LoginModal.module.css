@@ -1,0 +1,34 @@
+.ModalContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.ModalContent > input {
+  width: 80%;
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.ModalContent > button {
+  width: 80%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #ccc;
+  cursor: pointer;
+}
+
+.ModalContent > button:hover {
+  background-color: #ddd;
+}
+
+.ModalContent > label {
+  margin: 10px;
+  font-weight: bold;
+}
