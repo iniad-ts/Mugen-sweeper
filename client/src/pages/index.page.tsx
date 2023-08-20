@@ -44,6 +44,15 @@ const Home = () => {
       <div className={styles.title} style={{ marginTop: '160px' }}>
         Welcome to frourio!
       </div>
+      <button
+        onClick={async () =>
+          await apiClient.game.config.$post({
+            body: { width: 10, height: 10, bombRatioPercent: 10 },
+          })
+        }
+      >
+        test
+      </button>
 
       <form style={{ textAlign: 'center', marginTop: '80px' }} onSubmit={createTask}>
         <input value={label} type="text" onChange={inputLabel} />

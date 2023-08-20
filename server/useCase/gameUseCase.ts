@@ -27,8 +27,12 @@ export const gameUseCase = {
       bombMap: newBombMap,
       userInputs: newUserInputs,
     };
-    const res = await gameRepository.save(newGame);
-    return res;
+    const oldGame = await gameRepository.find(); //reactのstrictモードの回避
+    if (oldGame === null) {
+      const res = await gameRepository.save(newGame);
+      return res;
+    }
+    return oldGame;
   },
   save: async () => {
     const res = await cellsRepository.findAllUserInputted();
