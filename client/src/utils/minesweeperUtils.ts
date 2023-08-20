@@ -1,4 +1,4 @@
-import type { boardModel } from 'src/pages/game/index.page';
+import type { BoardModel } from 'src/pages/game/index.page';
 
 const directions = [
   [0, 1],
@@ -12,18 +12,23 @@ const directions = [
 ];
 
 export const minesweeperUtils = {
-  aroundCellToArray: (board: boardModel, x: number, y: number) =>
+  aroundCellToArray: (board: BoardModel, x: number, y: number) =>
     directions
       .map((direction) => ({ x: x + direction[0], y: y + direction[1] }))
       .filter((nextPos) => board[nextPos.y] !== undefined && board[nextPos.y][nextPos.x] === -1),
-  countAroundBombsNum: (bombMap: boardModel, x: number, y: number) =>
+
+  countAroundBombsNum: (bombMap: BoardModel, x: number, y: number) =>
     bombMap
       .slice(Math.max(0, y - 1), Math.min(y + 2, bombMap.length))
       .map((row) => row.slice(Math.max(0, x - 1), Math.min(x + 2, row.length)))
       .flat()
       .filter((b) => b === 1).length ?? 1 - 1,
-  makeBoard: (x: number, y: number, board: boardModel, bombMap: boardModel): boardModel => {
-    const newBoard = JSON.parse(JSON.stringify(board));
+
+  makeBoard: (bombMap: BoardModel, userInputs: BoardModel): BoardModel => {
+    const newBoard = bombMap.map((row) => row.map(() => -1));
+    userInputs.forEach((row, y) =>
+      row.forEach((val, x) => val === 1 && openSurroundingCells(x, y))
+    );
     const openSurroundingCells = (x: number, y: number) => {
       newBoard[y][x] = minesweeperUtils.countAroundBombsNum(bombMap, x, y);
 
@@ -33,7 +38,6 @@ export const minesweeperUtils = {
         });
       }
     };
-    openSurroundingCells(x, y);
     return newBoard;
   },
 };

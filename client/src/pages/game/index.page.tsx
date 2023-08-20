@@ -10,9 +10,7 @@ export type Pos = {
   x: number;
   y: number;
 };
-export type boardModel = number[][];
-
-const fontsize = (n: number) => `${(8 - Math.min(n, 3) * 2) * 0.5}em`;
+export type BoardModel = number[][];
 
 const RANKING_COLOR = ['#FFD700', '#C0C0C0', '#C47222'];
 
@@ -62,8 +60,8 @@ const Game = () => {
     }
   };
 
+  //初回レンダリング時のみ
   const fetchBombMap = async () => {
-    //初回レンダリング時のみ
     //開発時のみここで作成
     const res = await apiClient.game.config.$post({
       body: { width: 10, height: 10, bombRatioPercent: 10 },
@@ -85,31 +83,18 @@ const Game = () => {
   if (bombMap === undefined || userInputs === undefined || ranking === undefined) {
     return <Loading visible />;
   }
-  const newBoard = bombMap?.map((row) => row.map(() => -1));
-
-  const startMakeBoard = (x: number, y: number, bombMap: boardModel) =>
-    minesweeperUtils
-      .makeBoard(x, y, newBoard, bombMap)
-      .forEach((row, y) => row.forEach((val, x) => (newBoard[y][x] = val)));
-
-  userInputs.forEach((row, y) =>
-    row.forEach((val, x) => {
-      if (val === 1) {
-        startMakeBoard(x, y, bombMap);
-      }
-    })
-  );
+  const board = minesweeperUtils.makeBoard(bombMap, userInputs);
 
   return (
     <div className={styles.container}>
       <div
         className={styles.game}
         style={{
-          gridTemplateColumns: `repeat(${newBoard[0].length},1fr)`,
-          gridTemplateRows: `repeat(${newBoard.length},1fr)`,
+          gridTemplateColumns: `repeat(${board[0].length},1fr)`,
+          gridTemplateRows: `repeat(${board.length},1fr)`,
         }}
       >
-        {newBoard.map((row, y) =>
+        {board.map((row, y) =>
           row.map((value, x) => (
             <div className={value === -1 ? styles.stone : styles.number} key={`${y}-${x}`} />
           ))
