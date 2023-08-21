@@ -106,7 +106,6 @@ const Controller = () => {
     const digCell = () => {
       const [x, y] = [player.x, player.y];
       if (board[y][x] !== -1) return;
-      console.log('a');
       const newBoard = deepCopy<BoardModel>(board);
       const newOpenCells = deepCopy<OpenCellModel[]>(openCells);
       const openSurroundingCells = (x: number, y: number, isUserInput: boolean) => {

@@ -25,7 +25,7 @@ const LoginModal: React.FC = () => {
   const handleButtonClick = async () => {
     if (username.length === 0) return;
     const player = await apiClient.player.create.$post({ body: { name: username } });
-    if (player === null) return <>game is not found</>;
+    if (player === null) return <p>game is not found</p>;
     loginWithLocalStorage(player.id);
     router.push({ query: { playerId: player.id } });
   };
