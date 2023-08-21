@@ -1,5 +1,4 @@
 import type { UserId } from 'commonTypesWithClient/branded';
-import { useRouter } from 'next/router';
 import { userIdParser } from './../../../server/service/idParsers';
 
 export const getUserIdFromLocalStorage = (): UserId | null => {

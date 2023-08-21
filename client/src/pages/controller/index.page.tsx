@@ -142,7 +142,7 @@ const Controller = () => {
       <div className={styles.controller}>
         <div className={styles['button-container']} style={{ gridArea: 'cross' }}>
           {arrows.map((arrow, i) => (
-            <Button className={arrow} text={arrowTexts[i]} key={i}></Button>
+            <Button className={arrow} text={arrowTexts[i]} key={i} />
           ))}
         </div>
         <div className={styles.display}>{/*ディスプレイ*/}</div>
