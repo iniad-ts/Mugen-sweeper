@@ -29,6 +29,7 @@
   grid-template-rows: 3fr 2fr 2fr repeat(7, 1fr);
   gap: 1vmin;
   padding: 1vmin;
+  border-left: solid 1px;
 }
 
 .prof {
