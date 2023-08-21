@@ -1,1 +1,7 @@
-export const GAME_SIZE = { WIDTH: 180, HEIGHT: 120 }; //9px 3:2の場合
+import { gameRepository } from '$/repository/gameRepository';
+
+export const GAME_SIZE = async () => {
+  const res = await gameRepository.find();
+  if (res === null) return null;
+  return { width: res.bombMap[0].length, height: res.bombMap.length };
+};
