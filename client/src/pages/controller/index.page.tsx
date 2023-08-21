@@ -51,10 +51,11 @@ const Controller = () => {
       const res = await apiClient.game.$get();
       const res2 = await apiClient.player.$get();
       if (res === null || res2 === null) return;
-      const newBoard = minesweeperUtils.makeBoard(res.bombMap, res.userInputs);
+      const newBoard = minesweeperUtils.makeBoard(res.bombMap, res.userInputs, board);
       setBoard(newBoard);
       setPlayers(res2);
-    }, [openCells]);
+    }, [openCells, board]);
+
     // 初回レンダリング時のみ;
     const fetchBombMap = async () => {
       //開発時のみここで作成
@@ -72,6 +73,7 @@ const Controller = () => {
       }, 2000);
       return () => clearInterval(cancelId);
     }, [fetchGame]);
+
     useEffect(() => {
       fetchBombMap();
     }, []);
@@ -124,7 +126,7 @@ const Controller = () => {
       newBoard[y][x] = 9;
       setBoard(newBoard);
     };
-
+    console.table(board);
     const handleMove = (action: ActionModel) => {
       if (action === 'left') {
         move(-1, 0);

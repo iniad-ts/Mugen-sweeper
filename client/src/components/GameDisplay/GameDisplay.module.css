@@ -49,3 +49,12 @@
   /* background-color: #f008; */
   border: solid #f00d;
 }
+
+.selector {
+  position: absolute;
+  width: calc(100% + 6px);
+  height: calc(100% + 12px);
+  top: -7px;
+  left: -3px;
+  background-color: #f004;
+}
