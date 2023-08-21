@@ -1,60 +1,57 @@
 import type { PlayerModel } from 'commonTypesWithClient/models';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
-import { Button } from 'src/components/Button/index.page';
+import { ArrowButton } from 'src/components/Button/index.page';
 import GameDisplay from 'src/components/GameDisplay/GameDisplay';
 import { Loading } from 'src/components/Loading/Loading';
 import LoginModal from 'src/components/LoginModal/LoginModal';
+import type { ActionModel, BoardModel, OpenCellModel } from 'src/types/types';
 import { apiClient } from 'src/utils/apiClient';
 import { deepCopy } from 'src/utils/deepCopy';
 import { formatOpenCells } from 'src/utils/formatOpenCells';
 import { minMax } from 'src/utils/minMax';
 import { minesweeperUtils } from 'src/utils/minesweeperUtils';
-import type { BoardModel } from '../game/index.page';
 import styles from './index.module.css';
 
-type ActionModel = 'left' | 'right' | 'up' | 'down';
+const arrowStyles = [
+  [1, 3, 3, 5],
+  [5, 7, 3, 5],
+  [3, 5, 1, 3],
+  [3, 5, 5, 7],
+];
+
+const arrowTexts = ['▲', '▼', '◀', '▶'];
 
 const dir: ActionModel[] = ['up', 'down', 'left', 'right'];
 
-export type OpenCellModel = { x: number; y: number; isUserInput: boolean; value: number };
-
-const arrows = [
-  styles['cross-layout-position-top'],
-  styles['cross-layout-position-bottom'],
-  styles['cross-layout-position-left'],
-  styles['cross-layout-position-right'],
-];
-const arrowTexts = ['▲', '▼', '◀', '▶'];
-
 const Controller = () => {
   const router = useRouter();
-  const playerId = typeof router.query.playerId === 'string' ? router.query.playerId : null;
+  const playerIdStr = typeof router.query.playerId === 'string' ? router.query.playerId : null;
 
-  if (playerId === null) {
+  if (playerIdStr === null) {
     return <LoginModal />;
   }
 
   const GameController = () => {
-    //TODO 分割
     const [bombMap, setBombMap] = useState<BoardModel>();
     const [board, setBoard] = useState<BoardModel>();
     const [openCells, setOpenCells] = useState<OpenCellModel[]>([]);
-    const [players, setPlayers] = useState<PlayerModel[]>();
+    const [player, setPlayer] = useState<PlayerModel>();
 
     const fetchGame = useCallback(async () => {
+      if (player === undefined) return;
       if (openCells.length !== 0) {
-        const postCells = formatOpenCells(openCells, playerId);
+        const postCells = formatOpenCells(openCells, player.id);
         await apiClient.game.$post({ body: postCells });
         setOpenCells([]);
       }
       const res = await apiClient.game.$get();
-      const res2 = await apiClient.player.$get();
+      const res2 = await apiClient.player.config.$get({ query: { playerId: playerIdStr } });
       if (res === null || res2 === null) return;
       const newBoard = minesweeperUtils.makeBoard(res.bombMap, res.userInputs);
       setBoard(newBoard);
-      setPlayers(res2);
-    }, [openCells]);
+      setPlayer(res2);
+    }, [openCells, player]);
     // 初回レンダリング時のみ;
     const fetchBombMap = async () => {
       //開発時のみここで作成
@@ -76,12 +73,11 @@ const Controller = () => {
       fetchBombMap();
     }, []);
 
-    const player = players?.find((player) => player.id === playerId);
     if (player === undefined || board === undefined || bombMap === undefined) {
       return <Loading visible />;
     }
 
-    const digCell = () => {
+    const dig = () => {
       const [x, y] = [player.x, player.y];
       if (board[y][x] !== -1) return;
       const newBoard = deepCopy<BoardModel>(board);
@@ -107,15 +103,9 @@ const Controller = () => {
         y: minMax(player.y + moveY, bombMap.length),
       };
       const res = await apiClient.player.$post({ body: newPlayer });
-      const newPlayers = deepCopy(players);
       if (res === null) return;
-      (newPlayers ?? [])[
-        Math.max(
-          0,
-          (newPlayers ?? []).findIndex((onePlayer) => onePlayer.id === playerId)
-        )
-      ] = res;
-      setPlayers(newPlayers);
+
+      setPlayer(res);
     };
 
     const frag = () => {
@@ -148,9 +138,9 @@ const Controller = () => {
       <div className={styles.container}>
         <div className={styles.controller}>
           <div className={styles['button-container']} style={{ gridArea: 'cross' }}>
-            {arrows.map((arrow, i) => (
-              <Button
-                className={arrow}
+            {arrowStyles.map((arrow, i) => (
+              <ArrowButton
+                gridRowColumn={arrow}
                 text={arrowTexts[i]}
                 key={i}
                 onClick={() => handleMove(dir[i])}
@@ -164,8 +154,12 @@ const Controller = () => {
             className={styles['button-container']}
             style={{ gridArea: 'button', margin: '0 0 0 auto' }}
           >
-            <Button className={styles['flag-button']} text="🚩" onClick={() => frag()} />
-            <Button className={styles['open-button']} text="⛏️" onClick={() => digCell()} />
+            <button className={`${styles.button} ${styles['flag-button']}`} onClick={() => frag()}>
+              🚩
+            </button>
+            <button className={`${styles.button} ${styles['open-button']}`} onClick={() => dig()}>
+              ⛏️
+            </button>
           </div>
         </div>
       </div>

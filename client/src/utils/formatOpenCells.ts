@@ -1,7 +1,7 @@
-import type { OpenCellModel } from 'src/pages/controller/index.page';
-import { userIdParser } from '../../../server/service/idParsers';
+import type { UserId } from 'commonTypesWithClient/branded';
+import type { OpenCellModel } from 'src/types/types';
 
-export const formatOpenCells = (openCells: OpenCellModel[], playerId: string) => {
+export const formatOpenCells = (openCells: OpenCellModel[], playerId: UserId) => {
   const jsonCells = openCells.map((cell) => JSON.stringify(cell));
   const jsonPostCells = Array.from(new Set(jsonCells));
   const postCells = jsonPostCells
@@ -9,8 +9,8 @@ export const formatOpenCells = (openCells: OpenCellModel[], playerId: string) =>
     .map((cell) => ({
       x: cell.x,
       y: cell.y,
-      whoOpened: userIdParser.parse(playerId),
-      whenOpened: new Date().getTime(),
+      whoOpened: playerId,
+      whenOpened: Date.now(),
       isUserInput: cell.isUserInput,
       cellValue: cell.value,
     }));
