@@ -12,17 +12,21 @@
 
 .main {
   display: grid;
+  background-color: #aab;
+  border-radius: 10px;
   grid-area: main;
-  grid-template-columns: 20px 1fr 1fr 1fr 20px;
+  grid-template-columns: 20px 2fr 3fr 2fr 20px;
   grid-template-rows: 10px 1fr 1fr 1fr 1fr 10px;
   grid-template-areas:
     '. . .                . . '
     '. width  width  width  . '
     '. height height height . '
     '. bomb   bomb   bomb   . '
-    '. .      create  .     . '
+    '. .      create  delete     . '
     '. . .                . . ';
   gap: 10px;
+  border: 6px solid #4468;
+  box-shadow: 0 0 0 0 #000, 0 0 50px #0006;
 }
 
 .main * {
@@ -30,20 +34,39 @@
 }
 
 .create {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   grid-area: create;
 }
 
 .button {
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+  background-color: #787888;
+  border: 3px solid #223;
+  box-shadow: 0 0 0 1px #03030380, 0 0 5px #0006;
+}
+
+.button:hover {
+  cursor: pointer;
+  background-color: #3348;
+  /* box-shadow: 0 0 0 2px #03030380, 0 0 5px #0006; */
+}
+
+.button:active {
+  transform: scale(0.95);
+  border-color: #334;
 }
 
 .width,
 .height,
 .bomb {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  gap: 5px;
+  grid-template-columns: 1fr 1fr 3fr 1fr 1fr;
 }
 
 .width,
@@ -65,7 +88,31 @@
 }
 
 .center {
+  /**/
+}
+
+.text {
   display: flex;
+  margin: 5px;
   justify-content: center;
   align-items: center;
+  background-color: #101010;
+  box-shadow: 0 0 0 1px #03030380;
+  color: #fffa;
+  user-select: none;
+}
+
+.delete {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  grid-area: delete;
+  background-color: #c44;
+  color: #fffa;
+  border: 3px solid #dcc;
+  box-shadow: 0 0 0 1px #fafafa80, 0 0 5px #fff6;
+}
+
+.delete:active {
+  border-color: #edd;
 }

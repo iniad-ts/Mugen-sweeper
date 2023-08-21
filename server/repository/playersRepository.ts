@@ -49,4 +49,7 @@ export const playersRepository = {
   delete: async (id: UserId): Promise<void> => {
     await prismaClient.player.delete({ where: { id } });
   },
+  deleteAll: async () => {
+    await prismaClient.player.deleteMany();
+  },
 };
