@@ -1,14 +1,28 @@
 import type { CellModel, PlayerModel } from 'commonTypesWithClient/models';
 import { useCallback, useEffect, useState } from 'react';
 import { Loading } from 'src/components/Loading/Loading';
+import LoginModal from 'src/components/LoginModal/LoginModal';
 import { apiClient } from 'src/utils/apiClient';
 import { deepCopy } from 'src/utils/deepCopy';
-import { RedirectToLogin, getUserIdFromLocalStorage } from 'src/utils/loginWithLocalStorage';
+import { getUserIdFromLocalStorage } from 'src/utils/loginWithLocalStorage';
 import { minesweeperUtils } from 'src/utils/minesweeperUtils';
 import type { BoardModel } from '../game/index.page';
 import styles from './index.module.css';
 
 type ActionModel = 'left' | 'right' | 'up' | 'down';
+
+const arrows = [
+  styles['cross-layout-position-top'],
+  styles['cross-layout-position-bottom'],
+  styles['cross-layout-position-left'],
+  styles['cross-layout-position-right'],
+];
+
+const arrowTexts = ['▲', '▼', '◀', '▶'];
+
+const Button = ({ className, text }: { className: string; text: string }) => (
+  <button className={`${className} ${styles.button} `}>{text}</button>
+);
 
 //TODO complexity下げる
 const Controller = () => {
@@ -51,8 +65,7 @@ const Controller = () => {
   }, []);
 
   if (playerId === null) {
-    RedirectToLogin();
-    return;
+    return <LoginModal />;
   }
   const player = players?.find((player) => player.id === playerId);
   if (player === undefined) return <>did not login</>;
@@ -125,19 +138,21 @@ const Controller = () => {
   };
 
   return (
-    <div className={styles.controller}>
-      <div className={styles['cross-container']}>
-        <div className={styles['cross-layout']}>
-          <button className={styles['cross-layout-position-top']}>▲</button>
-          <button className={styles['cross-layout-position-bottom']}>▼</button>
-          <button className={styles['cross-layout-position-left']}>◀</button>
-          <button className={styles['cross-layout-position-right']}>▶</button>
+    <div className={styles.container}>
+      <div className={styles.controller}>
+        <div className={styles['button-container']} style={{ gridArea: 'cross' }}>
+          {arrows.map((arrow, i) => (
+            <Button className={arrow} text={arrowTexts[i]} key={i} />
+          ))}
         </div>
-      </div>
-      <div>{/*ディスプレイ*/}</div>
-      <div className={styles['button-layout']}>
-        <button className={styles['flag-button']}>🚩</button>
-        <button className={styles['open-button']}>open</button>
+        <div className={styles.display}>{/*ディスプレイ*/}</div>
+        <div
+          className={styles['button-container']}
+          style={{ gridArea: 'button', margin: '0 0 0 auto' }}
+        >
+          <Button className={styles['flag-button']} text="🚩" />
+          <Button className={styles['open-button']} text="⛏️" />
+        </div>
       </div>
     </div>
   );

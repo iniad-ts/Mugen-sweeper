@@ -1,5 +1,4 @@
 import type { UserId } from 'commonTypesWithClient/branded';
-import { useRouter } from 'next/router';
 import { userIdParser } from './../../../server/service/idParsers';
 
 export const getUserIdFromLocalStorage = (): UserId | null => {
@@ -20,10 +19,10 @@ export const logoutWithLocalStorage = () => {
   localStorage.clear();
 };
 
-export const RedirectToLogin = () => {
-  const router = useRouter();
+// export const RedirectToLogin = () => {
+//   const router = useRouter();
 
-  if (localStorage.getItem('userId') === null) {
-    router.push('/login');
-  }
-};
+//   if (localStorage.getItem('userId') === null) {
+//     router.push('/login');
+//   }
+// };
