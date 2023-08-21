@@ -1,14 +1,10 @@
 import type { PlayerModel } from 'commonTypesWithClient/models';
 import { useEffect, useMemo, useState } from 'react';
 import { Loading } from 'src/components/Loading/Loading';
+import type { BoardModel } from 'src/types/types';
 import { apiClient } from 'src/utils/apiClient';
 import { minesweeperUtils } from 'src/utils/minesweeperUtils';
 import styles from './index.module.css';
-export type Pos = {
-  x: number;
-  y: number;
-};
-export type BoardModel = number[][];
 
 const RANKING_COLOR = ['#FFD700', '#C0C0C0', '#C47222'];
 
@@ -87,7 +83,7 @@ const Game = () => {
   if (bombMap === undefined || userInputs === undefined || ranking === undefined) {
     return <Loading visible />;
   }
-  const board = minesweeperUtils.makeBoard(bombMap, userInputs);
+  const board: BoardModel = minesweeperUtils.makeBoard(bombMap, userInputs);
 
   return (
     <div className={styles.container}>
