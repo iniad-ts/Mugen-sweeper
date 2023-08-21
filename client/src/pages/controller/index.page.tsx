@@ -1,13 +1,15 @@
 import type { PlayerModel } from 'commonTypesWithClient/models';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
+import { Button } from 'src/components/Button/index.page';
+import GameDisplay from 'src/components/GameDisplay/GameDisplay';
 import { Loading } from 'src/components/Loading/Loading';
 import LoginModal from 'src/components/LoginModal/LoginModal';
 import { apiClient } from 'src/utils/apiClient';
 import { deepCopy } from 'src/utils/deepCopy';
+import { formatOpenCells } from 'src/utils/formatOpenCells';
 import { minMax } from 'src/utils/minMax';
 import { minesweeperUtils } from 'src/utils/minesweeperUtils';
-import { userIdParser } from '../../../../server/service/idParsers';
 import type { BoardModel } from '../game/index.page';
 import styles from './index.module.css';
 
@@ -15,7 +17,7 @@ type ActionModel = 'left' | 'right' | 'up' | 'down';
 
 const dir: ActionModel[] = ['up', 'down', 'left', 'right'];
 
-type OpenCellModel = { x: number; y: number; isUserInput: boolean; value: number };
+export type OpenCellModel = { x: number; y: number; isUserInput: boolean; value: number };
 
 const arrows = [
   styles['cross-layout-position-top'],
@@ -24,20 +26,6 @@ const arrows = [
   styles['cross-layout-position-right'],
 ];
 const arrowTexts = ['▲', '▼', '◀', '▶'];
-
-const Button = ({
-  className,
-  text,
-  onClick,
-}: {
-  className: string;
-  text: string;
-  onClick: () => void;
-}) => (
-  <button className={`${className} ${styles.button} `} onClick={onClick}>
-    {text}
-  </button>
-);
 
 const Controller = () => {
   const router = useRouter();
@@ -48,6 +36,7 @@ const Controller = () => {
   }
 
   const GameController = () => {
+    //TODO 分割
     const [bombMap, setBombMap] = useState<BoardModel>();
     const [board, setBoard] = useState<BoardModel>();
     const [openCells, setOpenCells] = useState<OpenCellModel[]>([]);
@@ -55,18 +44,7 @@ const Controller = () => {
 
     const fetchGame = useCallback(async () => {
       if (openCells.length !== 0) {
-        const jsonCells = openCells.map((cell) => JSON.stringify(cell));
-        const jsonPostCells = Array.from(new Set(jsonCells));
-        const postCells = jsonPostCells
-          .map((cell) => JSON.parse(cell))
-          .map((cell) => ({
-            x: cell.x,
-            y: cell.y,
-            whoOpened: userIdParser.parse(playerId),
-            whenOpened: new Date().getTime(),
-            isUserInput: cell.isUserInput,
-            cellValue: cell.value,
-          }));
+        const postCells = formatOpenCells(openCells, playerId);
         await apiClient.game.$post({ body: postCells });
         setOpenCells([]);
       }
@@ -180,7 +158,7 @@ const Controller = () => {
             ))}
           </div>
           <div className={styles.display}>
-            {player.x}/{player.y}
+            <GameDisplay player={player} board={board} />
           </div>
           <div
             className={styles['button-container']}
