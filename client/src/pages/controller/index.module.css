@@ -73,29 +73,6 @@
   user-select: none;
 }
 
-.cross-layout-position-top {
-  grid-row: 1/3;
-  grid-column: 3/5;
-  border-radius: 30%;
-}
-
-.cross-layout-position-bottom {
-  grid-row: 5/7;
-  grid-column: 3/5;
-  border-radius: 30%;
-}
-
-.cross-layout-position-left {
-  grid-row: 3/5;
-  grid-column: 1/3;
-  border-radius: 30%;
-}
-
-.cross-layout-position-right {
-  grid-row: 3/5;
-  grid-column: 5/7;
-  border-radius: 30%;
-}
 
 .flag-button {
   display: flex;

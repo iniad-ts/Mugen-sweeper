@@ -8,6 +8,7 @@
   border: 3px solid #223;
   box-shadow: 0 0 0 1px #03030380, 0 0 5px #0006;
   user-select: none;
+  border-radius: 30%;
 }
 
 .button:active {

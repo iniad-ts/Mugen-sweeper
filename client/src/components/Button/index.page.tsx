@@ -1,15 +1,22 @@
 import styles from './index.module.css';
 
-export const Button = ({
-  className,
+export const ArrowButton = ({
+  gridRowColumn,
   text,
   onClick,
 }: {
-  className: string;
+  gridRowColumn: number[];
   text: string;
   onClick: () => void;
-}) => (
-  <button className={`${className} ${styles.button} `} onClick={onClick}>
-    {text}
-  </button>
-);
+}) => {
+  const [a, b, c, d] = gridRowColumn;
+  return (
+    <button
+      className={styles.button}
+      onClick={onClick}
+      style={{ gridRow: `${a}/${b}`, gridColumn: `${c}/${d}` }}
+    >
+      {text}
+    </button>
+  );
+};
