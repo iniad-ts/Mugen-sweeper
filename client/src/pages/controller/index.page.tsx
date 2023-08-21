@@ -1,10 +1,11 @@
-import type { CellModel, PlayerModel } from 'commonTypesWithClient/models';
+import type { PlayerModel } from 'commonTypesWithClient/models';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
 import { Loading } from 'src/components/Loading/Loading';
 import LoginModal from 'src/components/LoginModal/LoginModal';
 import { apiClient } from 'src/utils/apiClient';
 import { deepCopy } from 'src/utils/deepCopy';
+import { minMax } from 'src/utils/minMax';
 import { minesweeperUtils } from 'src/utils/minesweeperUtils';
 import { userIdParser } from '../../../../server/service/idParsers';
 import type { BoardModel } from '../game/index.page';
@@ -12,7 +13,9 @@ import styles from './index.module.css';
 
 type ActionModel = 'left' | 'right' | 'up' | 'down';
 
-const dir: ActionModel[] = ['left', 'right', 'up', 'down'];
+const dir: ActionModel[] = ['up', 'down', 'left', 'right'];
+
+type OpenCellModel = { x: number; y: number; isUserInput: boolean; value: number };
 
 const arrows = [
   styles['cross-layout-position-top'],
@@ -20,7 +23,6 @@ const arrows = [
   styles['cross-layout-position-left'],
   styles['cross-layout-position-right'],
 ];
-
 const arrowTexts = ['▲', '▼', '◀', '▶'];
 
 const Button = ({
@@ -39,14 +41,8 @@ const Button = ({
 
 const Controller = () => {
   const router = useRouter();
-  const playerId =
-    router.query.playerId === undefined
-      ? null
-      : userIdParser.parse(
-          typeof router.query.playerId === 'object'
-            ? router.query.playerId[0]
-            : router.query.playerId
-        );
+  const playerId = typeof router.query.playerId === 'string' ? router.query.playerId : null;
+
   if (playerId === null) {
     return <LoginModal />;
   }
@@ -54,12 +50,26 @@ const Controller = () => {
   const GameController = () => {
     const [bombMap, setBombMap] = useState<BoardModel>();
     const [board, setBoard] = useState<BoardModel>();
-    const [openCells, setOpenCells] = useState<CellModel[]>([]);
-    // const [playerId] = useState(getUserIdFromLocalStorage);
+    const [openCells, setOpenCells] = useState<OpenCellModel[]>([]);
     const [players, setPlayers] = useState<PlayerModel[]>();
 
     const fetchGame = useCallback(async () => {
-      if (openCells.length !== 0) await apiClient.game.$post({ body: openCells });
+      if (openCells.length !== 0) {
+        const jsonCells = openCells.map((cell) => JSON.stringify(cell));
+        const jsonPostCells = Array.from(new Set(jsonCells));
+        const postCells = jsonPostCells
+          .map((cell) => JSON.parse(cell))
+          .map((cell) => ({
+            x: cell.x,
+            y: cell.y,
+            whoOpened: userIdParser.parse(playerId),
+            whenOpened: new Date().getTime(),
+            isUserInput: cell.isUserInput,
+            cellValue: cell.value,
+          }));
+        await apiClient.game.$post({ body: postCells });
+        setOpenCells([]);
+      }
       const res = await apiClient.game.$get();
       const res2 = await apiClient.player.$get();
       if (res === null || res2 === null) return;
@@ -67,7 +77,6 @@ const Controller = () => {
       setBoard(newBoard);
       setPlayers(res2);
     }, [openCells]);
-
     // 初回レンダリング時のみ;
     const fetchBombMap = async () => {
       //開発時のみここで作成
@@ -85,7 +94,6 @@ const Controller = () => {
       }, 2000);
       return () => clearInterval(cancelId);
     }, [fetchGame]);
-
     useEffect(() => {
       fetchBombMap();
     }, []);
@@ -97,20 +105,13 @@ const Controller = () => {
 
     const digCell = () => {
       const [x, y] = [player.x, player.y];
+      if (board[y][x] !== -1) return;
+      console.log('a');
       const newBoard = deepCopy<BoardModel>(board);
-      const newOpenCells = deepCopy<CellModel[]>(openCells);
+      const newOpenCells = deepCopy<OpenCellModel[]>(openCells);
       const openSurroundingCells = (x: number, y: number, isUserInput: boolean) => {
         newBoard[y][x] = minesweeperUtils.countAroundBombsNum(bombMap, x, y);
-
-        newOpenCells.push({
-          x,
-          y,
-          whoOpened: playerId,
-          whenOpened: new Date().getTime(),
-          isUserInput,
-          cellValue: newBoard[y][x],
-        });
-
+        newOpenCells.push({ x, y, isUserInput, value: newBoard[y][x] });
         if (newBoard[y][x] === 0) {
           minesweeperUtils.aroundCellToArray(newBoard, x, y).forEach((nextPos) => {
             openSurroundingCells(nextPos.x, nextPos.y, false);
@@ -123,9 +124,14 @@ const Controller = () => {
     };
 
     const move = async (moveX: number, moveY: number) => {
-      const newPlayer = { ...player, x: player.x + moveX, y: player.y + moveY };
+      const newPlayer = {
+        ...player,
+        x: minMax(player.x + moveX, bombMap[0].length),
+        y: minMax(player.y + moveY, bombMap.length),
+      };
       const res = await apiClient.player.$post({ body: newPlayer });
       const newPlayers = deepCopy(players);
+      if (res === null) return;
       (newPlayers ?? [])[
         Math.max(
           0,
@@ -174,7 +180,9 @@ const Controller = () => {
               />
             ))}
           </div>
-          <div className={styles.display}>{/*ディスプレイ*/}</div>
+          <div className={styles.display}>
+            {player.x}/{player.y}
+          </div>
           <div
             className={styles['button-container']}
             style={{ gridArea: 'button', margin: '0 0 0 auto' }}
