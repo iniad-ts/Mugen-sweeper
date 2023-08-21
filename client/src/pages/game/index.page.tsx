@@ -1,9 +1,9 @@
 import type { PlayerModel } from 'commonTypesWithClient/models';
 import { useEffect, useMemo, useState } from 'react';
 import { Loading } from 'src/components/Loading/Loading';
-import type { BoardModel } from 'src/types/types';
 import { apiClient } from 'src/utils/apiClient';
 import { minesweeperUtils } from 'src/utils/minesweeperUtils';
+import type { BoardModel } from '../../types/types';
 import styles from './index.module.css';
 
 const RANKING_COLOR = ['#FFD700', '#C0C0C0', '#C47222'];
