@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import { apiClient } from 'src/utils/apiClient';
+import { loginWithLocalStorage } from 'src/utils/loginWithLocalStorage';
 import styles from './LoginModal.module.css';
 import Modal from './Modal';
 
 const LoginModal: React.FC = () => {
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(true);
   const [username, setUsername] = useState<string>('');
 
   const handleButtonClick = async () => {
     const player = await apiClient.player.create.$post({ body: { name: username } });
+    loginWithLocalStorage(player.id);
     setIsModalOpen(false);
   };
   const onChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -17,7 +19,7 @@ const LoginModal: React.FC = () => {
 
   return (
     <div>
-      <button onClick={() => setIsModalOpen(true)}>モーダルを開く</button>
+      {/* <button onClick={() => setIsModalOpen(true)}>モーダルを開く</button> */}
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <div className={styles.ModalContent}>
           <h2>Mugen Sweeper</h2>

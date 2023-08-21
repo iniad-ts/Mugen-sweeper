@@ -20,10 +20,10 @@ export const logoutWithLocalStorage = () => {
   localStorage.clear();
 };
 
-export const RedirectToLogin = () => {
-  const router = useRouter();
+// export const RedirectToLogin = () => {
+//   const router = useRouter();
 
-  if (localStorage.getItem('userId') === null) {
-    router.push('/login');
-  }
-};
+//   if (localStorage.getItem('userId') === null) {
+//     router.push('/login');
+//   }
+// };
