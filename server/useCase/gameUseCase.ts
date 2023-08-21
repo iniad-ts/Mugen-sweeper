@@ -5,6 +5,7 @@ import { playersRepository } from '$/repository/playersRepository';
 import { gameIdParser } from '$/service/idParsers';
 import { make2DArray } from '$/service/make2DArray';
 import { randomUUID } from 'crypto';
+import { cellUseCase } from './cellUseCase';
 
 export const gameUseCase = {
   create: async (width: number, height: number, bombRatioPercent: number) => {
@@ -43,7 +44,10 @@ export const gameUseCase = {
   },
   getBoard: async () => {
     const res = await gameRepository.find();
-    return res !== null ? res : null;
+    if (res === null) return null;
+    const userInputs = await cellUseCase.updateUserInputs(res.userInputs);
+    const newRes = { ...res, userInputs };
+    return newRes;
   },
   getRanking: async (row: number) => {
     const res = await playersRepository.findAll();
