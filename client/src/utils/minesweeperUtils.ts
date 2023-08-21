@@ -25,10 +25,6 @@ export const minesweeperUtils = {
       .filter((b) => b === 1).length ?? 1 - 1,
 
   makeBoard: (bombMap: BoardModel, userInputs: BoardModel): BoardModel => {
-    const newBoard = bombMap.map((row) => row.map(() => -1));
-    userInputs.forEach((row, y) =>
-      row.forEach((val, x) => val === 1 && openSurroundingCells(x, y))
-    );
     const openSurroundingCells = (x: number, y: number) => {
       newBoard[y][x] = minesweeperUtils.countAroundBombsNum(bombMap, x, y);
 
@@ -38,6 +34,11 @@ export const minesweeperUtils = {
         });
       }
     };
+    const newBoard = bombMap.map((row) => row.map(() => -1));
+    userInputs.forEach((row, y) =>
+      row.forEach((val, x) => val === 1 && openSurroundingCells(x, y))
+    );
+
     return newBoard;
   },
 };

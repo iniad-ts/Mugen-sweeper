@@ -7,6 +7,6 @@ export type Methods = DefineMethods<{
   };
   post: {
     reqBody: PlayerModel;
-    resBody: PlayerModel;
+    resBody: PlayerModel | null;
   };
 }>;

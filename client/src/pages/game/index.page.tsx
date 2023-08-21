@@ -3,7 +3,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { Loading } from 'src/components/Loading/Loading';
 import { apiClient } from 'src/utils/apiClient';
 import { minesweeperUtils } from 'src/utils/minesweeperUtils';
-import { userIdParser } from '../../../../server/service/idParsers';
 import styles from './index.module.css';
 export type Pos = {
   x: number;
@@ -69,17 +68,17 @@ const Game = () => {
   const fetchBombMap = async () => {
     //開発時のみここで作成
     const res = await apiClient.game.config.$post({
-      body: { width: 200, height: 150, bombRatioPercent: 20 },
+      body: { width: 10, height: 10, bombRatioPercent: 10 },
     });
     //開発用に一旦playerを作る
-    [...Array(10)].forEach((_, i) =>
-      apiClient.player.config.post({
-        body: {
-          userId: userIdParser.parse(`${Math.random()}`),
-          name: `frouriochan${i + 1}`,
-        },
-      })
-    );
+    // [...Array(10)].forEach((_, i) =>
+    //   apiClient.player.config.post({
+    //     body: {
+    //       userId: userIdParser.parse(`${Math.random()}`),
+    //       name: `frouriochan${i + 1}`,
+    //     },
+    //   })
+    // );
     if (res !== null) {
       setBombMap(res.bombMap);
     }
@@ -101,13 +100,15 @@ const Game = () => {
       >
         {board.map((row, y) =>
           row.map((value, x) => (
-            <div className={value === -1 ? styles.stone : styles.number} key={`${y}-${x}`} />
+            <div className={value === -1 ? styles.stone : styles.number} key={`${y}-${x}`}>
+              {value}
+            </div>
           ))
         )}
       </div>
       <div className={styles.ranking}>
         {ranking.map((player, i) => (
-          <Profile key={i} player={player} i={i} />
+          <Profile key={player.id} player={player} i={i} />
         ))}
       </div>
     </div>

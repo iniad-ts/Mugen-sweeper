@@ -1,16 +1,29 @@
 import type { PlayerModel } from '$/commonTypesWithClient/models';
-import { GAME_SIZE } from '$/constants/gameSize';
+import { gameRepository } from '$/repository/gameRepository';
 import { playersRepository } from '$/repository/playersRepository';
 import { userIdParser } from '$/service/idParsers';
-import { minMax } from '$/service/minMax';
 import { randomUUID } from 'crypto';
 
 export const playerUseCase = {
-  create: async (userName: string): Promise<PlayerModel> => {
+  create: async (userName: string): Promise<PlayerModel | null> => {
+    const game = await gameRepository.find();
+
+    if (game === null) return null;
+    const gameSize = { width: game.bombMap[0].length, height: game.bombMap.length };
+
+    const choicePos = () => {
+      const x = Math.floor(Math.random() * gameSize.width);
+      const y = Math.floor(Math.random() * gameSize.height);
+      if (game.bombMap[y][x] === 1) {
+        choicePos();
+      }
+      return [x, y];
+    };
+    const [x, y] = choicePos();
     const newPlayerModel = {
       id: userIdParser.parse(randomUUID()),
-      x: Math.floor(Math.random() * GAME_SIZE.WIDTH),
-      y: Math.floor(Math.random() * GAME_SIZE.HEIGHT),
+      x,
+      y,
       name: userName,
       score: 0,
       isLive: true,
@@ -22,8 +35,8 @@ export const playerUseCase = {
   move: async (player: PlayerModel) => {
     const newPlayer = {
       ...player,
-      x: minMax(player.x, GAME_SIZE.WIDTH),
-      y: minMax(player.y, GAME_SIZE.HEIGHT),
+      x: player.x,
+      y: player.y,
     };
     const res = await playersRepository.save(newPlayer);
     return res;
