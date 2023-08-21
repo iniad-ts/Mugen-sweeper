@@ -18,7 +18,9 @@
   background-color: #000;
 }
 
-
+.number {
+/*TODO 数字部分が空白のやつ*/
+}
 
 .ranking {
   display: grid;
