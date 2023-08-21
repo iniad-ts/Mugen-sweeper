@@ -13,9 +13,6 @@
 }
 
 .modalContent {
-  position: absolute;
-  top: 50%;
-  left: 50%;
   background-color: white;
   padding: 20px;
   border-radius: 10px;
