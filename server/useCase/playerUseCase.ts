@@ -45,4 +45,5 @@ export const playerUseCase = {
     const res = await playersRepository.findAll();
     return res;
   },
+  getStatus: async (playerId: string) => await playersRepository.find(userIdParser.parse(playerId)),
 };
