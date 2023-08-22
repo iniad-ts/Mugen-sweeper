@@ -64,7 +64,7 @@
   align-items: center;
   grid-area: score;
   font-size: 10e;
-  text-shadow: 0.4px 0.5px 1px #000;
+  text-shadow: 0.5px 0.5px 1px #000;
   font-family: 'Ozwald Regular';
 }
 
