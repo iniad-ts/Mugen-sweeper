@@ -1,4 +1,4 @@
-import type { BoardModel } from 'src/pages/game/index.page';
+import type { BoardModel } from '../types/types';
 
 const directions = [
   [0, 1],

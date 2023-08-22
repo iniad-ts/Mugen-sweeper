@@ -1,90 +1,75 @@
+import type { Maybe, UserId } from 'commonTypesWithClient/branded';
 import type { PlayerModel } from 'commonTypesWithClient/models';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
+import { ArrowButton } from 'src/components/Button/index.page';
+import GameDisplay from 'src/components/GameDisplay/GameDisplay';
 import { Loading } from 'src/components/Loading/Loading';
 import LoginModal from 'src/components/LoginModal/LoginModal';
+import type { ActionModel, BoardModel, OpenCellModel } from 'src/types/types';
 import { apiClient } from 'src/utils/apiClient';
 import { deepCopy } from 'src/utils/deepCopy';
+import { formatOpenCells } from 'src/utils/formatOpenCells';
 import { minMax } from 'src/utils/minMax';
 import { minesweeperUtils } from 'src/utils/minesweeperUtils';
-import { userIdParser } from '../../../../server/service/idParsers';
-import type { BoardModel } from '../game/index.page';
 import styles from './index.module.css';
 
-type ActionModel = 'left' | 'right' | 'up' | 'down';
+const arrowStyles = [
+  { rowStart: 1, rowEnd: 3, columnStart: 3, columnEnd: 5 },
+  { rowStart: 5, rowEnd: 7, columnStart: 3, columnEnd: 5 },
+  { rowStart: 3, rowEnd: 5, columnStart: 1, columnEnd: 3 },
+  { rowStart: 3, rowEnd: 5, columnStart: 5, columnEnd: 7 },
+];
+
+const arrowTexts = ['▲', '▼', '◀', '▶'];
 
 const dir: ActionModel[] = ['up', 'down', 'left', 'right'];
 
-type OpenCellModel = { x: number; y: number; isUserInput: boolean; value: number };
-
-const arrows = [
-  styles['cross-layout-position-top'],
-  styles['cross-layout-position-bottom'],
-  styles['cross-layout-position-left'],
-  styles['cross-layout-position-right'],
-];
-const arrowTexts = ['▲', '▼', '◀', '▶'];
-
-const Button = ({
-  className,
-  text,
-  onClick,
-}: {
-  className: string;
-  text: string;
-  onClick: () => void;
-}) => (
-  <button className={`${className} ${styles.button} `} onClick={onClick}>
-    {text}
-  </button>
-);
-
 const Controller = () => {
   const router = useRouter();
-  const playerId = typeof router.query.playerId === 'string' ? router.query.playerId : null;
+  const playerIdStr =
+    typeof router.query.playerId === 'string' ? (router.query.playerId as Maybe<UserId>) : null;
 
-  if (playerId === null) {
+  if (playerIdStr === null) {
     return <LoginModal />;
   }
 
   const GameController = () => {
     const [bombMap, setBombMap] = useState<BoardModel>();
     const [board, setBoard] = useState<BoardModel>();
-    const [openCells, setOpenCells] = useState<OpenCellModel[]>([]);
-    const [players, setPlayers] = useState<PlayerModel[]>();
+    const [openCells, setOpenCells] = useState<Set<OpenCellModel>>(new Set());
+    const [player, setPlayer] = useState<PlayerModel>();
 
     const fetchGame = useCallback(async () => {
-      if (openCells.length !== 0) {
-        const jsonCells = openCells.map((cell) => JSON.stringify(cell));
-        const jsonPostCells = Array.from(new Set(jsonCells));
-        const postCells = jsonPostCells
-          .map((cell) => JSON.parse(cell))
-          .map((cell) => ({
-            x: cell.x,
-            y: cell.y,
-            whoOpened: userIdParser.parse(playerId),
-            whenOpened: new Date().getTime(),
-            isUserInput: cell.isUserInput,
-            cellValue: cell.value,
-          }));
+      if (player === undefined || openCells === undefined) return;
+      if (openCells.size !== 0) {
+        const postCells = formatOpenCells(openCells, player.id);
         await apiClient.game.$post({ body: postCells });
-        setOpenCells([]);
+        setOpenCells(new Set());
       }
       const res = await apiClient.game.$get();
-      const res2 = await apiClient.player.$get();
-      if (res === null || res2 === null) return;
+      // const res2 = await apiClient.player.config.$post({ body: { playerId: playerIdStr } });
+
+      if (
+        res === null
+        //  || res2 === null
+      )
+        return;
       const newBoard = minesweeperUtils.makeBoard(res.bombMap, res.userInputs);
       setBoard(newBoard);
-      setPlayers(res2);
-    }, [openCells]);
+      // setPlayer(res2);
+    }, [openCells, player]);
+
     // 初回レンダリング時のみ;
     const fetchBombMap = async () => {
       //開発時のみここで作成
       const res1 = await apiClient.game.config.$post({
         body: { width: 10, height: 10, bombRatioPercent: 10 },
       });
-      if (res1 !== null) {
+      const res2 = await apiClient.player.config.$post({ body: { playerId: playerIdStr } });
+      if (res1 !== null && res2 !== null) {
         setBombMap(res1.bombMap);
+        setPlayer(res2);
       }
     };
 
@@ -94,23 +79,23 @@ const Controller = () => {
       }, 2000);
       return () => clearInterval(cancelId);
     }, [fetchGame]);
+
     useEffect(() => {
       fetchBombMap();
     }, []);
 
-    const player = players?.find((player) => player.id === playerId);
     if (player === undefined || board === undefined || bombMap === undefined) {
       return <Loading visible />;
     }
 
-    const digCell = () => {
+    const dig = () => {
       const [x, y] = [player.x, player.y];
       if (board[y][x] !== -1) return;
       const newBoard = deepCopy<BoardModel>(board);
-      const newOpenCells = deepCopy<OpenCellModel[]>(openCells);
+      const newOpenCells = new Set(openCells);
       const openSurroundingCells = (x: number, y: number, isUserInput: boolean) => {
         newBoard[y][x] = minesweeperUtils.countAroundBombsNum(bombMap, x, y);
-        newOpenCells.push({ x, y, isUserInput, value: newBoard[y][x] });
+        newOpenCells.add([x, y, isUserInput, newBoard[y][x]]);
         if (newBoard[y][x] === 0) {
           minesweeperUtils.aroundCellToArray(newBoard, x, y).forEach((nextPos) => {
             openSurroundingCells(nextPos.x, nextPos.y, false);
@@ -129,18 +114,12 @@ const Controller = () => {
         y: minMax(player.y + moveY, bombMap.length),
       };
       const res = await apiClient.player.$post({ body: newPlayer });
-      const newPlayers = deepCopy(players);
       if (res === null) return;
-      (newPlayers ?? [])[
-        Math.max(
-          0,
-          (newPlayers ?? []).findIndex((onePlayer) => onePlayer.id === playerId)
-        )
-      ] = res;
-      setPlayers(newPlayers);
+
+      setPlayer(res);
     };
 
-    const frag = () => {
+    const flag = () => {
       const [x, y] = [player.x, player.y];
       const newBoard = deepCopy<BoardModel>(board);
       newBoard[y][x] = 9;
@@ -170,9 +149,9 @@ const Controller = () => {
       <div className={styles.container}>
         <div className={styles.controller}>
           <div className={styles['button-container']} style={{ gridArea: 'cross' }}>
-            {arrows.map((arrow, i) => (
-              <Button
-                className={arrow}
+            {arrowStyles.map((arrow, i) => (
+              <ArrowButton
+                grid={arrow}
                 text={arrowTexts[i]}
                 key={i}
                 onClick={() => handleMove(dir[i])}
@@ -180,14 +159,18 @@ const Controller = () => {
             ))}
           </div>
           <div className={styles.display}>
-            {player.x}/{player.y}
+            <GameDisplay player={player} board={board} />
           </div>
           <div
             className={styles['button-container']}
             style={{ gridArea: 'button', margin: '0 0 0 auto' }}
           >
-            <Button className={styles['flag-button']} text="🚩" onClick={() => frag()} />
-            <Button className={styles['open-button']} text="⛏️" onClick={() => digCell()} />
+            <button className={`${styles.button} ${styles['flag-button']}`} onClick={flag}>
+              🚩
+            </button>
+            <button className={`${styles.button} ${styles['open-button']}`} onClick={dig}>
+              ⛏️
+            </button>
           </div>
         </div>
       </div>
