@@ -10,7 +10,7 @@ const GameDisplay = ({ player, board }: { player: PlayerModel; board: BoardModel
 
   useEffect(() => {
     setPlayerPos([player.x, player.y]);
-  }, [player]);
+  }, [player.x, player.y]);
 
   const displayPos = useCallback(
     (): PlayerPos =>
