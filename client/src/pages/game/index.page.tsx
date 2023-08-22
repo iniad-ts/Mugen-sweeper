@@ -1,15 +1,28 @@
 import type { PlayerModel } from 'commonTypesWithClient/models';
 import { useEffect, useMemo, useState } from 'react';
 import { Loading } from 'src/components/Loading/Loading';
+import { staticPath } from 'src/utils/$path';
 import { apiClient } from 'src/utils/apiClient';
 import { minesweeperUtils } from 'src/utils/minesweeperUtils';
 import styles from './index.module.css';
 
-const RANKING_COLOR = ['#FFD700', '#C0C0C0', '#C47222'];
+const MEDAL_IMAGES = [
+  staticPath.images.rank1_png,
+  staticPath.images.rank2_png,
+  staticPath.images.rank3_png,
+];
 
-const Profile = ({ player, i }: { player: PlayerModel; i: number }) => {
+// スコアに基づいて色を返す関数
+const getScoreColor = (score: number): string => {
+  return score >= 100 ? '#ff026b' : score >= 50 ? '#0400ff' : '#f88';
+};
+
+const ProfileBoard = ({ player, index }: { player: PlayerModel; index: number }) => {
   return useMemo(() => {
-    const fontsize = `${(8 - Math.min(i, 3) * 2) * 0.5}em`;
+    const baseSize = 35;
+    const imageSize = baseSize * (8 - Math.min(index, 3) * 2) * 0.3;
+    const scoreColor = getScoreColor(player.score);
+    const rankTextFontSize = index >= 3 ? '1.5em' : '1em';
     return (
       <div
         className={styles.prof}
@@ -18,20 +31,28 @@ const Profile = ({ player, i }: { player: PlayerModel; i: number }) => {
           borderColor: player.isLive ? '#8f8' : '#f88',
         }}
       >
-        <div
-          className={styles.rank}
-          style={{
-            color: i < 3 ? RANKING_COLOR[i] : '#000',
-            fontSize: fontsize,
-          }}
-        >
-          {i + 1}
+        <div className={styles.rank}>
+          {index < 3 ? (
+            <img
+              src={MEDAL_IMAGES[index]}
+              alt={`Rank ${index + 1} Medal`}
+              className={styles.rankImage}
+              style={{
+                width: `${imageSize}px`,
+                height: `${imageSize}px`,
+              }}
+            />
+          ) : (
+            <span style={{ fontSize: rankTextFontSize }}>{index + 1}</span>
+          )}
         </div>
         <div className={styles.name}>{player.name}</div>
-        <div className={styles.score}>{player.score}</div>
+        <div className={styles.score} style={{ color: scoreColor }}>
+          {player.score}
+        </div>
       </div>
     );
-  }, [player, i]);
+  }, [player, index]);
 };
 
 const Game = () => {
@@ -102,8 +123,8 @@ const Game = () => {
         )}
       </div>
       <div className={styles.ranking}>
-        {ranking.map((player, i) => (
-          <Profile key={player.id} player={player} i={i} />
+        {ranking.map((player, index) => (
+          <ProfileBoard key={player.id} player={player} index={index} />
         ))}
       </div>
     </div>
