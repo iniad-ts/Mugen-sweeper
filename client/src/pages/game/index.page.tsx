@@ -13,11 +13,22 @@ export type BoardModel = number[][];
 
 const MEDAL_IMAGES = ['/images/rank1.png', '/images/rank2.png', '/images/rank3.png'];
 
+// スコアに基づいて色を返す関数
+const getScoreColor = (score: number): string => {
+  if (score >= 100) {
+    return '#8f8';
+  } else if (score >= 50) {
+    return '#ff0';
+  } else {
+    return '#f88';
+  }
+};
+
 const ProfileBoard = ({ player, i }: { player: PlayerModel; i: number }) => {
   return useMemo(() => {
     const baseSize = 35;
     const imageSize = baseSize * (8 - Math.min(i, 3) * 2) * 0.3;
-
+    const scoreColor = getScoreColor(player.score);
     return (
       <div
         className={styles.prof}
@@ -42,7 +53,9 @@ const ProfileBoard = ({ player, i }: { player: PlayerModel; i: number }) => {
           )}
         </div>
         <div className={styles.name}>{player.name}</div>
-        <div className={styles.score}>{player.score}</div>
+        <div className={styles.score} style={{ color: scoreColor }}>
+          {player.score}
+        </div>
       </div>
     );
   }, [player, i]);
