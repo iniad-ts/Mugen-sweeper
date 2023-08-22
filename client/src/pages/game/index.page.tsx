@@ -4,17 +4,20 @@ import { Loading } from 'src/components/Loading/Loading';
 import { apiClient } from 'src/utils/apiClient';
 import { minesweeperUtils } from 'src/utils/minesweeperUtils';
 import styles from './index.module.css';
+
 export type Pos = {
   x: number;
   y: number;
 };
 export type BoardModel = number[][];
 
-const RANKING_COLOR = ['#FFD700', '#C0C0C0', '#C47222'];
+const MEDAL_IMAGES = ['/images/rank1.png', '/images/rank2.png', '/images/rank3.png'];
 
-const Profile = ({ player, i }: { player: PlayerModel; i: number }) => {
+const ProfileBoard = ({ player, i }: { player: PlayerModel; i: number }) => {
   return useMemo(() => {
-    const fontsize = `${(8 - Math.min(i, 3) * 2) * 0.5}em`;
+    const baseSize = 35;
+    const imageSize = baseSize * (8 - Math.min(i, 3) * 2) * 0.3;
+
     return (
       <div
         className={styles.prof}
@@ -23,14 +26,20 @@ const Profile = ({ player, i }: { player: PlayerModel; i: number }) => {
           borderColor: player.isLive ? '#8f8' : '#f88',
         }}
       >
-        <div
-          className={styles.rank}
-          style={{
-            color: i < 3 ? RANKING_COLOR[i] : '#000',
-            fontSize: fontsize,
-          }}
-        >
-          {i + 1}
+        <div className={styles.rank}>
+          {i < 3 ? (
+            <img
+              src={MEDAL_IMAGES[i]}
+              alt={`Rank ${i + 1} Medal`}
+              className={styles.rankImage}
+              style={{
+                width: `${imageSize}px`,
+                height: `${imageSize}px`,
+              }}
+            />
+          ) : (
+            i + 1
+          )}
         </div>
         <div className={styles.name}>{player.name}</div>
         <div className={styles.score}>{player.score}</div>
@@ -108,7 +117,7 @@ const Game = () => {
       </div>
       <div className={styles.ranking}>
         {ranking.map((player, i) => (
-          <Profile key={player.id} player={player} i={i} />
+          <ProfileBoard key={player.id} player={player} i={i} />
         ))}
       </div>
     </div>
