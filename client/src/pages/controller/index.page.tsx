@@ -1,3 +1,4 @@
+import type { Maybe, UserId } from 'commonTypesWithClient/branded';
 import type { PlayerModel } from 'commonTypesWithClient/models';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
@@ -26,7 +27,8 @@ const dir: ActionModel[] = ['up', 'down', 'left', 'right'];
 
 const Controller = () => {
   const router = useRouter();
-  const playerIdStr = typeof router.query.playerId === 'string' ? router.query.playerId : null;
+  const playerIdStr =
+    typeof router.query.playerId === 'string' ? (router.query.playerId as Maybe<UserId>) : null;
 
   if (playerIdStr === null) {
     return <LoginModal />;

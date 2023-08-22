@@ -8,7 +8,7 @@ export const formatOpenCells = (openCells: OpenCellModel[], playerId: UserId) =>
   const jsonPostCells = Array.from(new Set(jsonCells));
   const postCells = jsonPostCells
     .map((cell) => JSON.parse(cell))
-    .map((cell: number[]) => ({
+    .map((cell: [number, number, boolean, number]) => ({
       x: cell[0],
       y: cell[1],
       whoOpened: playerId,

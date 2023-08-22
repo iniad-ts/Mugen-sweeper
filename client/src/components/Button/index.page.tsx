@@ -13,7 +13,10 @@ export const ArrowButton = ({
     <button
       className={styles.button}
       onClick={onClick}
-      style={{ gridRow: `${grid.rowStart}/${grid.rowEnd}`, gridColumn: `${grid.columnStart}/${grid.columnEnd}` }}
+      style={{
+        gridRow: `${grid.rowStart}/${grid.rowEnd}`,
+        gridColumn: `${grid.columnStart}/${grid.columnEnd}`,
+      }}
     >
       {text}
     </button>
