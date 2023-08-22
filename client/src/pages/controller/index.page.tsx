@@ -55,10 +55,10 @@ const Controller = () => {
         //  || res2 === null
       )
         return;
-      const newBoard = minesweeperUtils.makeBoard(res.bombMap, res.userInputs);
+      const newBoard = minesweeperUtils.makeBoard(res.bombMap, res.userInputs, board);
       setBoard(newBoard);
       // setPlayer(res2);
-    }, [openCells, player]);
+    }, [openCells, player, board]);
 
     // 初回レンダリング時のみ;
     const fetchBombMap = async () => {
@@ -125,7 +125,7 @@ const Controller = () => {
       newBoard[y][x] = 9;
       setBoard(newBoard);
     };
-
+    console.table(board);
     const handleMove = (action: ActionModel) => {
       if (action === 'left') {
         move(-1, 0);
