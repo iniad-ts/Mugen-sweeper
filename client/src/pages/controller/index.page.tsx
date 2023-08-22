@@ -14,10 +14,10 @@ import { minesweeperUtils } from 'src/utils/minesweeperUtils';
 import styles from './index.module.css';
 
 const arrowStyles = [
-  [1, 3, 3, 5],
-  [5, 7, 3, 5],
-  [3, 5, 1, 3],
-  [3, 5, 5, 7],
+  { rowStart: 1, rowEnd: 3, columnStart: 3, columnEnd: 5 },
+  { rowStart: 5, rowEnd: 7, columnStart: 3, columnEnd: 5 },
+  { rowStart: 3, rowEnd: 5, columnStart: 1, columnEnd: 3 },
+  { rowStart: 3, rowEnd: 5, columnStart: 5, columnEnd: 7 },
 ];
 
 const arrowTexts = ['▲', '▼', '◀', '▶'];
@@ -46,20 +46,24 @@ const Controller = () => {
         setOpenCells([]);
       }
       const res = await apiClient.game.$get();
-      const res2 = await apiClient.player.config.$get({ query: { playerId: playerIdStr } });
+      const res2 = await apiClient.player.config.$post({ body: { playerId: playerIdStr } });
+
       if (res === null || res2 === null) return;
       const newBoard = minesweeperUtils.makeBoard(res.bombMap, res.userInputs);
       setBoard(newBoard);
       setPlayer(res2);
     }, [openCells, player]);
+
     // 初回レンダリング時のみ;
     const fetchBombMap = async () => {
       //開発時のみここで作成
       const res1 = await apiClient.game.config.$post({
         body: { width: 10, height: 10, bombRatioPercent: 10 },
       });
-      if (res1 !== null) {
+      const res2 = await apiClient.player.config.$post({ body: { playerId: playerIdStr } });
+      if (res1 !== null && res2 !== null) {
         setBombMap(res1.bombMap);
+        setPlayer(res2);
       }
     };
 
@@ -69,6 +73,7 @@ const Controller = () => {
       }, 2000);
       return () => clearInterval(cancelId);
     }, [fetchGame]);
+
     useEffect(() => {
       fetchBombMap();
     }, []);
@@ -140,7 +145,7 @@ const Controller = () => {
           <div className={styles['button-container']} style={{ gridArea: 'cross' }}>
             {arrowStyles.map((arrow, i) => (
               <ArrowButton
-                gridRowColumn={arrow}
+                grid={arrow}
                 text={arrowTexts[i]}
                 key={i}
                 onClick={() => handleMove(dir[i])}
