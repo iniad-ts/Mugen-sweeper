@@ -16,9 +16,9 @@ const MEDAL_IMAGES = ['/images/rank1.png', '/images/rank2.png', '/images/rank3.p
 // スコアに基づいて色を返す関数
 const getScoreColor = (score: number): string => {
   if (score >= 100) {
-    return '#8f8';
+    return '#ff026b';
   } else if (score >= 50) {
-    return '#ff0';
+    return '#0400ff';
   } else {
     return '#f88';
   }
