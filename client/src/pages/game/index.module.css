@@ -56,6 +56,7 @@
   align-items: center;
   grid-area: name;
   border-bottom: solid 1px;
+  font-family: 'Ozwald Regular';
 }
 
 .score {
@@ -64,6 +65,8 @@
   align-items: center;
   grid-area: score;
   font-size: 10e;
+  text-shadow: 0.4px 0.5px 1px #000;
+  font-family: 'Ozwald Regular';
 }
 
 .rankImage {
