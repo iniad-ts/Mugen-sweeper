@@ -103,7 +103,11 @@ const Game = () => {
   if (bombMap === undefined || userInputs === undefined || ranking === undefined) {
     return <Loading visible />;
   }
-  const board = minesweeperUtils.makeBoard(bombMap, userInputs);
+  const board = minesweeperUtils.makeBoard(
+    bombMap,
+    userInputs,
+    bombMap.map((row) => row.map(() => -1))
+  );
 
   return (
     <div className={styles.container}>

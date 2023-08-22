@@ -30,6 +30,7 @@ export const minesweeperUtils = {
     userInputs: BoardModel,
     board: BoardModel | undefined
   ): BoardModel => {
+    if (board === undefined) return bombMap.map((row) => row.map(() => -1));
     const openSurroundingCells = (x: number, y: number) => {
       newBoard[y][x] = minesweeperUtils.countAroundBombsNum(bombMap, x, y);
 
