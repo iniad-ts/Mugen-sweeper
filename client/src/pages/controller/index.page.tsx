@@ -108,6 +108,11 @@ const Controller = () => {
         x: minMax(player.x + moveX, bombMap[0].length),
         y: minMax(player.y + moveY, bombMap.length),
       };
+      if (
+        [board[player.y][player.x] === -1, board[newPlayer.y][newPlayer.x] === -1].every(Boolean)
+      ) {
+        return;
+      }
       const res = await apiClient.player.$post({ body: newPlayer });
       const newPlayers = deepCopy(players);
       if (res === null) return;
@@ -123,10 +128,9 @@ const Controller = () => {
     const frag = () => {
       const [x, y] = [player.x, player.y];
       const newBoard = deepCopy<BoardModel>(board);
-      newBoard[y][x] = 9;
+      newBoard[y][x] = 10;
       setBoard(newBoard);
     };
-    console.table(board);
     const handleMove = (action: ActionModel) => {
       if (action === 'left') {
         move(-1, 0);
