@@ -109,7 +109,10 @@ const Controller = () => {
         y: minMax(player.y + moveY, bombMap.length),
       };
       if (
-        [board[player.y][player.x] === -1, board[newPlayer.y][newPlayer.x] === -1].every(Boolean)
+        [
+          [-1, 9, 10].includes(board[player.y][player.x]),
+          board[newPlayer.y][newPlayer.x] === -1,
+        ].every(Boolean)
       ) {
         return;
       }
@@ -128,7 +131,7 @@ const Controller = () => {
     const frag = () => {
       const [x, y] = [player.x, player.y];
       const newBoard = deepCopy<BoardModel>(board);
-      newBoard[y][x] = 10;
+      newBoard[y][x] = newBoard[y][x] === -1 ? 10 : -1;
       setBoard(newBoard);
     };
     const handleMove = (action: ActionModel) => {

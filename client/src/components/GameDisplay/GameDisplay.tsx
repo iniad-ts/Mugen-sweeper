@@ -7,7 +7,7 @@ const cellStyler = (val: number) =>
   val === -1
     ? styles.stone
     : [val === 9, val === 10].some(Boolean)
-    ? `${styles.number} ${styles.stone} `
+    ? `${styles.stone} ${styles.number}`
     : styles.number;
 
 const viewSelectorList = [-1, 9, 10];
