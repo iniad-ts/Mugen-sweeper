@@ -6,7 +6,6 @@ import { apiClient } from 'src/utils/apiClient';
 import { minesweeperUtils } from 'src/utils/minesweeperUtils';
 import styles from './index.module.css';
 
-
 const MEDAL_IMAGES = [
   staticPath.images.rank1_png,
   staticPath.images.rank2_png,
