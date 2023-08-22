@@ -16,11 +16,10 @@
   width: 100%;
   height: 100%;
   background-color: #000;
-  /* border: outset 2px #c6c6c6; */
 }
 
 .number {
-  background: url() no-repeat;
+/*TODO 数字部分が空白のやつ*/
 }
 
 .ranking {

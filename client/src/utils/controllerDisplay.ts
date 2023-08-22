@@ -1,4 +1,4 @@
-import type { BoardModel } from 'src/pages/game/index.page';
+import type { BoardModel } from '../types/types';
 
 export const controllerDisplay = (
   board: BoardModel,

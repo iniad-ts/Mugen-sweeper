@@ -1,3 +1,4 @@
+import type { Maybe, UserId } from '$/commonTypesWithClient/branded';
 import type { PlayerModel } from '$/commonTypesWithClient/models';
 import { gameRepository } from '$/repository/gameRepository';
 import { playersRepository } from '$/repository/playersRepository';
@@ -45,4 +46,5 @@ export const playerUseCase = {
     const res = await playersRepository.findAll();
     return res;
   },
+  getStatus: async (playerId: Maybe<UserId>) => await playersRepository.find(playerId),
 };
