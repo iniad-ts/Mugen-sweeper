@@ -1,6 +1,7 @@
 import type { PlayerModel } from 'commonTypesWithClient/models';
 import { useEffect, useMemo, useState } from 'react';
 import { Loading } from 'src/components/Loading/Loading';
+import { staticPath } from 'src/utils/$path';
 import { apiClient } from 'src/utils/apiClient';
 import { minesweeperUtils } from 'src/utils/minesweeperUtils';
 import styles from './index.module.css';
@@ -11,25 +12,23 @@ export type Pos = {
 };
 export type BoardModel = number[][];
 
-const MEDAL_IMAGES = ['/images/rank1.png', '/images/rank2.png', '/images/rank3.png'];
+const MEDAL_IMAGES = [
+  staticPath.images.rank1_png,
+  staticPath.images.rank2_png,
+  staticPath.images.rank3_png,
+];
 
 // スコアに基づいて色を返す関数
 const getScoreColor = (score: number): string => {
-  if (score >= 100) {
-    return '#ff026b';
-  } else if (score >= 50) {
-    return '#0400ff';
-  } else {
-    return '#f88';
-  }
+  return score >= 100 ? '#ff026b' : score >= 50 ? '#0400ff' : '#f88';
 };
 
-const ProfileBoard = ({ player, i }: { player: PlayerModel; i: number }) => {
+const ProfileBoard = ({ player, index }: { player: PlayerModel; index: number }) => {
   return useMemo(() => {
     const baseSize = 35;
-    const imageSize = baseSize * (8 - Math.min(i, 3) * 2) * 0.3;
+    const imageSize = baseSize * (8 - Math.min(index, 3) * 2) * 0.3;
     const scoreColor = getScoreColor(player.score);
-    const rankTextFontSize = i >= 3 ? '1.5em' : '1em';
+    const rankTextFontSize = index >= 3 ? '1.5em' : '1em';
     return (
       <div
         className={styles.prof}
@@ -39,10 +38,10 @@ const ProfileBoard = ({ player, i }: { player: PlayerModel; i: number }) => {
         }}
       >
         <div className={styles.rank}>
-          {i < 3 ? (
+          {index < 3 ? (
             <img
-              src={MEDAL_IMAGES[i]}
-              alt={`Rank ${i + 1} Medal`}
+              src={MEDAL_IMAGES[index]}
+              alt={`Rank ${index + 1} Medal`}
               className={styles.rankImage}
               style={{
                 width: `${imageSize}px`,
@@ -50,7 +49,7 @@ const ProfileBoard = ({ player, i }: { player: PlayerModel; i: number }) => {
               }}
             />
           ) : (
-            <span style={{ fontSize: rankTextFontSize }}>{i + 1}</span>
+            <span style={{ fontSize: rankTextFontSize }}>{index + 1}</span>
           )}
         </div>
         <div className={styles.name}>{player.name}</div>
@@ -59,7 +58,7 @@ const ProfileBoard = ({ player, i }: { player: PlayerModel; i: number }) => {
         </div>
       </div>
     );
-  }, [player, i]);
+  }, [player, index]);
 };
 
 const Game = () => {
@@ -130,8 +129,8 @@ const Game = () => {
         )}
       </div>
       <div className={styles.ranking}>
-        {ranking.map((player, i) => (
-          <ProfileBoard key={player.id} player={player} i={i} />
+        {ranking.map((player, index) => (
+          <ProfileBoard key={player.id} player={player} index={index} />
         ))}
       </div>
     </div>
