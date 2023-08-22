@@ -10,6 +10,9 @@ const cellStyler = (val: number) =>
     ? `${styles.stone} ${styles.number}`
     : styles.number;
 
+const cellBackgroundColor = (val: number) =>
+  [val === 9, val === 10, val === -1].some(Boolean) ? '#4a2' : '#dca';
+
 const viewSelectorList = [-1, 9, 10];
 
 type PlayerPos = [number, number];
@@ -17,13 +20,14 @@ type PlayerPos = [number, number];
 const GameDisplay = ({ player, board }: { player: PlayerModel; board: BoardModel }) => {
   const [playerPos, setPlayerPos] = useState<PlayerPos>();
   const [displayPos, setDisplayPos] = useState<PlayerPos>();
-
+  console.table(board);
   useEffect(() => {
     setPlayerPos([player.x, player.y]);
-    if (viewSelectorList.includes(board[player.y][player.x])) return;
+    if (board[player.y] === undefined || viewSelectorList.includes(board[player.y][player.x])) {
+      return;
+    }
     setDisplayPos([player.x, player.y]);
   }, [player.x, player.y, board]);
-
   return useMemo(
     () => (
       <div className={styles.container}>
@@ -34,31 +38,22 @@ const GameDisplay = ({ player, board }: { player: PlayerModel; board: BoardModel
           {board.map((row, y) =>
             row.map((val, x) => (
               <div
-                className={
-                  val === -1
-                    ? styles.stone
-                    : [val === 9, val === 10].some(Boolean)
-                    ? `${styles.stone} ${styles.number}`
-                    : styles.number
-                }
+                className={cellStyler(val)}
                 key={`${y}-${x}`}
                 style={{
                   backgroundPositionX: `${7.65 * (val - 1)}%`,
-                  /* stylelint-disable-next-line function-no-unknown */
-                  backgroundColor: [val === 9, val === 10, val === -1].some(Boolean)
-                    ? '#4a2'
-                    : '#dca',
+                  /* stylelint-disable-next-line  */
+                  backgroundColor: cellBackgroundColor(val),
                 }}
               >
-                {[displayPos !== undefined, displayPos[0] === x, displayPos[1] === y].every(
-                  Boolean
-                ) && <div className={styles.player} />}
-                {[
-                  playerPos !== undefined,
-                  playerPos[0] === x,
-                  playerPos[1] === y,
-                  viewSelectorList.includes(val),
-                ].every(Boolean) && <div className={styles.selector} />}
+                {displayPos !== undefined &&
+                  [displayPos[0] === x, displayPos[1] === y].every(Boolean) && (
+                    <div className={styles.player} />
+                  )}
+                {playerPos !== undefined &&
+                  [playerPos[0] === x, playerPos[1] === y, viewSelectorList.includes(val)].every(
+                    Boolean
+                  ) && <div className={styles.selector} />}
               </div>
             ))
           )}
