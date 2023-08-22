@@ -29,6 +29,7 @@ const ProfileBoard = ({ player, i }: { player: PlayerModel; i: number }) => {
     const baseSize = 35;
     const imageSize = baseSize * (8 - Math.min(i, 3) * 2) * 0.3;
     const scoreColor = getScoreColor(player.score);
+    const rankTextFontSize = i >= 3 ? '1.5em' : '1em';
     return (
       <div
         className={styles.prof}
@@ -49,7 +50,7 @@ const ProfileBoard = ({ player, i }: { player: PlayerModel; i: number }) => {
               }}
             />
           ) : (
-            i + 1
+            <span style={{ fontSize: rankTextFontSize }}>{i + 1}</span>
           )}
         </div>
         <div className={styles.name}>{player.name}</div>
