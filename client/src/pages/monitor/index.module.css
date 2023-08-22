@@ -5,11 +5,11 @@
   align-items: center;
   justify-content: center;
   grid-template-rows: 20px 1fr 20px;
-  grid-template-columns: 20px 1fr 20px;
+  grid-template-columns: 20px 1fr 9fr 20px;
   grid-template-areas:
-    '. .    .'
-    '. main .'
-    '. .    .';
+    '. .    .    .'
+    '. info main .'
+    '. .    .    .';
 }
 
 .main {
@@ -38,7 +38,7 @@
   background-color: #fff;
   border: solid 1px;
   user-select: none;
-  z-index: 99999;/*TODO top layerを調べる*/
+  z-index: 99999; /*TODO top layerを調べる*/
 }
 
 .playerInfo {
@@ -47,4 +47,28 @@
   left: 50%;
   color: #0000;
   z-index: -1;
+}
+
+.focus-info {
+  display: grid;
+  grid-area: info;
+  grid-template-rows: repeat(12, 1fr);
+  gap: 5px;
+}
+
+.focus-info-row {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.button{
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+
 }
