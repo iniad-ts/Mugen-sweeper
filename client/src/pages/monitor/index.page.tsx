@@ -77,7 +77,6 @@ const Monitor = () => {
   }, []);
 
   const handleDelete = async () => {
-    console.log('a');
     if (focusedPlayer === undefined) return;
     if (confirm('Are You Sure You Want To Ban This Player?')) {
       await apiClient.player.delete({ body: focusedPlayer });

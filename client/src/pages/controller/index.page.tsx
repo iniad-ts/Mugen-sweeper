@@ -6,7 +6,7 @@ import { ArrowButton } from 'src/components/Button/index.page';
 import GameDisplay from 'src/components/GameDisplay/GameDisplay';
 import { Loading } from 'src/components/Loading/Loading';
 import LoginModal from 'src/components/LoginModal/LoginModal';
-import type { ActionModel, BoardModel, OpenCellModel } from 'src/types/types';
+import type { ActionModel, BoardModel } from 'src/types/types';
 import { apiClient } from 'src/utils/apiClient';
 import { deepCopy } from 'src/utils/deepCopy';
 import { formatOpenCells } from 'src/utils/formatOpenCells';
@@ -37,7 +37,7 @@ const Controller = () => {
   const GameController = () => {
     const [bombMap, setBombMap] = useState<BoardModel>();
     const [board, setBoard] = useState<BoardModel>();
-    const [openCells, setOpenCells] = useState<Set<OpenCellModel>>(new Set());
+    const [openCells, setOpenCells] = useState<Set<string>>(new Set());
     const [player, setPlayer] = useState<PlayerModel>();
 
     const fetchGame = useCallback(async () => {
@@ -95,7 +95,7 @@ const Controller = () => {
       const newOpenCells = new Set(openCells);
       const openSurroundingCells = (x: number, y: number, isUserInput: boolean) => {
         newBoard[y][x] = minesweeperUtils.countAroundBombsNum(bombMap, x, y);
-        newOpenCells.add([x, y, isUserInput, newBoard[y][x]]);
+        newOpenCells.add(JSON.stringify([x, y, isUserInput, newBoard[y][x]]));
         if (newBoard[y][x] === 0) {
           minesweeperUtils.aroundCellToArray(newBoard, x, y).forEach((nextPos) => {
             openSurroundingCells(nextPos.x, nextPos.y, false);
