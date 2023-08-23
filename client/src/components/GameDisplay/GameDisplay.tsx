@@ -20,7 +20,6 @@ type PlayerPos = [number, number];
 const GameDisplay = ({ player, board }: { player: PlayerModel; board: BoardModel }) => {
   const [playerPos, setPlayerPos] = useState<PlayerPos>();
   const [displayPos, setDisplayPos] = useState<PlayerPos>();
-  console.table(board);
   useEffect(() => {
     setPlayerPos([player.x, player.y]);
     if (board[player.y] === undefined || viewSelectorList.includes(board[player.y][player.x])) {
