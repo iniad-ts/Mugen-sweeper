@@ -6,11 +6,11 @@ import { ArrowButton } from 'src/components/Button/index.page';
 import GameDisplay from 'src/components/GameDisplay/GameDisplay';
 import { Loading } from 'src/components/Loading/Loading';
 import LoginModal from 'src/components/LoginModal/LoginModal';
-import type { ActionModel, BoardModel, OpenCellModel } from 'src/types/types';
+import type { ActionModel, BoardModel } from 'src/types/types';
 import { apiClient } from 'src/utils/apiClient';
 import { deepCopy } from 'src/utils/deepCopy';
 import { formatOpenCells } from 'src/utils/formatOpenCells';
-import { minMax } from 'src/utils/minMax';
+import { handleMove } from 'src/utils/handleMove';
 import { minesweeperUtils } from 'src/utils/minesweeperUtils';
 import styles from './index.module.css';
 
@@ -37,7 +37,7 @@ const Controller = () => {
   const GameController = () => {
     const [bombMap, setBombMap] = useState<BoardModel>();
     const [board, setBoard] = useState<BoardModel>();
-    const [openCells, setOpenCells] = useState<Set<OpenCellModel>>(new Set());
+    const [openCells, setOpenCells] = useState<Set<string>>(new Set());
     const [player, setPlayer] = useState<PlayerModel>();
 
     const fetchGame = useCallback(async () => {
@@ -95,7 +95,7 @@ const Controller = () => {
       const newOpenCells = new Set(openCells);
       const openSurroundingCells = (x: number, y: number, isUserInput: boolean) => {
         newBoard[y][x] = minesweeperUtils.countAroundBombsNum(bombMap, x, y);
-        newOpenCells.add([x, y, isUserInput, newBoard[y][x]]);
+        newOpenCells.add(JSON.stringify([x, y, isUserInput, newBoard[y][x]]));
         if (newBoard[y][x] === 0) {
           minesweeperUtils.aroundCellToArray(newBoard, x, y).forEach((nextPos) => {
             openSurroundingCells(nextPos.x, nextPos.y, false);
@@ -107,49 +107,11 @@ const Controller = () => {
       setBoard(newBoard);
     };
 
-    const move = async (moveX: number, moveY: number) => {
-      const newPlayer = {
-        ...player,
-        x: minMax(player.x + moveX, bombMap[0].length),
-        y: minMax(player.y + moveY, bombMap.length),
-      };
-      if (
-        [
-          [-1, 9, 10].includes(board[player.y][player.x]),
-          board[newPlayer.y][newPlayer.x] === -1,
-        ].every(Boolean)
-      ) {
-        return;
-      }
-      const res = await apiClient.player.$post({ body: newPlayer });
-      if (res === null) return;
-
-      setPlayer(res);
-    };
-
     const flag = () => {
       const [x, y] = [player.x, player.y];
       const newBoard = deepCopy<BoardModel>(board);
       newBoard[y][x] = newBoard[y][x] === -1 ? 10 : -1;
       setBoard(newBoard);
-    };
-    const handleMove = (action: ActionModel) => {
-      if (action === 'left') {
-        move(-1, 0);
-        return;
-      }
-      if (action === 'right') {
-        move(1, 0);
-        return;
-      }
-      if (action === 'down') {
-        move(0, 1);
-        return;
-      }
-      if (action === 'up') {
-        move(0, -1);
-        return;
-      }
     };
 
     return (
@@ -161,7 +123,9 @@ const Controller = () => {
                 grid={arrow}
                 text={arrowTexts[i]}
                 key={i}
-                onClick={() => handleMove(dir[i])}
+                onClick={() =>
+                  handleMove(dir[i], board, player).then((result) => setPlayer(result))
+                }
               />
             ))}
           </div>
