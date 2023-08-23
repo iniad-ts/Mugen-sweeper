@@ -19,7 +19,7 @@
   height: 100%;
   background-color: #aab;
   border-radius: 40px;
-  grid-template-columns: 10px 1fr 400px 1fr 10px;
+  grid-template-columns: 10px 1fr 3fr 1fr 10px;
   grid-template-rows: 10px 1fr 10px;
   grid-template-areas:
     '. .     .       .      . '
@@ -72,7 +72,6 @@
   border-color: #334;
   user-select: none;
 }
-
 
 .flag-button {
   display: flex;
