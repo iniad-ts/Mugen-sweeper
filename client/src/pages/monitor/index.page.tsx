@@ -6,33 +6,51 @@ import { apiClient } from 'src/utils/apiClient';
 import { minesweeperUtils } from 'src/utils/minesweeperUtils';
 import styles from './index.module.css';
 
-const InfoCell = ({
+const PlayerInfo = ({
   thisPlayer,
-  onClick,
-  val,
+
+  isView,
 }: {
   thisPlayer: PlayerModel | undefined;
-  onClick: (value: PlayerModel | undefined) => void;
-  val: number;
-}) => (
-  <div
-    className={styles.cell}
-    style={{ backgroundColor: val === -1 ? '#000' : '#fff' }}
-    onClick={() => onClick(thisPlayer)}
-  >
-    {thisPlayer !== undefined && (
-      <div
-        className={styles.player}
-        style={{ backgroundColor: thisPlayer.isLive ? '0ff8' : '#f008' }}
-      >
+
+  isView: boolean;
+}) =>
+  thisPlayer !== undefined && (
+    <div
+      className={styles.player}
+      style={{ backgroundColor: thisPlayer.isLive ? '0ff8' : '#f008' }}
+    >
+      {isView ? (
+        <div className={styles.nameInfo}>
+          <p style={{ zIndex: 99998 }}>{thisPlayer.name}</p>
+        </div>
+      ) : (
         <div className={styles.playerInfo}>
           <p>id:{thisPlayer.id}</p>
           <p>name:{thisPlayer.name}</p>
           <p>score:{thisPlayer.score}</p>
           <p>{thisPlayer.isLive ? 'alive' : 'dead'}</p>
         </div>
-      </div>
-    )}
+      )}
+    </div>
+  );
+const InfoCell = ({
+  thisPlayer,
+  onClick,
+  val,
+  isView,
+}: {
+  thisPlayer: PlayerModel | undefined;
+  onClick: (value: PlayerModel | undefined) => void;
+  val: number;
+  isView: boolean;
+}) => (
+  <div
+    className={styles.cell}
+    style={{ backgroundColor: val === -1 ? '#000' : '#fff' }}
+    onClick={() => onClick(thisPlayer)}
+  >
+    <PlayerInfo thisPlayer={thisPlayer} isView={isView} />
   </div>
 );
 
@@ -40,6 +58,7 @@ const Monitor = () => {
   const [players, setPlayers] = useState<PlayerModel[]>([]);
   const [focusedPlayer, setFocusedPlayer] = useState<PlayerModel>();
   const [board, setBoard] = useState<BoardModel>();
+  const [isViewName, setIsViewName] = useState(false);
 
   const fetchMonitor = async () => {
     const resPlayers = await apiClient.player.$get();
@@ -57,6 +76,14 @@ const Monitor = () => {
     return () => clearInterval(cancelId);
   }, []);
 
+  const handleDelete = async () => {
+    console.log('a');
+    if (focusedPlayer === undefined) return;
+    if (confirm('Are You Sure You Want To Ban This Player?')) {
+      await apiClient.player.delete({ body: focusedPlayer });
+    }
+  };
+
   if (board === undefined) return <Loading visible />;
   return (
     <div className={styles.container}>
@@ -64,16 +91,18 @@ const Monitor = () => {
         <div className={styles['focus-info-row']}>{focusedPlayer?.id}</div>
         <div className={styles['focus-info-row']}>{focusedPlayer?.name}</div>
         <div className={styles['focus-info-row']}>{focusedPlayer?.score}</div>
-        <div className={styles['focus-info-row']}>{focusedPlayer?.isLive}</div>
+        <div className={styles['focus-info-row']}>
+          {focusedPlayer?.isLive === true ? 'alive' : focusedPlayer?.isLive === false && 'dead'}
+        </div>
+        <button className={styles.button} onClick={handleDelete}>
+          delete
+        </button>
         <button
           className={styles.button}
-          onClick={async () =>
-            confirm('Are You Sure You Want To Ban This Player?') &&
-            focusedPlayer !== undefined &&
-            (await apiClient.player.delete({ body: focusedPlayer }))
-          }
+          style={{ backgroundColor: '#4c4' }}
+          onClick={() => setIsViewName(!isViewName)}
         >
-          delete
+          view names
         </button>
       </div>
       <div
@@ -91,6 +120,7 @@ const Monitor = () => {
                 thisPlayer={thisPlayer}
                 onClick={setFocusedPlayer}
                 val={val}
+                isView={isViewName}
                 key={`${y}-${x}`}
               />
             );
