@@ -5,7 +5,7 @@
   align-items: center;
   justify-content: center;
   grid-template-rows: 20px 1fr 20px;
-  grid-template-columns: 20px 1fr 9fr 20px;
+  grid-template-columns: 20px 2fr 8fr 20px;
   grid-template-areas:
     '. .    .    .'
     '. info main .'
@@ -49,26 +49,59 @@
   z-index: -1;
 }
 
+.nameInfo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  background-color: #fff;
+  border: solid 1px;
+  color: #000;
+  z-index: 99998;
+}
+
 .focus-info {
   display: grid;
+  width: 100%;
+  height: 100%;
   grid-area: info;
-  grid-template-rows: repeat(12, 1fr);
-  gap: 5px;
+  grid-template-rows: repeat(6, 1fr);
+  grid-template-columns: 0 1fr 0;
+  gap: 10px;
+  padding: 10px 0;
+  border: 6px solid #4468;
+  box-shadow: 0 0 0 0 #000, 0 0 50px #0006;
 }
 
 .focus-info-row {
   display: flex;
-  width: 100%;
-  height: 100%;
-  align-items: center;
+  grid-column: 2/3;
   justify-content: center;
+  align-items: center;
+  background-color: #101010;
+  border-radius: 20px;
+  padding: 10px;
+  word-break: break-all;
+  box-shadow: 0 0 0 1px #03030380;
+  color: #fffa;
 }
 
-.button{
+.button {
   display: flex;
-  width: 100%;
-  height: 100%;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  grid-column: 2/3;
+  border-radius: 20px;
+  background-color: #c44;
+  color: #fffa;
+  border: 3px solid #dcc;
+  box-shadow: 0 0 0 1px #fafafa80, 0 0 5px #fff6;
+}
+.button:hover {
+  cursor: pointer;
+  background-color: #3348;
+}
 
+.button:active {
+  transform: scale(0.95);
+  border-color: #edd;
 }
