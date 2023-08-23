@@ -22,15 +22,15 @@ export const handleMove = async (action: ActionModel, board: BoardModel, player:
     if (res === null) return player;
     return res;
   };
-
-  if (action === 'left') {
-    return move(-1, 0);
-  } else if (action === 'right') {
-    return move(1, 0);
-  } else if (action === 'down') {
-    return move(0, 1);
-  } else if (action === 'up') {
-    return move(0, -1);
-  }
-  return player;
+  const moves = {
+    left: move(-1, 0),
+    right: move(1, 0),
+    up: move(0, -1),
+    down: move(0, 1),
+    ur: move(1, -1),
+    ul: move(-1, -1),
+    dr: move(1, 1),
+    dl: move(-1, 1),
+  };
+  return moves[action];
 };

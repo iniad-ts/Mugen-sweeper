@@ -2,7 +2,6 @@ import type { Maybe, UserId } from 'commonTypesWithClient/branded';
 import type { PlayerModel } from 'commonTypesWithClient/models';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
-import { ArrowButton } from 'src/components/Button/index.page';
 import GameDisplay from 'src/components/GameDisplay/GameDisplay';
 import { Loading } from 'src/components/Loading/Loading';
 import LoginModal from 'src/components/LoginModal/LoginModal';
@@ -12,18 +11,12 @@ import { deepCopy } from 'src/utils/deepCopy';
 import { formatOpenCells } from 'src/utils/formatOpenCells';
 import { handleMove } from 'src/utils/handleMove';
 import { minesweeperUtils } from 'src/utils/minesweeperUtils';
+import { ArrowButton } from './Button/index.page';
 import styles from './index.module.css';
-
-const arrowStyles = [
-  { rowStart: 1, rowEnd: 3, columnStart: 3, columnEnd: 5 },
-  { rowStart: 5, rowEnd: 7, columnStart: 3, columnEnd: 5 },
-  { rowStart: 3, rowEnd: 5, columnStart: 1, columnEnd: 3 },
-  { rowStart: 3, rowEnd: 5, columnStart: 5, columnEnd: 7 },
-];
 
 const arrowTexts = ['▲', '▼', '◀', '▶'];
 
-const dir: ActionModel[] = ['up', 'down', 'left', 'right'];
+const actions: ActionModel[] = ['up', 'down', 'left', 'right', 'ur', 'ul', 'dr', 'dl'];
 
 const Controller = () => {
   const router = useRouter();
@@ -114,18 +107,21 @@ const Controller = () => {
       setBoard(newBoard);
     };
 
+    const clickButton = async (action: ActionModel) => {
+      const res = await handleMove(action, board, player);
+      setPlayer(res);
+    };
+
     return (
       <div className={styles.container}>
         <div className={styles.controller}>
           <div className={styles['button-container']} style={{ gridArea: 'cross' }}>
-            {arrowStyles.map((arrow, i) => (
+            {actions.map((action, i) => (
               <ArrowButton
-                grid={arrow}
                 text={arrowTexts[i]}
                 key={i}
-                onClick={() =>
-                  handleMove(dir[i], board, player).then((result) => setPlayer(result))
-                }
+                action={action}
+                onClick={() => clickButton(action)}
               />
             ))}
           </div>
