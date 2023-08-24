@@ -128,11 +128,11 @@ const Monitor = () => {
   if (board === undefined) return <Loading visible />;
   return (
     <div className={styles.container}>
-      <div className={styles['focus-info']}>
-        <div className={styles['focus-info-row']}>{focusedPlayer?.id}</div>
-        <div className={styles['focus-info-row']}>{focusedPlayer?.name}</div>
-        <div className={styles['focus-info-row']}>{focusedPlayer?.score}</div>
-        <div className={styles['focus-info-row']}>
+      <div className={styles['focusInfo']}>
+        <div className={styles['focusInfoRow']}>{focusedPlayer?.id}</div>
+        <div className={styles['focusInfoRow']}>{focusedPlayer?.name}</div>
+        <div className={styles['focusInfoRow']}>{focusedPlayer?.score}</div>
+        <div className={styles['focusInfoRow']}>
           {focusedPlayer?.isAlive === true ? 'alive' : focusedPlayer?.isAlive === false && 'dead'}
         </div>
         <button className={styles.button} onClick={handleDelete}>

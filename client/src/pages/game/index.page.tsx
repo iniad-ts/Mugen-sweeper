@@ -26,7 +26,7 @@ const Number = ({ value }: { value: number }) => {
       : numbers[value - 1];
   return useMemo(
     () => (
-      <div className={styles['number-main']}>
+      <div className={styles['numberMain']}>
         <div className={styles.border} style={{ gridArea: 't' }} />
         <div className={styles.border} style={{ gridArea: 'l' }} />
         {board.map((row, y) =>
