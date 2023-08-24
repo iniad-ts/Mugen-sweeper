@@ -1,9 +1,11 @@
 import type { PlayerModel } from 'commonTypesWithClient/models';
 import { useEffect, useMemo, useState } from 'react';
+import Webcam from 'react-webcam';
 import { Loading } from 'src/components/Loading/Loading';
 import { staticPath } from 'src/utils/$path';
 import { apiClient } from 'src/utils/apiClient';
 import { minesweeperUtils } from 'src/utils/minesweeperUtils';
+import { numbers } from 'src/utils/nums';
 import styles from './index.module.css';
 
 const MEDAL_IMAGES = [
@@ -15,6 +17,33 @@ const MEDAL_IMAGES = [
 // スコアに基づいて色を返す関数
 const getScoreColor = (score: number): string => {
   return score >= 100 ? '#ff026b' : score >= 50 ? '#0400ff' : '#f88';
+};
+
+const Number = ({ value }: { value: number }) => {
+  const board =
+    value === 0
+      ? [...Array(5)].map((_, j) => [...Array(5)].map((_, i) => (j + i) % 2))
+      : numbers[value - 1];
+  return useMemo(
+    () => (
+      <div className={styles['number-main']}>
+        <div className={styles.border} style={{ gridArea: 't' }} />
+        <div className={styles.border} style={{ gridArea: 'l' }} />
+        {board.map((row, y) =>
+          row.map((num, x) => (
+            <div
+              className={styles.number}
+              key={`${y}-${x}`}
+              style={{ backgroundColor: num === 0 ? '#0000' : '#000' }}
+            />
+          ))
+        )}
+        <div className={styles.border} style={{ gridArea: 'r' }} />
+        <div className={styles.border} style={{ gridArea: 'u' }} />
+      </div>
+    ),
+    [board]
+  );
 };
 
 const ProfileBoard = ({ player, index }: { player: PlayerModel; index: number }) => {
@@ -86,15 +115,7 @@ const Game = () => {
     const res = await apiClient.game.config.$post({
       body: { width: 10, height: 10, bombRatioPercent: 10 },
     });
-    //開発用に一旦playerを作る
-    // [...Array(10)].forEach((_, i) =>
-    //   apiClient.player.config.post({
-    //     body: {
-    //       userId: userIdParser.parse(`${Math.random()}`),
-    //       name: `frouriochan${i + 1}`,
-    //     },
-    //   })
-    // );
+
     if (res !== null) {
       setBombMap(res.bombMap);
     }
@@ -107,20 +128,25 @@ const Game = () => {
 
   return (
     <div className={styles.container}>
-      <div
-        className={styles.game}
-        style={{
-          gridTemplateColumns: `repeat(${board[0].length},1fr)`,
-          gridTemplateRows: `repeat(${board.length},1fr)`,
-        }}
-      >
-        {board.map((row, y) =>
-          row.map((value, x) => (
-            <div className={value === -1 ? styles.stone : styles.number} key={`${y}-${x}`}>
-              {value}
-            </div>
-          ))
-        )}
+      <div className={styles.main}>
+        <Webcam width={1430} style={{ transform: 'scaleX(-1)' }} />
+        <div
+          className={styles.game}
+          style={{
+            gridTemplateColumns: `repeat(${board[0].length},1fr)`,
+            gridTemplateRows: `repeat(${board.length},1fr)`,
+          }}
+        >
+          {board.map((row, y) =>
+            row.map((value, x) =>
+              [value < 0, value > 8].some(Boolean) ? (
+                <div className={styles.stone} key={`${y}-${x}`} />
+              ) : (
+                <Number value={value} key={`${y}-${x}`} />
+              )
+            )
+          )}
+        </div>
       </div>
       <div className={styles.ranking}>
         {ranking.map((player, index) => (
