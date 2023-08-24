@@ -1,6 +1,6 @@
 .container {
   display: grid;
-  grid-template-areas:
+  grid-template:
     '. .    .'
     '. main .'
     '. .    .';
@@ -14,12 +14,12 @@
   display: grid;
   grid-area: main;
   grid-template:
-    '. . .                . . '
-    '. width  width  width  . '
-    '. height height height . '
-    '. bomb   bomb   bomb   . '
-    '. .      create  delete     . '
-    '. . .                . . ';
+    '. . .                .  . '
+    '. width  width  width   . '
+    '. height height height  . '
+    '. bomb   bomb   bomb    . '
+    '. .      create  delete . '
+    '. . .                .  . ';
   grid-template-rows: 10px 1fr 1fr 1fr 1fr 10px;
   grid-template-columns: 20px 2fr 3fr 2fr 20px;
   gap: 10px;
@@ -89,7 +89,7 @@
 }
 
 .center {
-  /*  */
+  /* TODO */
 }
 
 .text {
