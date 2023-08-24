@@ -37,7 +37,7 @@ const LoginModal: React.FC = () => {
     <div>
       {/* <button onClick={() => setIsModalOpen(true)}>モーダルを開く</button> */}
       <Modal isOpen onClose={() => null}>
-        <div className={styles.ModalContent}>
+        <div className={styles.modalContent}>
           <h2>Mugen Sweeper</h2>
           <label>ユーザー名:</label>
           <input type="text" placeholder="ユーザー名を入力してください" onChange={onChangeInput} />
