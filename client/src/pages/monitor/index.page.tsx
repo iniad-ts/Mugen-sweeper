@@ -1,5 +1,5 @@
 import type { PlayerModel } from 'commonTypesWithClient/models';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Loading } from 'src/components/Loading/Loading';
 import type { BoardModel } from 'src/types/types';
 import { apiClient } from 'src/utils/apiClient';
@@ -60,21 +60,21 @@ const Monitor = () => {
   const [board, setBoard] = useState<BoardModel>();
   const [isViewName, setIsViewName] = useState(false);
 
-  const fetchMonitor = async () => {
+  const fetchMonitor = useCallback(async () => {
     const resPlayers = await apiClient.player.$get();
     const resGame = await apiClient.game.$get();
     if (resGame === null) return;
-    const newBoard = minesweeperUtils.makeBoard(resGame.bombMap, resGame.userInputs);
+    const newBoard = minesweeperUtils.makeBoard(resGame.bombMap, resGame.userInputs, board);
     setBoard(newBoard);
     setPlayers(resPlayers);
-  };
+  }, [board]);
 
   useEffect(() => {
     const cancelId = setInterval(() => {
       fetchMonitor();
     }, 2000);
     return () => clearInterval(cancelId);
-  }, []);
+  }, [fetchMonitor]);
 
   const handleDelete = async () => {
     console.log('a');

@@ -2,8 +2,8 @@
   display: grid;
   height: 100vh;
   width: 100vw;
-  grid-template-columns: 20px 1fr 20px;
-  grid-template-rows: 1fr 300px 1fr;
+  grid-template-columns: 0px 1fr 0px;
+  grid-template-rows: 0fr 1fr 0fr;
   grid-template-areas:
     '. .    .'
     '. cont .'
@@ -19,14 +19,15 @@
   height: 100%;
   background-color: #aab;
   border-radius: 40px;
-  grid-template-columns: 10px 1fr 400px 1fr 10px;
-  grid-template-rows: 10px 1fr 10px;
+  grid-template-columns: 0 1fr 3fr 1fr 0;
+  grid-template-rows: 0 1fr 0;
   grid-template-areas:
     '. .     .       .      . '
     '. cross display button .'
     '. .     .       .      . ';
   box-shadow: 0 0 0 0 #000, 0 0 50px #0006;
   border: 6px solid #4468;
+  gap: 10px;
 }
 
 .display {
@@ -42,15 +43,16 @@
 }
 
 .button-container {
-  width: 15vw;
-  height: 15vw;
+  width: 100%;
+  aspect-ratio: 1;
   background-color: #42567a;
-  border-radius: 50%;
+  border-radius: 25%;
   display: grid;
-  grid-template-rows: 2fr 4fr 3fr 3fr 4fr 2fr;
-  grid-template-columns: 2fr 4fr 3fr 3fr 4fr 2fr;
+  grid-template-rows: 1fr 5fr 3fr 3fr 5fr 1fr;
+  grid-template-columns: 1fr 5fr 3fr 3fr 5fr 1fr;
   border: 3px solid #42567a;
   box-shadow: 0 0 0 1px #03030380, 0 0 5px #0006;
+  gap: 4px;
 }
 
 .button {
@@ -72,7 +74,6 @@
   border-color: #334;
   user-select: none;
 }
-
 
 .flag-button {
   display: flex;

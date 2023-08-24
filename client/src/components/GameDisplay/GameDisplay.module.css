@@ -23,12 +23,12 @@
   height: 100%;
   border-width: 5px;
   background-color: #4a2;
-  border-left: solid #fb3;
-  border-right: solid #fa2;
-  border-bottom: solid #e91;
-  border-top: solid #290 7px;
+  border-left: solid #fb3 !important;
+  border-right: solid #fa2 !important;
+  border-bottom: solid #e91 !important;
+  border-top: solid #290 7px !important;
   position: relative;
-}
+} /*TODO 要変更*/
 
 .number {
   display: flex;
@@ -47,4 +47,13 @@
   width: 100%;
   height: 100%;
   border: solid #f00d;
+}
+
+.selector {
+  position: absolute;
+  width: calc(100% + 6px);
+  height: calc(100% + 12px);
+  top: -7px;
+  left: -3px;
+  background-color: #f004;
 }

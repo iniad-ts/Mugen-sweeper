@@ -18,7 +18,6 @@ export const cellUseCase = {
     const newUserInputs = deepCopy<(0 | 1 | 2)[][]>(userInputs);
     res?.forEach((cell) => {
       newUserInputs[cell.y][cell.x] = 1;
-      console.log(cell.x, cell.y);
     });
     return newUserInputs;
   },
