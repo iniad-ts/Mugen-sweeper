@@ -10,6 +10,7 @@ import { apiClient } from 'src/utils/apiClient';
 import { deepCopy } from 'src/utils/deepCopy';
 import { formatOpenCells } from 'src/utils/formatOpenCells';
 import { handleMove } from 'src/utils/handleMove';
+import { logoutWithLocalStorage } from 'src/utils/loginWithLocalStorage';
 import { minesweeperUtils } from 'src/utils/minesweeperUtils';
 import { ArrowButton } from './Button/index.page';
 import styles from './index.module.css';
@@ -81,11 +82,8 @@ const Controller = () => {
       const [x, y] = [player.x, player.y];
       if (bombMap[y][x] === 1) {
         await apiClient.player.bomb.post({ body: player });
-        return (
-          <div className={styles.container}>
-            <div>you dead</div>
-          </div>
-        );
+        logoutWithLocalStorage();
+        router.push('/controller');
       }
       if (board[y][x] !== -1) return;
       const newBoard = deepCopy<BoardModel>(board);
@@ -107,7 +105,7 @@ const Controller = () => {
     const flag = () => {
       const [x, y] = [player.x, player.y];
       const newBoard = deepCopy<BoardModel>(board);
-      newBoard[y][x] = newBoard[y][x] === -1 ? 10 : -1;
+      newBoard[y][x] = newBoard[y][x] === -1 ? 10 : newBoard[y][x] === 10 ? -1 : newBoard[y][x];
       setBoard(newBoard);
     };
 

@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import type { ActionModel } from 'src/types/types';
 import styles from './index.module.css';
 
@@ -21,13 +20,8 @@ export const ArrowButton = ({
   action: ActionModel;
   text: string;
   onClick: () => void;
-}) => {
-  return useMemo(
-    () => (
-      <button className={`${styles.button} ${arrowStyles[action]}`} onClick={onClick}>
-        {text}
-      </button>
-    ),
-    [onClick, text, action]
-  );
-};
+}) => (
+  <button className={`${styles.button} ${arrowStyles[action]}`} onClick={onClick}>
+    {text}
+  </button>
+);
