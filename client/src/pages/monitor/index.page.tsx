@@ -1,24 +1,55 @@
-import type { PlayerModel } from 'commonTypesWithClient/models';
-import { useEffect, useState } from 'react';
+import type { CellModel, PlayerModel } from 'commonTypesWithClient/models';
+import { useCallback, useEffect, useState } from 'react';
 import { Loading } from 'src/components/Loading/Loading';
 import type { BoardModel } from 'src/types/types';
 import { apiClient } from 'src/utils/apiClient';
+import { hslToHex } from 'src/utils/hueToRGB';
 import { minesweeperUtils } from 'src/utils/minesweeperUtils';
 import styles from './index.module.css';
 
+type ColorList = Record<string, string>;
+
+const colorList = (players: PlayerModel[]) => {
+  const length = players.length;
+  const list = players.map(
+    (player, i): ColorList => ({
+      [player.id]: hslToHex((360 / length) * i, 0.5, 0.5),
+    })
+  );
+  return list;
+};
+
+const returnValue = (array: ColorList[], key: string) => {
+  const foundItem = array.find((item) => key in item);
+  return foundItem ? foundItem[key] : '#000';
+};
+
+const viewWhoDigged = (cells: CellModel[], board: BoardModel, players: PlayerModel[]) => {
+  console.log(colorList(players));
+  const newBoard = board.map((row) => row.map(() => '#000'));
+  cells.forEach(
+    (cell) => (newBoard[cell.y][cell.x] = returnValue(colorList(players), cell.whoOpened))
+  );
+  return newBoard;
+};
+
 const PlayerInfo = ({
   thisPlayer,
-
   isView,
+  players,
 }: {
   thisPlayer: PlayerModel | undefined;
-
   isView: boolean;
+  players: PlayerModel[];
 }) =>
   thisPlayer !== undefined && (
     <div
       className={styles.player}
-      style={{ backgroundColor: thisPlayer.isLive ? '0ff8' : '#f008' }}
+      style={{
+        borderColor: thisPlayer.isLive ? '#0ff8' : '#f008',
+        /* stylelint-disable-next-line */
+        backgroundColor: returnValue(colorList(players), thisPlayer.id),
+      }}
     >
       {isView ? (
         <div className={styles.nameInfo}>
@@ -34,23 +65,26 @@ const PlayerInfo = ({
       )}
     </div>
   );
+
 const InfoCell = ({
   thisPlayer,
   onClick,
   val,
   isView,
+  players,
 }: {
   thisPlayer: PlayerModel | undefined;
   onClick: (value: PlayerModel | undefined) => void;
-  val: number;
+  val: number | string;
   isView: boolean;
+  players: PlayerModel[];
 }) => (
   <div
     className={styles.cell}
-    style={{ backgroundColor: val === -1 ? '#000' : '#fff' }}
+    style={{ backgroundColor: typeof val === 'string' ? `${val}88` : val === -1 ? '#000' : '#fff' }}
     onClick={() => onClick(thisPlayer)}
   >
-    <PlayerInfo thisPlayer={thisPlayer} isView={isView} />
+    <PlayerInfo thisPlayer={thisPlayer} isView={isView} players={players} />
   </div>
 );
 
@@ -59,22 +93,31 @@ const Monitor = () => {
   const [focusedPlayer, setFocusedPlayer] = useState<PlayerModel>();
   const [board, setBoard] = useState<BoardModel>();
   const [isViewName, setIsViewName] = useState(false);
+  const [isViewWhoDigged, setIsViewWhoDigged] = useState(false);
+  const [isViewWhoDiggedBoard, setIsViewWhoDiggedBoard] = useState<string[][]>();
 
-  const fetchMonitor = async () => {
+  const fetchMonitor = useCallback(async () => {
     const resPlayers = await apiClient.player.$get();
     const resGame = await apiClient.game.$get();
     if (resGame === null) return;
     const newBoard = minesweeperUtils.makeBoard(resGame.bombMap, resGame.userInputs);
+    const newFocusedPlayer = resPlayers.find((player) => player.id === focusedPlayer?.id);
     setBoard(newBoard);
     setPlayers(resPlayers);
-  };
+    setFocusedPlayer(newFocusedPlayer);
+    if (isViewWhoDigged) {
+      const resCells: CellModel[] = await apiClient.cell.$get();
+      const newIsViewWhoDigged = viewWhoDigged(resCells, newBoard, resPlayers);
+      setIsViewWhoDiggedBoard(newIsViewWhoDigged);
+    }
+  }, [focusedPlayer, isViewWhoDigged]);
 
   useEffect(() => {
     const cancelId = setInterval(() => {
       fetchMonitor();
     }, 2000);
     return () => clearInterval(cancelId);
-  }, []);
+  }, [fetchMonitor]);
 
   const handleDelete = async () => {
     if (focusedPlayer === undefined) return;
@@ -82,7 +125,6 @@ const Monitor = () => {
       await apiClient.player.delete({ body: focusedPlayer });
     }
   };
-
   if (board === undefined) return <Loading visible />;
   return (
     <div className={styles.container}>
@@ -103,6 +145,16 @@ const Monitor = () => {
         >
           view names
         </button>
+        <button
+          className={styles.button}
+          style={{ backgroundColor: '#44c' }}
+          onClick={() => {
+            console.table(isViewWhoDiggedBoard);
+            setIsViewWhoDigged(!isViewWhoDigged);
+          }}
+        >
+          view cells
+        </button>
       </div>
       <div
         className={styles.main}
@@ -111,7 +163,7 @@ const Monitor = () => {
           gridTemplateRows: `repeat(${board.length},1fr)`,
         }}
       >
-        {board?.map((row, y) =>
+        {(isViewWhoDigged ? isViewWhoDiggedBoard : board)?.map((row, y) =>
           row.map((val, x) => {
             const thisPlayer = players.find((player) => player.x === x && player.y === y);
             return (
@@ -120,6 +172,7 @@ const Monitor = () => {
                 onClick={setFocusedPlayer}
                 val={val}
                 isView={isViewName}
+                players={players}
                 key={`${y}-${x}`}
               />
             );
