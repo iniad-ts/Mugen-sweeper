@@ -18,3 +18,43 @@
   border-color: #334;
   user-select: none;
 }
+
+.top-row {
+  grid-row: 1/3;
+}
+
+.middle-row {
+  grid-row: 3/5;
+}
+
+.bottom-row {
+  grid-row: 5/7;
+}
+
+.left-column {
+  grid-column: 1/3;
+}
+
+.middle-column {
+  grid-column: 3/5;
+}
+
+.right-column {
+  grid-column: 5/7;
+}
+
+.dl {
+  border-radius: 30% 30% 30% 100%;
+}
+
+.dr {
+  border-radius: 30% 30% 100% 30%;
+}
+
+.ur {
+  border-radius: 30% 100% 30% 30%;
+}
+
+.ul {
+  border-radius: 100% 30% 30% 30%;
+}
