@@ -1,6 +1,6 @@
-import { cellsRepository } from '$/repository/cellsRepository';
+import { cellUseCase } from '$/useCase/cellUseCase';
 import { defineController } from './$relay';
 
 export default defineController(() => ({
-  get: async () => ({ status: 200, body: await cellsRepository.findAll() }),
+  get: async () => ({ status: 200, body: await cellUseCase.get() }),
 }));

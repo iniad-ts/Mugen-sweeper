@@ -9,7 +9,7 @@ import { cellUseCase } from './cellUseCase';
 
 export const gameUseCase = {
   create: async (width: number, height: number, bombRatioPercent: number) => {
-    const newUserInputs: (0 | 1 | 2)[][] = make2DArray(width, height);
+    const newUserInputs: (0 | 1)[][] = make2DArray(width, height);
     const newBombMap: (0 | 1)[][] = make2DArray(width, height);
     [...Array(Math.floor((width * height * bombRatioPercent) / 100))].forEach(() => {
       const setBomb = () => {
@@ -35,6 +35,7 @@ export const gameUseCase = {
     }
     return oldGame;
   },
+
   save: async () => {
     const res = await cellsRepository.findAllUserInputted();
     const game = await gameRepository.find();
@@ -42,6 +43,7 @@ export const gameUseCase = {
     res.forEach((cell) => (game.userInputs[cell.y][cell.x] = 1));
     return await gameRepository.save({ ...game, userInputs: game.userInputs });
   },
+
   getBoard: async () => {
     const res = await gameRepository.find();
     if (res === null) return null;
@@ -49,13 +51,21 @@ export const gameUseCase = {
     const newRes = { ...res, userInputs };
     return newRes;
   },
-  getRanking: async (row: number) => {
-    const res = await playersRepository.findAll();
-    const deletes = res.slice(row, res.length);
-    deletes.forEach((player) => playersRepository.delete(player.id));
 
-    return res.slice(0, row);
+  getRanking: async () => {
+    const RANKING_ROW = 10;
+    const res = await playersRepository.findAllOrderByScoreDesc();
+    const deletes = res.slice(RANKING_ROW, res.length);
+    deletes
+      .filter((player) => player.isAlive === false)
+      .forEach((player) => playersRepository.delete(player.id));
+    return res.slice(0, RANKING_ROW);
   },
+
+  delete: async () => {
+    await gameRepository.deleteAll();
+  },
+
   deleteAll: async () => {
     await playersRepository.deleteAll();
     await cellsRepository.deleteAll();

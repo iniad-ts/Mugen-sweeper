@@ -43,8 +43,12 @@ export const playerUseCase = {
     return res;
   },
   get: async () => {
-    const res = await playersRepository.findAll();
+    const res = await playersRepository.findAllOrderByScoreDesc();
     return res;
   },
   getStatus: async (playerId: Maybe<UserId>) => await playersRepository.find(playerId),
+
+  delete: async (userId: UserId) => {
+    await playersRepository.delete(userId);
+  },
 };

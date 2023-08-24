@@ -16,7 +16,7 @@ export type TaskModel = {
 export type GameModel = {
   id: GameId;
   bombMap: (1 | 0)[][];
-  userInputs: (2 | 1 | 0)[][];
+  userInputs: (0 | 1)[][];
 };
 
 export type CellModel = {
