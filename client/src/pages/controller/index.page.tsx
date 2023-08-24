@@ -34,11 +34,14 @@ const Controller = () => {
     const [player, setPlayer] = useState<PlayerModel>();
 
     const fetchGame = useCallback(async () => {
-      if (player === undefined || openCells === undefined) return;
-      if (openCells.size !== 0) {
+      if (player === undefined) return;
+      if (openCells?.size > 0) {
         const postCells = formatOpenCells(openCells, player.id);
-        await apiClient.game.$post({ body: postCells });
+        const resPlayer = await apiClient.game.$post({ body: postCells });
         setOpenCells(new Set());
+        if (resPlayer === null) return;
+        const newPlayer: PlayerModel = { ...player, score: resPlayer.score };
+        setPlayer(newPlayer);
       }
       const res = await apiClient.game.$get();
       if (res === null) return;
@@ -74,8 +77,16 @@ const Controller = () => {
       return <Loading visible />;
     }
 
-    const dig = () => {
+    const dig = async () => {
       const [x, y] = [player.x, player.y];
+      if (bombMap[y][x] === 1) {
+        await apiClient.player.bomb.post({ body: player });
+        return (
+          <div className={styles.container}>
+            <div>you dead</div>
+          </div>
+        );
+      }
       if (board[y][x] !== -1) return;
       const newBoard = deepCopy<BoardModel>(board);
       const newOpenCells = new Set(openCells);
