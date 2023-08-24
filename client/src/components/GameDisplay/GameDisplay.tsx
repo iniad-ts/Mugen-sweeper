@@ -17,19 +17,52 @@ const viewSelectorList = [-1, 9, 10];
 
 type PlayerPos = [number, number];
 
-const GameDisplay = ({ player, board }: { player: PlayerModel; board: BoardModel }) => {
-  const [playerPos, setPlayerPos] = useState<PlayerPos>();
-  const [displayPos, setDisplayPos] = useState<PlayerPos>();
+const TimeModule = ({ loadedTime }: { loadedTime: number | undefined }) => {
+  const [nowTime, setNowTime] = useState<number>();
   useEffect(() => {
-    setPlayerPos([player.x, player.y]);
+    const cancelId = setInterval(() => {
+      setNowTime(Date.now());
+    }, 500);
+    return () => clearInterval(cancelId);
+  });
+  return useMemo(
+    () =>
+      nowTime !== undefined &&
+      loadedTime !== undefined && (
+        <div className={styles.infoColumn}>{(500 + nowTime - loadedTime) / 1000}秒前</div>
+      ),
+    [loadedTime, nowTime]
+  );
+};
+
+const GameDisplay = ({ player, board }: { player: PlayerModel; board: BoardModel }) => {
+  const [selectedPos, setSelectedPos] = useState<PlayerPos>();
+  const [displayPlayerPos, setDisplayPlayerPos] = useState<PlayerPos>();
+  const [loadedTime, setLoadedTime] = useState<number>();
+  useEffect(() => {
+    setSelectedPos([player.x, player.y]);
     if (board[player.y] === undefined || viewSelectorList.includes(board[player.y][player.x])) {
       return;
     }
-    setDisplayPos([player.x, player.y]);
+    setDisplayPlayerPos([player.x, player.y]);
+    setLoadedTime(Date.now());
   }, [player.x, player.y, board]);
   return useMemo(
     () => (
       <div className={styles.container}>
+        <div className={styles.info}>
+          <div className={styles.infoColumn}>your name</div>
+          <div className={styles.infoColumn}>your score</div>
+          <div className={styles.infoColumn}>Last update</div>
+          <div className={styles.infoColumn}>your position</div>
+          <div className={styles.infoColumn}>{player.name}</div>
+          <div className={styles.infoColumn}>{player.score}</div>
+          <TimeModule loadedTime={loadedTime} />
+          <div className={styles.infoColumn}>
+            {selectedPos && `[ ${selectedPos[0]} , ${selectedPos[1]} ]`}
+          </div>
+        </div>
+
         <div
           className={styles.display}
           style={{ gridTemplate: `repeat(${board.length}, 1fr) / repeat(${board[0].length}, 1fr)` }}
@@ -41,25 +74,26 @@ const GameDisplay = ({ player, board }: { player: PlayerModel; board: BoardModel
                 key={`${y}-${x}`}
                 style={{
                   backgroundPositionX: `${7.65 * (val - 1)}%`,
-                  /* stylelint-disable-next-line  */
                   backgroundColor: cellBackgroundColor(val),
                 }}
               >
-                {displayPos !== undefined &&
-                  [displayPos[0] === x, displayPos[1] === y].every(Boolean) && (
+                {displayPlayerPos !== undefined &&
+                  [displayPlayerPos[0] === x, displayPlayerPos[1] === y].every(Boolean) && (
                     <div className={styles.player} />
                   )}
-                {playerPos !== undefined &&
-                  [playerPos[0] === x, playerPos[1] === y, viewSelectorList.includes(val)].every(
-                    Boolean
-                  ) && <div className={styles.selector} />}
+                {selectedPos !== undefined &&
+                  [
+                    selectedPos[0] === x,
+                    selectedPos[1] === y,
+                    viewSelectorList.includes(val),
+                  ].every(Boolean) && <div className={styles.selector} />}
               </div>
             ))
           )}
         </div>
       </div>
     ),
-    [board, displayPos, playerPos]
+    [board, displayPlayerPos, selectedPos, player.name, player.score, loadedTime]
   );
 };
 

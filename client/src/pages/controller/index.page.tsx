@@ -41,16 +41,9 @@ const Controller = () => {
         setOpenCells(new Set());
       }
       const res = await apiClient.game.$get();
-      // const res2 = await apiClient.player.config.$post({ body: { playerId: playerIdStr } });
-
-      if (
-        res === null
-        //  || res2 === null
-      )
-        return;
+      if (res === null) return;
       const newBoard = minesweeperUtils.makeBoard(res.bombMap, res.userInputs, board);
       setBoard(newBoard);
-      // setPlayer(res2);
     }, [openCells, player, board]);
 
     // 初回レンダリング時のみ;
