@@ -11,7 +11,7 @@ const toPlayerModel = (prismaPlayer: Player) => ({
   x: z.number().min(0).parse(prismaPlayer.x),
   y: z.number().min(0).parse(prismaPlayer.y),
   score: z.number().min(0).parse(prismaPlayer.score),
-  isLive: z.boolean().parse(prismaPlayer.isLive),
+  isAlive: z.boolean().parse(prismaPlayer.isAlive),
 });
 export const playersRepository = {
   save: async (player: PlayerModel): Promise<PlayerModel> => {
@@ -22,7 +22,7 @@ export const playersRepository = {
         x: player.x,
         y: player.y,
         score: player.score,
-        isLive: player.isLive,
+        isAlive: player.isAlive,
       },
       create: {
         id: player.id,
@@ -30,7 +30,7 @@ export const playersRepository = {
         x: player.x,
         y: player.y,
         score: player.score,
-        isLive: player.isLive,
+        isAlive: player.isAlive,
       },
     });
     return toPlayerModel(prismaPlayer);

@@ -46,7 +46,7 @@ const PlayerInfo = ({
     <div
       className={styles.player}
       style={{
-        borderColor: thisPlayer.isLive ? '#0ff8' : '#f008',
+        borderColor: thisPlayer.isAlive ? '#0ff8' : '#f008',
         /* stylelint-disable-next-line */
         backgroundColor: returnValue(colorList(players), thisPlayer.id),
       }}
@@ -60,7 +60,7 @@ const PlayerInfo = ({
           <p>id:{thisPlayer.id}</p>
           <p>name:{thisPlayer.name}</p>
           <p>score:{thisPlayer.score}</p>
-          <p>{thisPlayer.isLive ? 'alive' : 'dead'}</p>
+          <p>{thisPlayer.isAlive ? 'alive' : 'dead'}</p>
         </div>
       )}
     </div>
@@ -133,7 +133,7 @@ const Monitor = () => {
         <div className={styles['focus-info-row']}>{focusedPlayer?.name}</div>
         <div className={styles['focus-info-row']}>{focusedPlayer?.score}</div>
         <div className={styles['focus-info-row']}>
-          {focusedPlayer?.isLive === true ? 'alive' : focusedPlayer?.isLive === false && 'dead'}
+          {focusedPlayer?.isAlive === true ? 'alive' : focusedPlayer?.isAlive === false && 'dead'}
         </div>
         <button className={styles.button} onClick={handleDelete}>
           delete
