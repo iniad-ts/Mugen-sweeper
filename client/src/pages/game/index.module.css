@@ -34,9 +34,9 @@
   background-color: #0000;
 }
 
-.number-main {
+.numberMain {
   display: grid;
-  grid-template-areas:
+  grid-template:
     't t t t t t t'
     'l n n n n n r'
     'l n n n n n r'
