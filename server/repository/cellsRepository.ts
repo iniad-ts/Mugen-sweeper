@@ -27,9 +27,7 @@ export const cellsRepository = {
     }
   },
   findAll: async (): Promise<CellModel[]> => {
-    const prismaCells = await prismaClient.cell.findMany({
-      orderBy: { x: 'asc', y: 'asc' },
-    });
+    const prismaCells = await prismaClient.cell.findMany();
     return prismaCells.map(toCellModel);
   },
   findWithPlayer: async (userId: UserId) => {
