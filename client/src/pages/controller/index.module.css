@@ -1,102 +1,53 @@
-.container {
-  display: grid;
-  grid-template:
-    '. .    .'
-    '. cont .'
-    '. .    . ';
-  grid-template-rows: 0fr 1fr 0fr;
-  grid-template-columns: 0 1fr 0;
-  align-items: center;
-  width: 100vw;
-  height: 100vh;
-  font-family: Jost, 'Zen Kaku Gothic New', sans-serif;
-}
-
 .controller {
   display: grid;
-  grid-area: cont;
-  grid-template:
-    '. .     .       .      . '
-    '. cross display button .'
-    '. .     .       .      . ';
-  grid-template-rows: 0 1fr 0;
-  grid-template-columns: 0 1fr 3fr 1fr 0;
-  gap: 10px;
-  width: 100%;
-  height: 100%;
+  grid-template: repeat(3, 1fr) / repeat(5, 1fr);
+  gap: 24px;
+  width: 100vw;
+  height: 100svh;
+  padding: 24px;
   background-color: #aab;
   border: 6px solid #4468;
-  border-radius: 40px;
-  box-shadow: 0 0 0 0 #000, 0 0 50px #0006;
+  border-radius: 48px;
 }
 
-.display {
-  display: flex;
-  grid-area: display;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  color: #fff;
-  background-color: #000;
-  border-radius: 10px;
-}
-
-.buttonContainer {
+.moveButton {
   display: grid;
-  grid-template-rows: 1fr 5fr 3fr 3fr 5fr 1fr;
-  grid-template-columns: 1fr 5fr 3fr 3fr 5fr 1fr;
-  gap: 4px;
-  width: 100%;
+  grid-area: 2 / 1;
+  grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+  gap: 8px;
+  align-self: center;
   aspect-ratio: 1;
-  background-color: #42567a;
-  border: 3px solid #42567a;
-  border-radius: 25%;
-  box-shadow: 0 0 0 1px #03030380, 0 0 5px #0006;
+}
+
+.actionButton {
+  display: grid;
+  grid-area: 2 / 5;
+  grid-template: repeat(2, 1fr) / repeat(2, 1fr);
+  align-self: center;
+  aspect-ratio: 1;
 }
 
 .button {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  height: 100%;
-  user-select: none;
+  aspect-ratio: 1;
+  font-size: 3vmin;
+  cursor: pointer;
   background-color: #787888;
   border: 3px solid #223;
-  box-shadow: 0 0 0 1px #03030380, 0 0 5px #0006;
+  border-radius: 4vmin;
+  transition: transform 0.1s ease-out;
 }
 
 .button:active {
-  cursor: pointer;
-  user-select: none;
-  background-color: #3348;
-  border-color: #334;
   transform: scale(0.85);
 }
 
 .flagButton {
-  display: flex;
-  grid-row: 2/4;
-  grid-column: 4/6;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  aspect-ratio: 1;
-  font-size: 4vmin;
-  border-radius: 40%;
+  grid-area: 1 / 1;
 }
 
 .openButton {
-  display: flex;
-  grid-row: 4/6;
-  grid-column: 2/4;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  aspect-ratio: 1;
-  font-size: 4vmin;
-  border-radius: 40%;
+  grid-area: 2 / 2;
 }
