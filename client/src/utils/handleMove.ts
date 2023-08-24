@@ -31,6 +31,7 @@ export const handleMove = async (action: ActionModel, board: BoardModel, player:
     ul: move(-1, -1),
     dr: move(1, 1),
     dl: move(-1, 1),
+    middle: move(0, 0),
   };
   return moves[action];
 };

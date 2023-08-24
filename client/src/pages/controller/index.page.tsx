@@ -13,9 +13,9 @@ import { handleMove } from 'src/utils/handleMove';
 import { minesweeperUtils } from 'src/utils/minesweeperUtils';
 import styles from './index.module.css';
 
-const arrowTexts = ['▲', '▼', '◀', '▶'];
+const arrowTexts = ['', '▲', '', '◀', '', '▶', '', '▼', ''];
 
-const actions: ActionModel[] = ['up', 'down', 'left', 'right', 'ur', 'ul', 'dr', 'dl'];
+const actions: ActionModel[] = ['ul', 'up', 'ur', 'left', 'middle', 'right', 'dl', 'down', 'dr'];
 
 const Controller = () => {
   const router = useRouter();
