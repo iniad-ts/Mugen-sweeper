@@ -62,6 +62,7 @@ const Home = () => {
   const [width, setWidth] = useState(10);
   const [height, setHeight] = useState(10);
   const [bombRatioPercent, setBombRatioPercent] = useState(10);
+  const deleteAll = async () => await apiClient.game.$delete();
   return (
     <div className={styles.container}>
       <div className={styles.main}>
@@ -98,11 +99,7 @@ const Home = () => {
           }
           text={`display/${width}*${height} bomb/${bombRatioPercent}%`}
         />
-        <Button
-          className={styles.delete}
-          onClick={async () => await apiClient.game.delete()}
-          text="delete"
-        />
+        <Button className={styles.delete} onClick={deleteAll} text="delete" />
       </div>
     </div>
   );
