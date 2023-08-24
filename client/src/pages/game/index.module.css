@@ -1,25 +1,25 @@
 .container {
   display: grid;
+  grid-template-columns: 27fr 5fr; /* 動画が3：2になる */
   width: 100vw;
   height: 100vh;
-  aspect-ratio: 16 / 9; /*一旦*/
-  grid-template-columns: 27fr 5fr; /*動画が3：2になる*/
+  aspect-ratio: 16 / 9; /* 一旦 */
 }
 
 .main {
+  position: relative;
   width: 100%;
   height: 100%;
-  position: relative;
 }
 
 .game {
-  display: grid;
-  flex-direction: column;
   position: absolute;
-  width: 100%;
-  height: 100%;
   top: 0;
   left: 0;
+  display: grid;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
 }
 
 .stone {
@@ -34,11 +34,9 @@
   background-color: #0000;
 }
 
-.number-main {
+.numberMain {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  grid-template-rows: repeat(7, 1fr);
-  grid-template-areas:
+  grid-template:
     't t t t t t t'
     'l n n n n n r'
     'l n n n n n r'
@@ -46,6 +44,8 @@
     'l n n n n n r'
     'l n n n n n r'
     'u u u u u u u';
+  grid-template-rows: repeat(7, 1fr);
+  grid-template-columns: repeat(7, 1fr);
 }
 
 .border {
@@ -64,45 +64,49 @@
   flex-direction: row;
   grid-template-rows: 3fr 2fr 2fr repeat(7, 1fr);
   gap: 1vmin;
+
   /* padding: 1vmin;
   border-left: solid 1px; */
 }
 
 .prof {
   display: grid;
+  grid-template: 'rank name' 'rank score ';
+  grid-template-rows: 50% 50%;
+  grid-template-columns: 10% 90%;
   width: 100%;
   height: 100%;
   border-radius: 10px;
-  grid-template-columns: 10% 90%;
-  grid-template-rows: 50% 50%;
-  grid-template: 'rank name' 'rank score ';
+
   /* border-right: solid 1vmin; */
 }
 
 .rank {
   display: flex;
-  justify-content: center;
-  align-items: center;
   grid-area: rank;
+  align-items: center;
+  justify-content: center;
 }
 
 .name {
   display: flex;
-  justify-content: center;
-  align-items: center;
   grid-area: name;
+  align-items: center;
+  justify-content: center;
+
+  /* font-family: 'Ozwald Regular'; */
   border-bottom: solid 1px;
-  font-family: 'Ozwald Regular';
 }
 
 .score {
   display: flex;
-  justify-content: center;
-  align-items: center;
   grid-area: score;
-  font-size: 10e;
+  align-items: center;
+  justify-content: center;
+
+  /* font-family: 'Ozwald Regular'; */
+  font-size: 10em;
   text-shadow: 0.5px 0.5px 1px #000;
-  font-family: 'Ozwald Regular';
 }
 
 .rankImage {

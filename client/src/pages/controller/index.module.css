@@ -1,102 +1,102 @@
 .container {
   display: grid;
-  height: 100vh;
-  width: 100vw;
-  grid-template-columns: 0px 1fr 0px;
-  grid-template-rows: 0fr 1fr 0fr;
-  grid-template-areas:
+  grid-template:
     '. .    .'
     '. cont .'
     '. .    . ';
+  grid-template-rows: 0fr 1fr 0fr;
+  grid-template-columns: 0 1fr 0;
   align-items: center;
-  font-family: 'Jost', 'Zen Kaku Gothic New', sans-serif;
+  width: 100vw;
+  height: 100vh;
+  font-family: Jost, 'Zen Kaku Gothic New', sans-serif;
 }
 
 .controller {
   display: grid;
   grid-area: cont;
-  width: 100%;
-  height: 100%;
-  background-color: #aab;
-  border-radius: 40px;
-  grid-template-columns: 0 1fr 3fr 1fr 0;
-  grid-template-rows: 0 1fr 0;
-  grid-template-areas:
+  grid-template:
     '. .     .       .      . '
     '. cross display button .'
     '. .     .       .      . ';
-  box-shadow: 0 0 0 0 #000, 0 0 50px #0006;
-  border: 6px solid #4468;
+  grid-template-rows: 0 1fr 0;
+  grid-template-columns: 0 1fr 3fr 1fr 0;
   gap: 10px;
+  width: 100%;
+  height: 100%;
+  background-color: #aab;
+  border: 6px solid #4468;
+  border-radius: 40px;
+  box-shadow: 0 0 0 0 #000, 0 0 50px #0006;
 }
 
 .display {
   display: flex;
-  width: 100%;
-  height: 100%;
+  grid-area: display;
   align-items: center;
   justify-content: center;
-  grid-area: display;
-  background-color: #000;
+  width: 100%;
+  height: 100%;
   color: #fff;
+  background-color: #000;
   border-radius: 10px;
 }
 
-.button-container {
-  width: 100%;
-  aspect-ratio: 1;
-  background-color: #42567a;
-  border-radius: 25%;
+.buttonContainer {
   display: grid;
   grid-template-rows: 1fr 5fr 3fr 3fr 5fr 1fr;
   grid-template-columns: 1fr 5fr 3fr 3fr 5fr 1fr;
-  border: 3px solid #42567a;
-  box-shadow: 0 0 0 1px #03030380, 0 0 5px #0006;
   gap: 4px;
+  width: 100%;
+  aspect-ratio: 1;
+  background-color: #42567a;
+  border: 3px solid #42567a;
+  border-radius: 25%;
+  box-shadow: 0 0 0 1px #03030380, 0 0 5px #0006;
 }
 
 .button {
   display: flex;
-  width: 100%;
-  height: 100%;
   align-items: center;
   justify-content: center;
+  width: 100%;
+  height: 100%;
+  user-select: none;
   background-color: #787888;
   border: 3px solid #223;
   box-shadow: 0 0 0 1px #03030380, 0 0 5px #0006;
-  user-select: none;
 }
 
 .button:active {
   cursor: pointer;
-  background-color: #3348;
-  transform: scale(0.85);
-  border-color: #334;
   user-select: none;
+  background-color: #3348;
+  border-color: #334;
+  transform: scale(0.85);
 }
 
-.flag-button {
+.flagButton {
   display: flex;
-  grid-column: 4/6;
   grid-row: 2/4;
-  aspect-ratio: 1;
-  width: 100%;
-  height: 100%;
+  grid-column: 4/6;
   align-items: center;
   justify-content: center;
-  border-radius: 40%;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 1;
   font-size: 4vmin;
+  border-radius: 40%;
 }
 
-.open-button {
+.openButton {
   display: flex;
-  grid-column: 2/4;
   grid-row: 4/6;
-  aspect-ratio: 1;
-  width: 100%;
-  height: 100%;
+  grid-column: 2/4;
   align-items: center;
   justify-content: center;
-  border-radius: 40%;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 1;
   font-size: 4vmin;
+  border-radius: 40%;
 }
