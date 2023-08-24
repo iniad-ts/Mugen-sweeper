@@ -100,7 +100,7 @@ const Monitor = () => {
     const resPlayers = await apiClient.player.$get();
     const resGame = await apiClient.game.$get();
     if (resGame === null) return;
-    const newBoard = minesweeperUtils.makeBoard(resGame.bombMap, resGame.userInputs);
+    const newBoard = minesweeperUtils.makeBoard(resGame.bombMap, resGame.userInputs, board);
     const newFocusedPlayer = resPlayers.find((player) => player.id === focusedPlayer?.id);
     setBoard(newBoard);
     setPlayers(resPlayers);
@@ -110,7 +110,7 @@ const Monitor = () => {
       const newIsViewWhoDigged = viewWhoDigged(resCells, newBoard, resPlayers);
       setIsViewWhoDiggedBoard(newIsViewWhoDigged);
     }
-  }, [focusedPlayer, isViewWhoDigged]);
+  }, [focusedPlayer, isViewWhoDigged, board]);
 
   useEffect(() => {
     const cancelId = setInterval(() => {
