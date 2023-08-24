@@ -37,6 +37,7 @@ jobs:
       - run: npm install --prefix server
         if: steps.server-npm-cache.outputs.cache-hit != 'true'
       - run: npm run generate
+      - run: npm run typecheck
       - run: npm run lint
       - run: npm run typecheck
       - run: |
