@@ -100,7 +100,7 @@ const Home = () => {
         />
         <Button
           className={styles.delete}
-          onClick={async () => await apiClient.delete.delete()}
+          onClick={async () => await apiClient.game.delete()}
           text="delete"
         />
       </div>

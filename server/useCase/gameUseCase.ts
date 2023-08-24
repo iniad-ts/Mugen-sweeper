@@ -56,6 +56,9 @@ export const gameUseCase = {
 
     return res.slice(0, row);
   },
+  delete: async () => {
+    await gameRepository.deleteAll();
+  },
   deleteAll: async () => {
     await playersRepository.deleteAll();
     await cellsRepository.deleteAll();
