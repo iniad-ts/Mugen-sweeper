@@ -1,11 +1,12 @@
 import type { CellModel } from '$/commonTypesWithClient/models';
 
-export const sliceWithTime = (time: number, cells: CellModel[]) => {
-  const lengthDivide = (cellArray: CellModel[], divideNum: number) =>
+export const sliceWithTime = (time: number, cells: (CellModel | null)[]) => {
+  const lengthDivide = (cellArray: (CellModel | null)[], divideNum: number) =>
     Math.floor(cellArray.length / divideNum);
-  const findWithTimeRecursion = (reCells: CellModel[]): CellModel => {
+  const findWithTimeRecursion = (reCells: (CellModel | null)[]): CellModel | null => {
     const compareCells = reCells[lengthDivide(reCells, 2)];
     if (reCells.length !== 1) {
+      if (compareCells === null) return null;
       if (compareCells.whenOpened < time) {
         const nextCells = reCells.slice(0, lengthDivide(reCells, 2) + 1);
         findWithTimeRecursion(nextCells);
