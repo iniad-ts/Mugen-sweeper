@@ -17,6 +17,7 @@ model Task {
 model Game {
   id         String @id //gameは一つだけどないといけない
   bombMap    Json //number[][]
+  userInputs Json //number[][]
 }
 
 model Cell {
@@ -31,10 +32,10 @@ model Cell {
 }
 
 model Player {
-  id     String  @id
-  name   String
-  x      Int
-  y      Int
-  score  Int
+  id      String  @id
+  name    String
+  x       Int
+  y       Int
+  score   Int
   isAlive Boolean
 }
