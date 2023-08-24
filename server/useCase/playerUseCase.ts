@@ -27,7 +27,7 @@ export const playerUseCase = {
       y,
       name: userName,
       score: 0,
-      isLive: true,
+      isAlive: true,
     };
     const res = await playersRepository.save(newPlayerModel);
 

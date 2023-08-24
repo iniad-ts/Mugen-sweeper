@@ -56,8 +56,8 @@ const ProfileBoard = ({ player, index }: { player: PlayerModel; index: number })
       <div
         className={styles.prof}
         style={{
-          backgroundColor: player.isLive ? '#8f8' : '#f88',
-          borderColor: player.isLive ? '#8f8' : '#f88',
+          backgroundColor: player.isAlive ? '#8f8' : '#f88',
+          borderColor: player.isAlive ? '#8f8' : '#f88',
         }}
       >
         <div className={styles.rank}>

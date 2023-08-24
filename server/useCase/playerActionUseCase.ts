@@ -16,7 +16,7 @@ export const playerActionUseCase = {
     const res = await cellsRepository.findWithPlayer(player.id);
     if (res === null) return null;
     res.forEach((cell) => cellsRepository.delete(cell.x, cell.y, cell.whoOpened));
-    const newPlayer = { ...player, isLive: false };
+    const newPlayer = { ...player, isAlive: false };
     return await playersRepository.save(newPlayer);
   },
   putFlag: async (userId: UserId, focusPos: Pos) => {
