@@ -115,7 +115,7 @@ const Controller = () => {
     return (
       <div className={styles.container}>
         <div className={styles.controller}>
-          <div className={styles['button-container']} style={{ gridArea: 'cross' }}>
+          <div className={styles['buttonContainer']} style={{ gridArea: 'cross' }}>
             {actions.map((action, i) => (
               <ArrowButton
                 text={arrowTexts[i]}
@@ -129,13 +129,13 @@ const Controller = () => {
             <GameDisplay player={player} board={board} />
           </div>
           <div
-            className={styles['button-container']}
+            className={styles['buttonContainer']}
             style={{ gridArea: 'button', margin: '0 0 0 auto' }}
           >
-            <button className={`${styles.button} ${styles['flag-button']}`} onClick={flag}>
+            <button className={`${styles.button} ${styles['flagButton']}`} onClick={flag}>
               🚩
             </button>
-            <button className={`${styles.button} ${styles['open-button']}`} onClick={dig}>
+            <button className={`${styles.button} ${styles['openButton']}`} onClick={dig}>
               ⛏️
             </button>
           </div>

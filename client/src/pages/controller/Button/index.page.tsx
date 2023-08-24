@@ -3,14 +3,14 @@ import type { ActionModel } from 'src/types/types';
 import styles from './index.module.css';
 
 const arrowStyles = {
-  up: `${styles['top-row']} ${styles['middle-column']}`,
-  left: `${styles['middle-row']} ${styles['left-column']}`,
-  right: `${styles['middle-row']} ${styles['right-column']}`,
-  down: `${styles['bottom-row']} ${styles['middle-column']}`,
-  ul: `${styles['top-row']} ${styles['left-column']} ${styles.ul}`,
-  ur: `${styles['right-column']} ${styles['top-row']} ${styles.ur}`,
-  dl: `${styles['bottom-row']} ${styles['left-column']} ${styles.dl}`,
-  dr: `${styles['bottom-row']} ${styles['right-column']} ${styles.dr}`,
+  up: `${styles['topRow']} ${styles['middleColumn']}`,
+  left: `${styles['middleRow']} ${styles['leftColumn']}`,
+  right: `${styles['middleRow']} ${styles['rightColumn']}`,
+  down: `${styles['bottomRow']} ${styles['middleColumn']}`,
+  ul: `${styles['topRow']} ${styles['leftColumn']} ${styles.ul}`,
+  ur: `${styles['rightColumn']} ${styles['topRow']} ${styles.ur}`,
+  dl: `${styles['bottomRow']} ${styles['leftColumn']} ${styles.dl}`,
+  dr: `${styles['bottomRow']} ${styles['rightColumn']} ${styles.dr}`,
 };
 
 export const ArrowButton = ({

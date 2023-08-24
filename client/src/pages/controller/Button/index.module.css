@@ -1,45 +1,45 @@
 .button {
   display: flex;
-  width: 100%;
-  height: 100%;
   align-items: center;
   justify-content: center;
+  width: 100%;
+  height: 100%;
+  user-select: none;
   background-color: #787888;
   border: 3px solid #223;
-  box-shadow: 0 0 0 1px #03030380, 0 0 5px #0006;
-  user-select: none;
   border-radius: 30%;
+  box-shadow: 0 0 0 1px #03030380, 0 0 5px #0006;
 }
 
 .button:active {
   cursor: pointer;
-  background-color: #3348;
-  transform: scale(0.85);
-  border-color: #334;
   user-select: none;
+  background-color: #3348;
+  border-color: #334;
+  transform: scale(0.85);
 }
 
-.top-row {
+.topRow {
   grid-row: 1/3;
 }
 
-.middle-row {
+.middleRow {
   grid-row: 3/5;
 }
 
-.bottom-row {
+.bottomRow {
   grid-row: 5/7;
 }
 
-.left-column {
+.leftColumn {
   grid-column: 1/3;
 }
 
-.middle-column {
+.middleColumn {
   grid-column: 3/5;
 }
 
-.right-column {
+.rightColumn {
   grid-column: 5/7;
 }
 
@@ -48,7 +48,7 @@
 }
 
 .dr {
-  border-radius: 30% 30% 100% 30%;
+  border-radius: 30% 30% 100%;
 }
 
 .ur {
@@ -56,5 +56,5 @@
 }
 
 .ul {
-  border-radius: 100% 30% 30% 30%;
+  border-radius: 100% 30% 30%;
 }
