@@ -9,4 +9,7 @@ export type Methods = {
 
     resBody: PlayerModel | null;
   };
+  delete: {
+    resBody: void;
+  };
 };

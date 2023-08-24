@@ -8,4 +8,5 @@ export default defineController(() => ({
     status: 201,
     body: await playerActionUseCase.dig(body),
   }),
+  delete: async () => ({ status: 200, body: await gameUseCase.deleteAll() }),
 }));
