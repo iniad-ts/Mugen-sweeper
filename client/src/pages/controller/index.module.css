@@ -58,6 +58,10 @@
   grid-area: 2 / 2;
 }
 
+.actionButton > .button {
+  border-radius: 24px;
+}
+
 .moveButton > .button:nth-child(1) {
   border-radius: 24px 12px 12px;
 }
@@ -72,8 +76,4 @@
 
 .moveButton > .button:nth-child(9) {
   border-radius: 12px 12px 24px;
-}
-
-.actionButton > .button {
-  border-radius: 24px;
 }
