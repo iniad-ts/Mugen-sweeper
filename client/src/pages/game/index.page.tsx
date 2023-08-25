@@ -86,7 +86,7 @@ const ProfileBoard = ({ player, index }: { player: PlayerModel; index: number })
 
 const Game = () => {
   const [bombMap, setBombMap] = useState<(0 | 1)[][]>(); //TODO bombMapの必要性をかんがえる
-  const [userInputs, setUserInputs] = useState<(0 | 1 | 2)[][]>();
+  const [userInputs, setUserInputs] = useState<(0 | 1)[][]>();
   const [ranking, setRanking] = useState<PlayerModel[]>();
 
   useEffect(() => {

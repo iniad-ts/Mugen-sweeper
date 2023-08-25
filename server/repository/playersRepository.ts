@@ -35,20 +35,23 @@ export const playersRepository = {
     });
     return toPlayerModel(prismaPlayer);
   },
-  findAll: async (): Promise<PlayerModel[]> => {
-    const prismaPlayers = await prismaClient.player.findMany({
-      orderBy: { score: 'desc' }, //ランキングで使う？
-    });
-    return prismaPlayers.map(toPlayerModel);
-  },
+
   find: async (id: Maybe<UserId>): Promise<PlayerModel | null> => {
     const prismaPlayer = await prismaClient.player.findUnique({ where: { id } });
     return prismaPlayer !== null ? toPlayerModel(prismaPlayer) : null;
   },
 
+  findAllOrderByScoreDesc: async (): Promise<PlayerModel[]> => {
+    const prismaPlayers = await prismaClient.player.findMany({
+      orderBy: { score: 'desc' }, //ランキングで使う？
+    });
+    return prismaPlayers.map(toPlayerModel);
+  },
+
   delete: async (id: UserId): Promise<void> => {
     await prismaClient.player.delete({ where: { id } });
   },
+
   deleteAll: async () => {
     await prismaClient.player.deleteMany();
   },
