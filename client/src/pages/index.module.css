@@ -1,11 +1,7 @@
 .container {
-  display: grid;
-  grid-template:
-    '. .    .'
-    '. main .'
-    '. .    .';
-  grid-template-rows: 1fr 250px 1fr;
-  grid-template-columns: 1fr 500px 1fr;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100vw;
   height: 100vh;
 }
@@ -14,23 +10,20 @@
   display: grid;
   grid-area: main;
   grid-template:
-    '. . .                .  . '
-    '. width  width  width   . '
-    '. height height height  . '
-    '. bomb   bomb   bomb    . '
-    '. .      create  delete . '
-    '. . .                .  . ';
-  grid-template-rows: 10px 1fr 1fr 1fr 1fr 10px;
-  grid-template-columns: 20px 2fr 3fr 2fr 20px;
+    ' width  width  width    '
+    ' height height height   '
+    ' bomb   bomb   bomb     '
+    ' .      create  delete  ';
+  grid-template-rows: repeat(4, 1fr);
+  grid-template-columns: 2fr 3fr 2fr;
   gap: 10px;
+  width: 500px;
+  height: 250px;
+  padding: 10px 20px;
   background-color: #aab;
   border: 6px solid #4468;
   border-radius: 10px;
   box-shadow: 0 0 0 0 #000, 0 0 50px #0006;
-}
-
-.main * {
-  border-radius: 10px;
 }
 
 .create {
@@ -53,12 +46,9 @@
 .button:hover {
   cursor: pointer;
   background-color: #3348;
-
-  /* box-shadow: 0 0 0 2px #03030380, 0 0 5px #0006; */
 }
 
 .button:active {
-  border-color: #334;
   transform: scale(0.95);
 }
 
@@ -100,6 +90,7 @@
   color: #fffa;
   user-select: none;
   background-color: #101010;
+  border-radius: 8px;
   box-shadow: 0 0 0 1px #03030380;
 }
 
