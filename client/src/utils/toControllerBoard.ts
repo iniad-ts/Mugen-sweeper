@@ -5,7 +5,7 @@ const VERTICAL_DISTANCE_FROM_CENTER = 4;
 
 const HORIZONTAL_DISTANCE_FROM_CENTER = 4;
 
-export const controllerBoard = (board: BoardModel, displayPos: Pos, selectPos: Pos) => {
+export const toControllerBoard = (board: BoardModel, displayPos: Pos, selectPos: Pos) => {
   const displayLeft = selectPos.x - VERTICAL_DISTANCE_FROM_CENTER;
   const displayTop = selectPos.y - HORIZONTAL_DISTANCE_FROM_CENTER;
   const displayRight = selectPos.x + VERTICAL_DISTANCE_FROM_CENTER;
@@ -16,12 +16,17 @@ export const controllerBoard = (board: BoardModel, displayPos: Pos, selectPos: P
     row.map((val, x) => ({
       val:
         val |
-        (displayPos.x === x ? CELL_FLAGS['user'] : selectPos.x === x ? CELL_FLAGS['select'] : 0),
+        ([displayPos.x === x, displayPos.y === y].every(Boolean)
+          ? CELL_FLAGS['user']
+          : [selectPos.x === x, selectPos.y === y].every(Boolean)
+          ? CELL_FLAGS['select']
+          : 0),
       x,
       y,
     }))
   );
-  return posBoard
-    .map((row) => row.slice(displayLeft + correctionX, displayRight + correctionX))
-    .slice(displayTop + correctionY, displayBottom + correctionY);
+  return posBoard;
+  // posBoard
+  //   .map((row) => row.slice(displayLeft + correctionX, displayRight + correctionX))
+  //   .slice(displayTop + correctionY, displayBottom + correctionY);
 };

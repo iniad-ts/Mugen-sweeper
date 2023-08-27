@@ -4,6 +4,7 @@ import Webcam from 'react-webcam';
 import { Loading } from 'src/components/Loading/Loading';
 import { staticPath } from 'src/utils/$path';
 import { apiClient } from 'src/utils/apiClient';
+import { CELL_FLAGS } from 'src/utils/boardFlag';
 import { minesweeperUtils } from 'src/utils/minesweeperUtils';
 import { numbers } from 'src/utils/nums';
 import styles from './index.module.css';
@@ -124,7 +125,7 @@ const Game = () => {
   const board = minesweeperUtils.makeBoard(
     bombMap,
     userInputs,
-    bombMap.map((row) => row.map(() => -1))
+    bombMap.map((row) => row.map(() => CELL_FLAGS['block']))
   );
 
   return (

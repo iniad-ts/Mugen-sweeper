@@ -43,4 +43,4 @@ export const CELL_STYLE_HANDLER = (
 
 export const IS_BLANK_CELL = (flag: number) => !(flag & 0b1111);
 
-export const CHANGE_FLAG = (value: number, flag: number, mask: number) => (value + flag) | ~mask;
+export const CHANGE_FLAG = (value: number, flag: number, mask: number) => (value + flag) & ~mask;

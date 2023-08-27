@@ -7,6 +7,7 @@ import { Loading } from 'src/components/Loading/Loading';
 import LoginModal from 'src/components/LoginModal/LoginModal';
 import type { ActionModel, BoardModel } from 'src/types/types';
 import { apiClient } from 'src/utils/apiClient';
+import { CELL_FLAGS, CHANGE_FLAG, IS_BLANK_CELL } from 'src/utils/boardFlag';
 import { deepCopy } from 'src/utils/deepCopy';
 import { formatOpenCells } from 'src/utils/formatOpenCells';
 import { handleMove } from 'src/utils/handleMove';
@@ -90,7 +91,7 @@ const Controller = () => {
       const openSurroundingCells = (x: number, y: number, isUserInput: boolean) => {
         newBoard[y][x] = minesweeperUtils.countAroundBombsNum(bombMap, x, y);
         newOpenCells.add(JSON.stringify([x, y, isUserInput, newBoard[y][x]]));
-        if (newBoard[y][x] === 0) {
+        if (IS_BLANK_CELL(newBoard[y][x])) {
           minesweeperUtils.aroundCellToArray(newBoard, x, y).forEach((nextPos) => {
             openSurroundingCells(nextPos.x, nextPos.y, false);
           });
@@ -104,7 +105,7 @@ const Controller = () => {
     const flag = () => {
       const [x, y] = [player.x, player.y];
       const newBoard = deepCopy<BoardModel>(board);
-      newBoard[y][x] = newBoard[y][x] === -1 ? 10 : newBoard[y][x] === 10 ? -1 : newBoard[y][x];
+      newBoard[y][x] = CHANGE_FLAG(newBoard[y][x], CELL_FLAGS['flag'], CELL_FLAGS['unFlag']);
       setBoard(newBoard);
     };
 
