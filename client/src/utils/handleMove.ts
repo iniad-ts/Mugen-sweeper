@@ -1,14 +1,14 @@
 import type { PlayerModel } from 'commonTypesWithClient/models';
 import type { ActionModel, BoardModel } from 'src/types/types';
 import { apiClient } from './apiClient';
-import { minMax } from './minMax';
+import { maxMin } from './maxMIn';
 
 export const handleMove = async (action: ActionModel, board: BoardModel, player: PlayerModel) => {
   const move = async (moveX: number, moveY: number) => {
     const newPlayer = {
       ...player,
-      x: minMax(player.x + moveX, board[0].length),
-      y: minMax(player.y + moveY, board.length),
+      x: maxMin(board[0].length - 1, 0, player.x + moveX),
+      y: maxMin(board.length - 1, 0, player.y + moveY),
     };
     if (
       [

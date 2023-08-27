@@ -1,6 +1,6 @@
 import type { PlayerModel } from 'commonTypesWithClient/models';
 import { useEffect, useState } from 'react';
-import type { BoardModel } from 'src/types/types';
+import type { BoardModel, Pos } from 'src/types/types';
 import styles from './GameDisplay.module.css';
 
 const cellStyler = (val: number) =>
@@ -14,8 +14,6 @@ const cellBackgroundColor = (val: number) =>
   [val === 9, val === 10, val === -1].some(Boolean) ? '#4a2' : '#dca';
 
 const viewSelectorList = [-1, 9, 10];
-
-type PlayerPos = [number, number];
 
 const TimeModule = ({ loadedTime }: { loadedTime: number | undefined }) => {
   const [nowTime, setNowTime] = useState<number>();
@@ -34,17 +32,17 @@ const TimeModule = ({ loadedTime }: { loadedTime: number | undefined }) => {
 };
 
 const GameDisplay = ({ player, board }: { player: PlayerModel; board: BoardModel }) => {
-  const [selectedPos, setSelectedPos] = useState<PlayerPos>();
-  const [displayPlayerPos, setDisplayPlayerPos] = useState<PlayerPos>();
+  const [selectedPos, setSelectedPos] = useState<Pos>();
+  const [displayPlayerPos, setDisplayPlayerPos] = useState<Pos>();
   const [loadedTime, setLoadedTime] = useState<number>();
   useEffect(() => {
-    setSelectedPos([player.x, player.y]);
+    setSelectedPos({ x: player.x, y: player.y });
     if (board[player.y] === undefined || viewSelectorList.includes(board[player.y][player.x])) {
       return;
     }
-    setDisplayPlayerPos([player.x, player.y]);
+    setDisplayPlayerPos({ x: player.x, y: player.y });
     setLoadedTime(Date.now());
-  }, [player, board]);
+  }, [player.x, player.y, board]);
   return (
     <div className={styles.container}>
       <div className={styles.info}>
@@ -56,7 +54,7 @@ const GameDisplay = ({ player, board }: { player: PlayerModel; board: BoardModel
         <div className={styles.infoColumn}>{player.score}</div>
         <TimeModule loadedTime={loadedTime} />
         <div className={styles.infoColumn}>
-          {selectedPos && `[ ${selectedPos[0]} , ${selectedPos[1]} ]`}
+          {selectedPos && `[ ${selectedPos.x} , ${selectedPos.y} ]`}
         </div>
       </div>
       <div
@@ -74,11 +72,11 @@ const GameDisplay = ({ player, board }: { player: PlayerModel; board: BoardModel
               }}
             >
               {displayPlayerPos !== undefined &&
-                [displayPlayerPos[0] === x, displayPlayerPos[1] === y].every(Boolean) && (
+                [displayPlayerPos.x === x, displayPlayerPos.y === y].every(Boolean) && (
                   <div className={styles.player} />
                 )}
               {selectedPos !== undefined &&
-                [selectedPos[0] === x, selectedPos[1] === y, viewSelectorList.includes(val)].every(
+                [selectedPos.x === x, selectedPos.y === y, viewSelectorList.includes(val)].every(
                   Boolean
                 ) && <div className={styles.selector} />}
             </div>
