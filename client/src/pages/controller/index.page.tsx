@@ -12,12 +12,11 @@ import { formatOpenCells } from 'src/utils/formatOpenCells';
 import { handleMove } from 'src/utils/handleMove';
 import { logoutWithLocalStorage } from 'src/utils/loginWithLocalStorage';
 import { minesweeperUtils } from 'src/utils/minesweeperUtils';
-import { ArrowButton } from './Button/index.page';
 import styles from './index.module.css';
 
-const arrowTexts = ['▲', '▼', '◀', '▶'];
+const arrowTexts = ['', '▲', '', '◀', '', '▶', '', '▼', ''];
 
-const actions: ActionModel[] = ['up', 'down', 'left', 'right', 'ur', 'ul', 'dr', 'dl'];
+const actions: ActionModel[] = ['ul', 'up', 'ur', 'left', 'middle', 'right', 'dl', 'down', 'dr'];
 
 const Controller = () => {
   const router = useRouter();
@@ -115,32 +114,22 @@ const Controller = () => {
     };
 
     return (
-      <div className={styles.container}>
-        <div className={styles.controller}>
-          <div className={styles['buttonContainer']} style={{ gridArea: 'cross' }}>
-            {actions.map((action, i) => (
-              <ArrowButton
-                text={arrowTexts[i]}
-                key={i}
-                action={action}
-                onClick={() => clickButton(action)}
-              />
-            ))}
-          </div>
-          <div className={styles.display}>
-            <GameDisplay player={player} board={board} />
-          </div>
-          <div
-            className={styles['buttonContainer']}
-            style={{ gridArea: 'button', margin: '0 0 0 auto' }}
-          >
-            <button className={`${styles.button} ${styles['flagButton']}`} onClick={flag}>
-              🚩
+      <div className={styles.controller}>
+        <div className={styles.moveButton}>
+          {actions.map((action, i) => (
+            <button key={i} onClick={() => clickButton(action)} className={styles.button}>
+              {arrowTexts[i]}
             </button>
-            <button className={`${styles.button} ${styles['openButton']}`} onClick={dig}>
-              ⛏️
-            </button>
-          </div>
+          ))}
+        </div>
+        <GameDisplay player={player} board={board} />
+        <div className={styles.actionButton}>
+          <button className={`${styles.button} ${styles.flagButton}`} onClick={flag}>
+            🚩
+          </button>
+          <button className={`${styles.button} ${styles.openButton}`} onClick={dig}>
+            ⛏️
+          </button>
         </div>
       </div>
     );

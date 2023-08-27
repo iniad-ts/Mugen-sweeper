@@ -32,8 +32,13 @@
 
 .display {
   display: grid;
-  grid-area: main;
+  grid-row: 1 / 4;
+  grid-column: 2 / 5;
+  width: 100%;
+  height: 100%;
   background-color: #dca;
+  border: 10px solid #333;
+  border-radius: 10px;
 }
 
 .stone {

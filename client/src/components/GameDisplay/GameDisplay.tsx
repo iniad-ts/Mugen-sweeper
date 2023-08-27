@@ -59,7 +59,6 @@ const GameDisplay = ({ player, board }: { player: PlayerModel; board: BoardModel
           {selectedPos && `[ ${selectedPos[0]} , ${selectedPos[1]} ]`}
         </div>
       </div>
-
       <div
         className={styles.display}
         style={{ gridTemplate: `repeat(${board.length}, 1fr) / repeat(${board[0].length}, 1fr)` }}
