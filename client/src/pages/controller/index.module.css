@@ -6,8 +6,9 @@
   height: 100svh;
   padding: 24px;
   background-color: #aab;
-  border: 6px solid #4468;
-  border-radius: 48px;
+
+  /* border: 6px solid #4468;
+  border-radius: 48px; */
 }
 
 .moveButton {

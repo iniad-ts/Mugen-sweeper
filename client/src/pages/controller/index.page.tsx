@@ -85,7 +85,7 @@ const Controller = () => {
         logoutWithLocalStorage();
         router.push('/controller');
       }
-      if (board[y][x] !== -1) return;
+      if (!(board[y][x] & CELL_FLAGS['block'])) return;
       const newBoard = deepCopy<BoardModel>(board);
       const newOpenCells = new Set(openCells);
       const openSurroundingCells = (x: number, y: number, isUserInput: boolean) => {

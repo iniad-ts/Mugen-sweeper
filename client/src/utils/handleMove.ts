@@ -1,6 +1,7 @@
 import type { PlayerModel } from 'commonTypesWithClient/models';
 import type { ActionModel, BoardModel } from 'src/types/types';
 import { apiClient } from './apiClient';
+import { CELL_FLAGS } from './boardFlag';
 import { maxMin } from './maxMIn';
 
 export const handleMove = async (action: ActionModel, board: BoardModel, player: PlayerModel) => {
@@ -12,8 +13,8 @@ export const handleMove = async (action: ActionModel, board: BoardModel, player:
     };
     if (
       [
-        [-1, 9, 10].includes(board[player.y][player.x]),
-        board[newPlayer.y][newPlayer.x] === -1,
+        board[player.y][player.x] & CELL_FLAGS['block'],
+        board[newPlayer.y][newPlayer.x] & CELL_FLAGS['block'],
       ].every(Boolean)
     ) {
       return player;

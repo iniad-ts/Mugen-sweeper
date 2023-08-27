@@ -1,7 +1,7 @@
 import type { PlayerModel } from 'commonTypesWithClient/models';
 import { useEffect, useState } from 'react';
 import type { BoardModel, Pos } from 'src/types/types';
-import { CELL_STYLE_HANDLER } from 'src/utils/boardFlag';
+import { CELL_FLAGS, CELL_STYLE_HANDLER, IS_BLANK_CELL, NUMBER } from 'src/utils/boardFlag';
 import { toControllerBoard } from 'src/utils/toControllerBoard';
 import styles from './GameDisplay.module.css';
 
@@ -53,18 +53,19 @@ const GameDisplay = ({ player, board }: { player: PlayerModel; board: BoardModel
   const [loadedTime, setLoadedTime] = useState<number>();
   useEffect(() => {
     setSelectedPos({ x: player.x, y: player.y });
-    if (board[player.y] === undefined || viewSelectorList.includes(board[player.y][player.x])) {
+    if (board[player.y] === undefined || board[player.y][player.x] & CELL_FLAGS['block']) {
       return;
     }
     setDisplayPlayerPos({ x: player.x, y: player.y });
     setLoadedTime(Date.now());
   }, [player.x, player.y, board]);
 
-  if (displayPlayerPos === undefined || selectedPos === undefined) {
+  if (selectedPos === undefined) {
     return;
   }
 
   const newBoard = toControllerBoard(board, displayPlayerPos, selectedPos);
+  console.table(newBoard);
   return (
     <div className={styles.container}>
       <div className={styles.info}>
@@ -79,29 +80,21 @@ const GameDisplay = ({ player, board }: { player: PlayerModel; board: BoardModel
       </div>
       <div
         className={styles.display}
-        style={{ gridTemplate: `repeat(${board.length}, 1fr) / repeat(${board[0].length}, 1fr)` }}
+        style={{
+          gridTemplate: `repeat(${newBoard.length}, 1fr) / repeat(${newBoard[0].length}, 1fr)`,
+        }}
       >
-        {newBoard.map((row, y) =>
-          row.map((val, x) => (
+        {newBoard.map((row) =>
+          row.map((cellObj) => (
             <div
-              className={CELL_STYLE_HANDLER(val.val, CLASS_NAMES)}
-              key={`${y}-${x}`}
+              className={CELL_STYLE_HANDLER(cellObj.val, CLASS_NAMES)}
+              key={`${cellObj.y}-${cellObj.x}`}
               style={{
-                backgroundPositionX: `${7.65 * (val.val - 1)}%`,
-                backgroundColor: cellBackgroundColor(val.val),
+                backgroundPositionX: `${
+                  !IS_BLANK_CELL(cellObj.val) ? 7.67 * (NUMBER(cellObj.val) - 1) : -7.67
+                }%`,
               }}
-            >
-              {/* {displayPlayerPos !== undefined &&
-                [displayPlayerPos.x === x, displayPlayerPos.y === y].every(Boolean) && (
-                  <div className={styles.player} />
-                )} */}
-              {/* {selectedPos !== undefined &&
-                [
-                  selectedPos.x === x,
-                  selectedPos.y === y,
-                  viewSelectorList.includes(val.val),
-                ].every(Boolean) && <div className={styles.selector} />} */}
-            </div>
+            />
           ))
         )}
       </div>

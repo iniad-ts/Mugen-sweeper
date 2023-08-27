@@ -18,8 +18,9 @@ export const CELL_FLAGS = keys.reduce(
   {} as Record<(typeof keys)[number], number>
 );
 
-export const HAS_FLAG = (flag: number) => flag & (0b1111 << 4);
+export const HAS_FLAG = (flag: number) => flag & (0b11111111 << 4);
 
+export const NUMBER = (flag: number) => flag & 0b1111;
 export const CELL_STYLE_HANDLER = (
   flag: number,
   styles: {

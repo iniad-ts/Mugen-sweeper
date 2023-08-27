@@ -40,20 +40,16 @@
 }
 
 .number {
-  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  height: 100%;
   background: url('~/public/images/icons.png') no-repeat;
-  background-color: '#dca';
+  background-color: #dca;
   background-size: 1400%;
   border: solid #fff 1px;
 }
 
 .block {
-  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -75,12 +71,12 @@
   width: 100%;
   height: 100%;
   background: url('~/public/images/icons.png') no-repeat;
+  background-color: #4a2;
   background-position-x: 69%;
   background-size: 1400%;
 }
 
 .bomb {
-  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -93,7 +89,7 @@
 }
 
 .user {
-  border: solid 2px #f00;
+  border-color: #f00;
 }
 
 .selector {
