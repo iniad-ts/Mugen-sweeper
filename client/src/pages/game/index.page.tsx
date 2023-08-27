@@ -25,7 +25,7 @@ const Number = ({ value }: { value: number }) => {
       ? [...Array(5)].map((_, j) => [...Array(5)].map((_, i) => (j + i) % 2))
       : numbers[value - 1];
   return (
-    <div className={styles['numberMain']}>
+    <div className={styles.numberMain}>
       <div className={styles.border} style={{ gridArea: 't' }} />
       <div className={styles.border} style={{ gridArea: 'l' }} />
       {board.map((row, y) =>
