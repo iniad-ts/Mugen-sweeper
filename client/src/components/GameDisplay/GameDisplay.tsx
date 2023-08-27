@@ -89,11 +89,13 @@ const GameDisplay = ({ player, board }: { player: PlayerModel; board: BoardModel
             <div
               className={CELL_STYLE_HANDLER(cellObj.val, CLASS_NAMES)}
               key={`${cellObj.y}-${cellObj.x}`}
-              style={{
-                backgroundPositionX: `${
-                  !IS_BLANK_CELL(cellObj.val) ? 7.67 * (NUMBER(cellObj.val) - 1) : -7.67
-                }%`,
-              }}
+              style={
+                !IS_BLANK_CELL(cellObj.val)
+                  ? {
+                      backgroundPositionX: `${7.67 * (NUMBER(cellObj.val) - 1)}%`,
+                    }
+                  : {}
+              }
             />
           ))
         )}

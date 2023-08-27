@@ -105,6 +105,7 @@ const Controller = () => {
     const flag = () => {
       const [x, y] = [player.x, player.y];
       const newBoard = deepCopy<BoardModel>(board);
+      if (!IS_BLANK_CELL(newBoard[y][x])) return;
       newBoard[y][x] = CHANGE_FLAG(newBoard[y][x], CELL_FLAGS['flag'], CELL_FLAGS['unFlag']);
       setBoard(newBoard);
     };
