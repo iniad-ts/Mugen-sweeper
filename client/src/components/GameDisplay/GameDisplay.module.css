@@ -1,53 +1,39 @@
 .display {
+  position: absolute;
   display: grid;
   grid-row: 1 / 4;
   grid-column: 2 / 5;
-  width: 100%;
-  height: 100%;
-  background-color: #dca;
-  border: 10px solid #333;
-  border-radius: 10px;
+  background-color: #c6c6c6;
+  border: solid #808080 2svmin;
+  transition: inset 0.5s ease-out;
+}
+
+.cell {
+  width: 20svmin;
+  aspect-ratio: 1;
+  background-image: url('~/public/images/icons.png');
+  background-size: 1400%;
+  border: 1px solid #808080;
 }
 
 .stone {
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   width: 100%;
   height: 100%;
-  background-color: #4a2;
-  border-width: 5px;
-  border-top: solid #290 7px !important;
-  border-right: solid #fa2 !important;
-  border-bottom: solid #e91 !important;
-  border-left: solid #fb3 !important;
-} /* TODO 要変更 */
-
-.number {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  background: url('~/public/images/icons.png') no-repeat;
+  background-color: #c6c6c6;
+  background-image: url('~/public/images/icons.png');
   background-size: 1400%;
-  border: solid #fff 1px;
+  border-top: solid #868686 6px;
+  border-right: solid #fff 6px;
+  border-bottom: solid #fff 6px;
+  border-left: solid #868686 6px;
 }
 
 .player {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  border: solid #f00d;
-}
-
-.selector {
-  position: absolute;
-  top: -7px;
-  left: -3px;
-  width: calc(100% + 6px);
-  height: calc(100% + 12px);
-  background-color: #f004;
+  position: fixed;
+  top: calc(50% - 12svmin - 1px);
+  left: calc(50% - 12svmin - 1px);
+  width: 20svmin;
+  aspect-ratio: 1;
+  border: solid #f008 8px;
 }
