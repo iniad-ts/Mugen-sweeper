@@ -62,10 +62,10 @@
 .ranking {
   display: grid;
   flex-direction: row;
+  background-color: #000;
   grid-template-rows: 3fr 2fr 2fr repeat(7, 1fr);
   gap: 1vmin;
-  /* padding: 1vmin;
-  border-left: solid 1px; */
+  padding: 1vmin;
 }
 
 .prof {
