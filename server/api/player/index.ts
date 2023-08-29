@@ -9,4 +9,7 @@ export type Methods = DefineMethods<{
     reqBody: PlayerModel;
     resBody: PlayerModel | null;
   };
+  delete: {
+    reqBody: PlayerModel;
+  };
 }>;

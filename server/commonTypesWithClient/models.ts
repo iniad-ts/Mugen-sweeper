@@ -16,7 +16,7 @@ export type TaskModel = {
 export type GameModel = {
   id: GameId;
   bombMap: (1 | 0)[][];
-  userInputs: (0 | 1 | 2)[][];
+  userInputs: (0 | 1)[][];
 };
 
 export type CellModel = {
@@ -34,7 +34,7 @@ export type PlayerModel = {
   x: number;
   y: number;
   score: number;
-  isLive: boolean;
+  isAlive: boolean;
 };
 
 export type Pos = {

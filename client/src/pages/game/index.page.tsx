@@ -26,7 +26,7 @@ const Number = ({ value }: { value: number }) => {
       : numbers[value - 1];
   return useMemo(
     () => (
-      <div className={styles['number-main']}>
+      <div className={styles['numberMain']}>
         <div className={styles.border} style={{ gridArea: 't' }} />
         <div className={styles.border} style={{ gridArea: 'l' }} />
         {board.map((row, y) =>
@@ -56,8 +56,8 @@ const ProfileBoard = ({ player, index }: { player: PlayerModel; index: number })
       <div
         className={styles.prof}
         style={{
-          backgroundColor: player.isLive ? '#8f8' : '#f88',
-          borderColor: player.isLive ? '#8f8' : '#f88',
+          backgroundColor: player.isAlive ? '#8f8' : '#f88',
+          borderColor: player.isAlive ? '#8f8' : '#f88',
         }}
       >
         <div className={styles.rank}>
@@ -85,8 +85,8 @@ const ProfileBoard = ({ player, index }: { player: PlayerModel; index: number })
 };
 
 const Game = () => {
-  const [bombMap, setBombMap] = useState<(0 | 1)[][]>();
-  const [userInputs, setUserInputs] = useState<(0 | 1 | 2)[][]>();
+  const [bombMap, setBombMap] = useState<(0 | 1)[][]>(); //TODO bombMapの必要性をかんがえる
+  const [userInputs, setUserInputs] = useState<(0 | 1)[][]>();
   const [ranking, setRanking] = useState<PlayerModel[]>();
 
   useEffect(() => {
@@ -124,7 +124,11 @@ const Game = () => {
   if (bombMap === undefined || userInputs === undefined || ranking === undefined) {
     return <Loading visible />;
   }
-  const board = minesweeperUtils.makeBoard(bombMap, userInputs);
+  const board = minesweeperUtils.makeBoard(
+    bombMap,
+    userInputs,
+    bombMap.map((row) => row.map(() => -1))
+  );
 
   return (
     <div className={styles.container}>

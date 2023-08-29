@@ -1,4 +1,4 @@
-export type ActionModel = 'left' | 'right' | 'up' | 'down';
+export type ActionModel = 'left' | 'right' | 'up' | 'down' | 'ur' | 'ul' | 'dr' | 'dl' | 'middle';
 
 export type OpenCellModel = [number, number, boolean, number];
 

@@ -7,9 +7,7 @@ import { z } from 'zod';
 const toGameModel = (prismaGame: Game) => ({
   id: gameIdParser.parse(prismaGame.id),
   bombMap: z.array(z.array(z.union([z.literal(0), z.literal(1)]))).parse(prismaGame.bombMap),
-  userInputs: z
-    .array(z.array(z.union([z.literal(0), z.literal(1), z.literal(2)])))
-    .parse(prismaGame.userInputs),
+  userInputs: z.array(z.array(z.union([z.literal(0), z.literal(1)]))).parse(prismaGame.userInputs),
 });
 
 export const gameRepository = {
@@ -21,10 +19,12 @@ export const gameRepository = {
     });
     return toGameModel(prismaGame);
   },
+
   find: async (): Promise<GameModel | null> => {
     const prismaGame = await prismaClient.game.findFirst().catch(() => null);
     return prismaGame !== null ? toGameModel(prismaGame) : null;
   },
+
   deleteAll: async () => {
     await prismaClient.game.deleteMany();
   },

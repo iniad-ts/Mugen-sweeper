@@ -1,101 +1,79 @@
-.container {
-  display: grid;
-  height: 100vh;
-  width: 100vw;
-  grid-template-columns: 20px 1fr 20px;
-  grid-template-rows: 1fr 300px 1fr;
-  grid-template-areas:
-    '. .    .'
-    '. cont .'
-    '. .    . ';
-  align-items: center;
-  font-family: 'Jost', 'Zen Kaku Gothic New', sans-serif;
-}
-
 .controller {
   display: grid;
-  grid-area: cont;
-  width: 100%;
-  height: 100%;
+  grid-template: repeat(3, 1fr) / repeat(5, 1fr);
+  gap: 24px;
+  width: 100vw;
+  height: 100svh;
+  padding: 24px;
   background-color: #aab;
-  border-radius: 40px;
-  grid-template-columns: 10px 1fr 400px 1fr 10px;
-  grid-template-rows: 10px 1fr 10px;
-  grid-template-areas:
-    '. .     .       .      . '
-    '. cross display button .'
-    '. .     .       .      . ';
-  box-shadow: 0 0 0 0 #000, 0 0 50px #0006;
   border: 6px solid #4468;
+  border-radius: 48px;
 }
 
-.display {
-  display: flex;
-  width: 100%;
-  height: 100%;
-  align-items: center;
-  justify-content: center;
-  grid-area: display;
-  background-color: #000;
-  color: #fff;
-  border-radius: 10px;
-}
-
-.button-container {
-  width: 15vw;
-  height: 15vw;
-  background-color: #42567a;
-  border-radius: 50%;
+.moveButton {
   display: grid;
-  grid-template-rows: 2fr 4fr 3fr 3fr 4fr 2fr;
-  grid-template-columns: 2fr 4fr 3fr 3fr 4fr 2fr;
-  border: 3px solid #42567a;
-  box-shadow: 0 0 0 1px #03030380, 0 0 5px #0006;
+  grid-area: 2 / 1;
+  grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+  gap: 4px;
+  align-self: center;
+  aspect-ratio: 1;
+  padding: 8px;
+  background-color: #42567a;
+  border-radius: 32px;
+}
+
+.actionButton {
+  display: grid;
+  grid-area: 2 / 5;
+  grid-template: repeat(2, 1fr) / repeat(2, 1fr);
+  align-self: center;
+  aspect-ratio: 1;
+  padding: 8px;
+  background-color: #42567a;
+  border-radius: 32px;
 }
 
 .button {
   display: flex;
-  width: 100%;
-  height: 100%;
   align-items: center;
   justify-content: center;
+  aspect-ratio: 1;
+  font-size: 3vmin;
+  cursor: pointer;
   background-color: #787888;
   border: 3px solid #223;
-  box-shadow: 0 0 0 1px #03030380, 0 0 5px #0006;
-  user-select: none;
+  border-radius: 12px;
+  transition: transform 0.1s ease-out;
 }
 
 .button:active {
-  cursor: pointer;
-  background-color: #3348;
   transform: scale(0.85);
-  border-color: #334;
-  user-select: none;
 }
 
-
-.flag-button {
-  display: flex;
-  grid-column: 4/6;
-  grid-row: 2/4;
-  aspect-ratio: 1;
-  width: 100%;
-  height: 100%;
-  align-items: center;
-  justify-content: center;
-  border-radius: 40%;
-  font-size: 4vmin;
+.flagButton {
+  grid-area: 1 / 1;
 }
 
-.open-button {
-  display: flex;
-  grid-column: 2/4;
-  grid-row: 4/6;
-  aspect-ratio: 1;
-  width: 100%;
-  height: 100%;
-  align-items: center;
-  justify-content: center;
-  border-radius: 40%;
-  font-size: 4vmin;
+.openButton {
+  grid-area: 2 / 2;
+}
+
+.actionButton > .button {
+  border-radius: 24px;
+}
+
+.moveButton > .button:nth-child(1) {
+  border-radius: 24px 12px 12px;
+}
+
+.moveButton > .button:nth-child(3) {
+  border-radius: 12px 24px 12px 12px;
+}
+
+.moveButton > .button:nth-child(7) {
+  border-radius: 12px 12px 12px 24px;
+}
+
+.moveButton > .button:nth-child(9) {
+  border-radius: 12px 12px 24px;
 }

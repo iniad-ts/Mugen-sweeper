@@ -2,28 +2,20 @@ import type { Maybe, UserId } from 'commonTypesWithClient/branded';
 import type { PlayerModel } from 'commonTypesWithClient/models';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
-import { ArrowButton } from 'src/components/Button/index.page';
 import GameDisplay from 'src/components/GameDisplay/GameDisplay';
 import { Loading } from 'src/components/Loading/Loading';
 import LoginModal from 'src/components/LoginModal/LoginModal';
-import type { ActionModel, BoardModel, OpenCellModel } from 'src/types/types';
+import type { ActionModel, BoardModel } from 'src/types/types';
 import { apiClient } from 'src/utils/apiClient';
 import { deepCopy } from 'src/utils/deepCopy';
 import { formatOpenCells } from 'src/utils/formatOpenCells';
-import { minMax } from 'src/utils/minMax';
+import { handleMove } from 'src/utils/handleMove';
 import { minesweeperUtils } from 'src/utils/minesweeperUtils';
 import styles from './index.module.css';
 
-const arrowStyles = [
-  { rowStart: 1, rowEnd: 3, columnStart: 3, columnEnd: 5 },
-  { rowStart: 5, rowEnd: 7, columnStart: 3, columnEnd: 5 },
-  { rowStart: 3, rowEnd: 5, columnStart: 1, columnEnd: 3 },
-  { rowStart: 3, rowEnd: 5, columnStart: 5, columnEnd: 7 },
-];
+const arrowTexts = ['', '▲', '', '◀', '', '▶', '', '▼', ''];
 
-const arrowTexts = ['▲', '▼', '◀', '▶'];
-
-const dir: ActionModel[] = ['up', 'down', 'left', 'right'];
+const actions: ActionModel[] = ['ul', 'up', 'ur', 'left', 'middle', 'right', 'dl', 'down', 'dr'];
 
 const Controller = () => {
   const router = useRouter();
@@ -37,7 +29,7 @@ const Controller = () => {
   const GameController = () => {
     const [bombMap, setBombMap] = useState<BoardModel>();
     const [board, setBoard] = useState<BoardModel>();
-    const [openCells, setOpenCells] = useState<Set<OpenCellModel>>(new Set());
+    const [openCells, setOpenCells] = useState<Set<string>>(new Set());
     const [player, setPlayer] = useState<PlayerModel>();
 
     const fetchGame = useCallback(async () => {
@@ -55,10 +47,10 @@ const Controller = () => {
         //  || res2 === null
       )
         return;
-      const newBoard = minesweeperUtils.makeBoard(res.bombMap, res.userInputs);
+      const newBoard = minesweeperUtils.makeBoard(res.bombMap, res.userInputs, board);
       setBoard(newBoard);
       // setPlayer(res2);
-    }, [openCells, player]);
+    }, [openCells, player, board]);
 
     // 初回レンダリング時のみ;
     const fetchBombMap = async () => {
@@ -95,7 +87,7 @@ const Controller = () => {
       const newOpenCells = new Set(openCells);
       const openSurroundingCells = (x: number, y: number, isUserInput: boolean) => {
         newBoard[y][x] = minesweeperUtils.countAroundBombsNum(bombMap, x, y);
-        newOpenCells.add([x, y, isUserInput, newBoard[y][x]]);
+        newOpenCells.add(JSON.stringify([x, y, isUserInput, newBoard[y][x]]));
         if (newBoard[y][x] === 0) {
           minesweeperUtils.aroundCellToArray(newBoard, x, y).forEach((nextPos) => {
             openSurroundingCells(nextPos.x, nextPos.y, false);
@@ -107,71 +99,35 @@ const Controller = () => {
       setBoard(newBoard);
     };
 
-    const move = async (moveX: number, moveY: number) => {
-      const newPlayer = {
-        ...player,
-        x: minMax(player.x + moveX, bombMap[0].length),
-        y: minMax(player.y + moveY, bombMap.length),
-      };
-      const res = await apiClient.player.$post({ body: newPlayer });
-      if (res === null) return;
-
-      setPlayer(res);
-    };
-
     const flag = () => {
       const [x, y] = [player.x, player.y];
       const newBoard = deepCopy<BoardModel>(board);
-      newBoard[y][x] = 9;
+      newBoard[y][x] = newBoard[y][x] === -1 ? 10 : -1;
       setBoard(newBoard);
     };
 
-    const handleMove = (action: ActionModel) => {
-      if (action === 'left') {
-        move(-1, 0);
-        return;
-      }
-      if (action === 'right') {
-        move(1, 0);
-        return;
-      }
-      if (action === 'down') {
-        move(0, 1);
-        return;
-      }
-      if (action === 'up') {
-        move(0, -1);
-        return;
-      }
+    const clickButton = async (action: ActionModel) => {
+      const res = await handleMove(action, board, player);
+      setPlayer(res);
     };
 
     return (
-      <div className={styles.container}>
-        <div className={styles.controller}>
-          <div className={styles['button-container']} style={{ gridArea: 'cross' }}>
-            {arrowStyles.map((arrow, i) => (
-              <ArrowButton
-                grid={arrow}
-                text={arrowTexts[i]}
-                key={i}
-                onClick={() => handleMove(dir[i])}
-              />
-            ))}
-          </div>
-          <div className={styles.display}>
-            <GameDisplay player={player} board={board} />
-          </div>
-          <div
-            className={styles['button-container']}
-            style={{ gridArea: 'button', margin: '0 0 0 auto' }}
-          >
-            <button className={`${styles.button} ${styles['flag-button']}`} onClick={flag}>
-              🚩
+      <div className={styles.controller}>
+        <div className={styles.moveButton}>
+          {actions.map((action, i) => (
+            <button key={i} onClick={() => clickButton(action)} className={styles.button}>
+              {arrowTexts[i]}
             </button>
-            <button className={`${styles.button} ${styles['open-button']}`} onClick={dig}>
-              ⛏️
-            </button>
-          </div>
+          ))}
+        </div>
+        <GameDisplay player={player} board={board} />
+        <div className={styles.actionButton}>
+          <button className={`${styles.button} ${styles.flagButton}`} onClick={flag}>
+            🚩
+          </button>
+          <button className={`${styles.button} ${styles.openButton}`} onClick={dig}>
+            ⛏️
+          </button>
         </div>
       </div>
     );

@@ -11,7 +11,7 @@ const toPlayerModel = (prismaPlayer: Player) => ({
   x: z.number().min(0).parse(prismaPlayer.x),
   y: z.number().min(0).parse(prismaPlayer.y),
   score: z.number().min(0).parse(prismaPlayer.score),
-  isLive: z.boolean().parse(prismaPlayer.isLive),
+  isAlive: z.boolean().parse(prismaPlayer.isAlive),
 });
 export const playersRepository = {
   save: async (player: PlayerModel): Promise<PlayerModel> => {
@@ -22,7 +22,7 @@ export const playersRepository = {
         x: player.x,
         y: player.y,
         score: player.score,
-        isLive: player.isLive,
+        isAlive: player.isAlive,
       },
       create: {
         id: player.id,
@@ -30,25 +30,28 @@ export const playersRepository = {
         x: player.x,
         y: player.y,
         score: player.score,
-        isLive: player.isLive,
+        isAlive: player.isAlive,
       },
     });
     return toPlayerModel(prismaPlayer);
   },
-  findAll: async (): Promise<PlayerModel[]> => {
-    const prismaPlayers = await prismaClient.player.findMany({
-      orderBy: { score: 'desc' }, //ランキングで使う？
-    });
-    return prismaPlayers.map(toPlayerModel);
-  },
+
   find: async (id: Maybe<UserId>): Promise<PlayerModel | null> => {
     const prismaPlayer = await prismaClient.player.findUnique({ where: { id } });
     return prismaPlayer !== null ? toPlayerModel(prismaPlayer) : null;
   },
 
+  findAllOrderByScoreDesc: async (): Promise<PlayerModel[]> => {
+    const prismaPlayers = await prismaClient.player.findMany({
+      orderBy: { score: 'desc' }, //ランキングで使う？
+    });
+    return prismaPlayers.map(toPlayerModel);
+  },
+
   delete: async (id: UserId): Promise<void> => {
     await prismaClient.player.delete({ where: { id } });
   },
+
   deleteAll: async () => {
     await prismaClient.player.deleteMany();
   },

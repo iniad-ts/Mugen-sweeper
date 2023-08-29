@@ -1,4 +1,5 @@
 import type { BoardModel } from '../types/types';
+import { deepCopy } from './deepCopy';
 
 const directions = [
   [0, 1],
@@ -24,7 +25,12 @@ export const minesweeperUtils = {
       .flat()
       .filter((b) => b === 1).length ?? 1 - 1,
 
-  makeBoard: (bombMap: BoardModel, userInputs: BoardModel): BoardModel => {
+  makeBoard: (
+    bombMap: BoardModel,
+    userInputs: BoardModel,
+    board: BoardModel | undefined
+  ): BoardModel => {
+    if (board === undefined) return bombMap.map((row) => row.map(() => -1));
     const openSurroundingCells = (x: number, y: number) => {
       newBoard[y][x] = minesweeperUtils.countAroundBombsNum(bombMap, x, y);
 
@@ -34,7 +40,8 @@ export const minesweeperUtils = {
         });
       }
     };
-    const newBoard = bombMap.map((row) => row.map(() => -1));
+    const newBoard =
+      board === undefined ? bombMap.map((row) => row.map(() => -1)) : deepCopy<BoardModel>(board);
     userInputs.forEach((row, y) =>
       row.forEach((val, x) => val === 1 && openSurroundingCells(x, y))
     );
