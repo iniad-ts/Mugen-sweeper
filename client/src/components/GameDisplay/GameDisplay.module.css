@@ -6,7 +6,6 @@
   background-color: #f00;
   border-radius: 10px;
   transition: transform 0.5s linear;
-  transition: inset 0.5s ease-out;
 }
 
 .display * {
