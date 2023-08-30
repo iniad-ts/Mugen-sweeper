@@ -59,22 +59,43 @@ const GameDisplay = ({
       }
     })
   );
-  console.log(player.x, player.y);
 
+  const VERTICAL_DISTANCE_FROM_CENTER = Math.floor(windowSize[1] / (20 * computedVmin)) + 2;
+
+  const HORIZONTAL_DISTANCE_FROM_CENTER = Math.ceil(windowSize[0] / (20 * computedVmin) / 4);
+
+  const displayLeft = player.x - VERTICAL_DISTANCE_FROM_CENTER + 1;
+
+  const displayTop = player.y - HORIZONTAL_DISTANCE_FROM_CENTER + 1;
+
+  const displayRight = player.x + VERTICAL_DISTANCE_FROM_CENTER;
+
+  const displayBottom = player.y + HORIZONTAL_DISTANCE_FROM_CENTER;
+
+  const correctionX = -Math.min(displayLeft, 0) - Math.max(displayRight - board[0].length, 0);
+
+  const correctionY = -Math.min(displayTop, 0) - Math.max(displayBottom - board.length, 0);
+
+  const cattedBoard = newBoard
+    .map((row) => row.slice(displayLeft + correctionX, displayRight + correctionX))
+    .slice(displayTop + correctionY, displayBottom + correctionY);
   return (
     <div
       className={styles.display}
       style={{
-        gridTemplate: `repeat(${board.length}, 1fr) / repeat(${board[0].length}, 1fr)`,
-        transform: `translateY(${
-          (maxMin(newBoard.length - 3, 2, player.y) + 0.5) * computedVmin * -20 + windowSize[1] / 2
-        }px) translateX(${
-          (maxMin(newBoard[0].length - 5, 4, player.x) + 0.5) * computedVmin * -20 +
-          windowSize[0] / 2
-        }px)`,
+        gridTemplate: `repeat(${cattedBoard.length}, 1fr) / repeat(${cattedBoard[0].length}, 1fr)`,
+        transform: `translateY(${maxMin(
+          0,
+          -20 * computedVmin * cattedBoard.length + windowSize[1],
+          windowSize[1] / 2 - (20 * computedVmin * cattedBoard.length) / 2 + correctionY * 80
+        )}px) translateX(${maxMin(
+          0,
+          -20 * computedVmin * cattedBoard[0].length + windowSize[0],
+          windowSize[0] / 2 - (20 * computedVmin * cattedBoard[0].length) / 2 + correctionX * 80
+        )}px)`,
       }}
     >
-      {newBoard.map((row, y) =>
+      {cattedBoard.map((row, y) =>
         row.map((val, x) => (
           <div
             className={CELL_STYLE_HANDLER(val, CLASS_NAMES)}
@@ -86,7 +107,10 @@ const GameDisplay = ({
                   }
                 : {}
             }
-          />
+          >
+            {correctionX}
+            {VERTICAL_DISTANCE_FROM_CENTER}
+          </div>
         ))
       )}
     </div>
