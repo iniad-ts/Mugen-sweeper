@@ -1,12 +1,20 @@
 .display {
+  position: absolute;
   display: grid;
   grid-row: 1 / 4;
   grid-column: 2 / 5;
-  width: 100%;
-  height: 100%;
   background-color: #f00;
-  border: 10px solid #333;
   border-radius: 10px;
+  transition: inset 0.5s ease-out;
+}
+
+.display * {
+  position: relative;
+  width: 20svmin;
+  aspect-ratio: 1;
+  background-color: #dca;
+  background-size: 1400%;
+  border: 1px solid #fff;
 }
 
 .number {
@@ -19,28 +27,10 @@
   border: solid #fff 1px;
 }
 
-.block {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  background-color: #4a2;
-  background-position-x: -7.67%;
-  border-width: 5px;
-  border-top: solid #290 7px;
-  border-right: solid #fa2;
-  border-bottom: solid #e91;
-  border-left: solid #fb3;
-}
-
 .flag {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  height: 100%;
   background: url('~/public/images/icons.png') no-repeat;
   background-color: #4a2;
   background-position-x: 69%;
@@ -52,8 +42,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  height: 100%;
   background: url('~/public/images/icons.png') no-repeat;
   background-position-x: 76.8%;
   background-size: 1400%;
@@ -66,4 +54,17 @@
 
 .selector {
   opacity: 0.5;
+}
+
+.block {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #4a2;
+  border-width: 5px;
+  border-top: solid #290 7px;
+  border-right: solid #fa2;
+  border-bottom: solid #e91;
+  border-left: solid #fb3;
 }

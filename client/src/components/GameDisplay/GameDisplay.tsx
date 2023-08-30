@@ -1,8 +1,15 @@
 import type { PlayerModel } from 'commonTypesWithClient/models';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { BoardModel } from 'src/types/types';
 import { deepCopy } from 'src/utils/deepCopy';
-import { CELL_FLAGS, CELL_NUMBER, CELL_STYLE_HANDLER, TYPE_IS } from 'src/utils/flag';
+import {
+  CELL_FLAGS,
+  CELL_NUMBER,
+  CELL_STYLE_HANDLER,
+  IS_BLANK_CELL,
+  TYPE_IS,
+} from 'src/utils/flag';
+import { maxMin } from 'src/utils/maxMIn';
 import styles from './GameDisplay.module.css';
 
 const CLASS_NAMES = {
@@ -18,14 +25,39 @@ type PlayerPos = [number, number];
 const GameDisplay = ({ player, board }: { player: PlayerModel; board: BoardModel }) => {
   const [playerPos, setPlayerPos] = useState<PlayerPos>();
   const [displayPos, setDisplayPos] = useState<PlayerPos>();
+  const [windowSize, setWindowSize] = useState<[number, number]>([
+    window.innerWidth,
+    window.innerHeight,
+  ]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowSize([window.innerWidth, window.innerHeight]);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   useEffect(() => {
     setPlayerPos([player.x, player.y]);
-    if (board[player.y] === undefined || TYPE_IS(board[player.y][player.x], 'block')) {
+    if (board[player.y] === undefined) {
+      if (TYPE_IS(board[maxMin(board.length - 1, 0, player.y)][player.x], 'block')) {
+        return;
+      }
+      setDisplayPos([player.x, maxMin(board.length - 1, 0, player.y)]);
+      return;
+    }
+    if (TYPE_IS(board[player.y][player.x], 'block')) {
       return;
     }
     setDisplayPos([player.x, player.y]);
   }, [player.x, player.y, board]);
+
   const newBoard = deepCopy<BoardModel>(board);
+
+  const computedVmin = useMemo(() => Math.min(windowSize[0], windowSize[1]) / 100, [windowSize]);
+
   newBoard.forEach((row, y) =>
     row.map((val, x) => {
       if (playerPos?.[0] === x && playerPos?.[1] === y) {
@@ -38,19 +70,34 @@ const GameDisplay = ({ player, board }: { player: PlayerModel; board: BoardModel
       }
     })
   );
+  console.log(player.x, player.y);
+
   return (
     <div
       className={styles.display}
-      style={{ gridTemplate: `repeat(${board.length}, 1fr) / repeat(${board[0].length}, 1fr)` }}
+      style={{
+        gridTemplate: `repeat(${board.length}, 1fr) / repeat(${board[0].length}, 1fr)`,
+        top: `${
+          (maxMin(newBoard.length - 3, 2, player.y) + 0.5) * computedVmin * -20 + windowSize[1] / 2
+        }px`,
+        left: `${
+          (maxMin(newBoard[0].length - 5, 4, player.x) + 0.5) * computedVmin * -20 +
+          windowSize[0] / 2
+        }px`,
+      }}
     >
       {newBoard.map((row, y) =>
         row.map((val, x) => (
           <div
             className={CELL_STYLE_HANDLER(val, CLASS_NAMES)}
             key={`${y}-${x}`}
-            style={{
-              backgroundPositionX: `${7.65 * (CELL_NUMBER(val) - 1)}%`,
-            }}
+            style={
+              !IS_BLANK_CELL(val)
+                ? {
+                    backgroundPositionX: `${7.65 * (CELL_NUMBER(val) - 1)}%`,
+                  }
+                : {}
+            }
           />
         ))
       )}
