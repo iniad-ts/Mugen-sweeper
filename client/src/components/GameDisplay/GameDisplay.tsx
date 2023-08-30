@@ -65,7 +65,6 @@ const GameDisplay = ({ player, board }: { player: PlayerModel; board: BoardModel
       }
       if (displayPos?.[0] === x && displayPos?.[1] === y) {
         newBoard[y][x] = val | CELL_FLAGS['user'];
-        console.log(newBoard[y][x]);
       }
     })
   );
@@ -76,13 +75,16 @@ const GameDisplay = ({ player, board }: { player: PlayerModel; board: BoardModel
       className={styles.display}
       style={{
         gridTemplate: `repeat(${board.length}, 1fr) / repeat(${board[0].length}, 1fr)`,
-        top: `${
-          (maxMin(newBoard.length - 3, 2, player.y) + 0.5) * computedVmin * -20 + windowSize[1] / 2
-        }px`,
-        left: `${
-          (maxMin(newBoard[0].length - 6, 5, player.x) + 0.5) * computedVmin * -20 +
-          windowSize[0] / 2
-        }px`,
+        top: `${maxMin(
+          0,
+          -20 * computedVmin * board.length + windowSize[1],
+          (player.y + 0.5) * computedVmin * -20 + windowSize[1] / 2
+        )}px`,
+        left: `${maxMin(
+          0,
+          -20 * computedVmin * board[0].length + windowSize[0],
+          (player.x + 0.5) * computedVmin * -20 + windowSize[0] / 2
+        )}px`,
       }}
     >
       {newBoard.map((row, y) =>
