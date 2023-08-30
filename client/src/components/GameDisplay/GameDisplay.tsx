@@ -19,18 +19,6 @@ const CLASS_NAMES = {
   unBomb: '',
 };
 
-const cellStyler = (val: number) =>
-  val === -1
-    ? styles.block
-    : [val === 9, val === 10].some(Boolean)
-    ? `${styles.block} ${styles.number}`
-    : styles.number;
-
-const cellBackgroundColor = (val: number) =>
-  [val === 9, val === 10, val === -1].some(Boolean) ? '#4a2' : '#dca';
-
-const viewSelectorList = [-1, 9, 10];
-
 const TimeModule = ({ loadedTime }: { loadedTime: number | undefined }) => {
   const [nowTime, setNowTime] = useState<number>();
   useEffect(() => {

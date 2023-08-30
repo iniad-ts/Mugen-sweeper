@@ -45,6 +45,7 @@
   justify-content: center;
   background: url('~/public/images/icons.png') no-repeat;
   background-color: #dca;
+  background-position: -7.65%;
   background-size: 1400%;
   border: solid #fff 1px;
 }
