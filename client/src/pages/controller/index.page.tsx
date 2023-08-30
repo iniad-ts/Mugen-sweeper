@@ -145,14 +145,12 @@ const Controller = () => {
           ))}
         </div>
         <GameDisplay player={player} board={board} display={displayPos} />
-        <div className={styles.actionButton}>
-          <button className={`${styles.button} ${styles.flagButton}`} onClick={flag}>
-            🚩
-          </button>
-          <button className={`${styles.button} ${styles.openButton}`} onClick={dig}>
-            ⛏️
-          </button>
-        </div>
+        <button className={`${styles.button} ${styles.flagButton}`} onClick={flag}>
+          🚩
+        </button>
+        <button className={`${styles.button} ${styles.openButton}`} onClick={dig}>
+          ⛏️
+        </button>
       </div>
     );
   };

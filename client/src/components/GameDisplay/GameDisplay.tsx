@@ -1,8 +1,9 @@
 import type { PlayerModel } from 'commonTypesWithClient/models';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { BoardModel, Pos } from 'src/types/types';
 import { deepCopy } from 'src/utils/deepCopy';
 import { CELL_FLAGS, CELL_NUMBER, CELL_STYLE_HANDLER, IS_BLANK_CELL } from 'src/utils/flag';
+import { maxMin } from 'src/utils/maxMIn';
 import styles from './GameDisplay.module.css';
 
 const CLASS_NAMES = {
@@ -26,11 +27,28 @@ const GameDisplay = ({
 }) => {
   const [playerPos, setPlayerPos] = useState<PlayerPos>();
   const [displayPos, setDisplayPos] = useState<PlayerPos>();
+  const [windowSize, setWindowSize] = useState<[number, number]>([
+    window.innerWidth,
+    window.innerHeight,
+  ]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowSize([window.innerWidth, window.innerHeight]);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   useEffect(() => {
     setPlayerPos([player.x, player.y]);
     setDisplayPos([display.x, display.y]);
   }, [player.x, player.y, display]);
   const newBoard = deepCopy<BoardModel>(board);
+
+  const computedVmin = useMemo(() => Math.min(windowSize[0], windowSize[1]) / 100, [windowSize]);
+
   newBoard.forEach((row, y) =>
     row.map((val, x) => {
       if (playerPos?.[0] === x && playerPos?.[1] === y) {
@@ -41,10 +59,20 @@ const GameDisplay = ({
       }
     })
   );
+  console.log(player.x, player.y);
+
   return (
     <div
       className={styles.display}
-      style={{ gridTemplate: `repeat(${board.length}, 1fr) / repeat(${board[0].length}, 1fr)` }}
+      style={{
+        gridTemplate: `repeat(${board.length}, 1fr) / repeat(${board[0].length}, 1fr)`,
+        transform: `translateY(${
+          (maxMin(newBoard.length - 3, 2, player.y) + 0.5) * computedVmin * -20 + windowSize[1] / 2
+        }px) translateX(${
+          (maxMin(newBoard[0].length - 5, 4, player.x) + 0.5) * computedVmin * -20 +
+          windowSize[0] / 2
+        }px)`,
+      }}
     >
       {newBoard.map((row, y) =>
         row.map((val, x) => (

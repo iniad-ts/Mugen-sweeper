@@ -1,14 +1,18 @@
 .display {
+  position: absolute;
   display: grid;
   grid-row: 1 / 4;
   grid-column: 2 / 5;
   background-color: #f00;
   border-radius: 10px;
+  transition: transform 0.5s linear;
   transition: inset 0.5s ease-out;
 }
 
 .display * {
   position: relative;
+  width: 20svmin;
+  aspect-ratio: 1;
   user-select: none;
   background-color: #dca;
   background-size: 1400%;
