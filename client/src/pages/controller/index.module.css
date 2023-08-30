@@ -2,6 +2,7 @@
   position: relative;
   height: 100svh;
   overflow: hidden;
+  touch-action: manipulation;
 }
 
 .moveButton {
@@ -14,6 +15,7 @@
   gap: 2.5svmin;
   width: 45svmin;
   aspect-ratio: 1;
+  touch-action: manipulation;
 }
 
 .button {
@@ -23,6 +25,8 @@
   aspect-ratio: 1;
   font-size: 3vmin;
   font-size: 4svmin;
+  touch-action: manipulation;
+  user-select: none;
   background-color: #f5f5f988;
   border: 1svmin solid #e9e9f1;
   border-radius: 4svmin;
@@ -38,6 +42,8 @@
   width: 20svmin;
   aspect-ratio: 1;
   font-size: 8svmin;
+  touch-action: manipulation;
+  user-select: none;
   background-color: #f5f5f988;
   border: 1.5svmin solid #e9e9f1;
   border-radius: 4svmin;
@@ -53,6 +59,8 @@
   width: 20svmin;
   aspect-ratio: 1;
   font-size: 8svmin;
+  touch-action: manipulation;
+  user-select: none;
   background-color: #f5f5f988;
   border: 1.5svmin solid #e9e9f1;
   border-radius: 4svmin;

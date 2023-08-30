@@ -10,8 +10,8 @@
 
 .display * {
   position: relative;
-  width: 20svmin;
   aspect-ratio: 1;
+  user-select: none;
   background-color: #dca;
   background-size: 1400%;
   border: 1px solid #fff;
@@ -62,9 +62,8 @@
   align-items: center;
   justify-content: center;
   background-color: #4a2;
-  border-width: 5px;
-  border-top: solid #290 7px;
-  border-right: solid #fa2;
-  border-bottom: solid #e91;
-  border-left: solid #fb3;
+  border-top: solid #290 15px;
+  border-right: solid #fa2 7.5px;
+  border-bottom: solid #e91 5px;
+  border-left: solid #fb3 7.5px;
 }

@@ -58,6 +58,8 @@ const GameDisplay = ({ player, board }: { player: PlayerModel; board: BoardModel
 
   const computedVmin = useMemo(() => Math.min(windowSize[0], windowSize[1]) / 100, [windowSize]);
 
+  const cellSize = 34 / computedVmin ** 0.5;
+
   newBoard.forEach((row, y) =>
     row.map((val, x) => {
       if (playerPos?.[0] === x && playerPos?.[1] === y) {
@@ -77,13 +79,13 @@ const GameDisplay = ({ player, board }: { player: PlayerModel; board: BoardModel
         gridTemplate: `repeat(${board.length}, 1fr) / repeat(${board[0].length}, 1fr)`,
         top: `${maxMin(
           0,
-          -20 * computedVmin * board.length + windowSize[1],
-          (player.y + 0.5) * computedVmin * -20 + windowSize[1] / 2
+          -cellSize * computedVmin * board.length + windowSize[1],
+          (player.y + 0.5) * computedVmin * -cellSize + windowSize[1] / 2
         )}px`,
         left: `${maxMin(
           0,
-          -20 * computedVmin * board[0].length + windowSize[0],
-          (player.x + 0.5) * computedVmin * -20 + windowSize[0] / 2
+          -cellSize * computedVmin * board[0].length + windowSize[0],
+          (player.x + 0.5) * computedVmin * -cellSize + windowSize[0] / 2
         )}px`,
       }}
     >
@@ -96,6 +98,7 @@ const GameDisplay = ({ player, board }: { player: PlayerModel; board: BoardModel
               !IS_BLANK_CELL(val)
                 ? {
                     backgroundPositionX: `${7.65 * (CELL_NUMBER(val) - 1)}%`,
+                    width: `${cellSize}svmin`,
                   }
                 : {}
             }
