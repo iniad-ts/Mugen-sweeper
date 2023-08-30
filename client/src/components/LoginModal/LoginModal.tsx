@@ -13,7 +13,7 @@ const LoginModal: React.FC = () => {
     const res = await apiClient.player.$get();
     const playerId = getUserIdFromLocalStorage();
     const isLoggedIn =
-      typeof res.find((player) => player.id === playerId) === 'object' ? true : false;
+      typeof res.find((player) => player && player.id === playerId) === 'object' ? true : false;
     if (isLoggedIn) {
       router.push({ query: { playerId } });
     }
