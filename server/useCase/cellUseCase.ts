@@ -12,7 +12,7 @@ export const cellUseCase = {
     const res = await cellsRepository.findAllOrderByWhenOpenedDesc();
     if (res === null) return;
     const moreOldCells = sliceWithTime(new Date().getTime() - 1000000, res);
-    moreOldCells.forEach((cell) => cellsRepository.delete(cell.x, cell.y, cell.whoOpened));
+    moreOldCells.forEach((cell) => cell && cellsRepository.delete(cell.x, cell.y, cell.whoOpened));
   },
 
   updateUserInputs: async (userInputs: (0 | 1)[][]) => {
