@@ -81,7 +81,7 @@ const GameDisplay = ({ player, board }: { player: PlayerModel; board: BoardModel
           (maxMin(newBoard.length - 3, 2, player.y) + 0.5) * computedVmin * -20 + windowSize[1] / 2
         }px`,
         left: `${
-          (maxMin(newBoard[0].length - 5, 4, player.x) + 0.5) * computedVmin * -20 +
+          (maxMin(newBoard[0].length - 6, 5, player.x) + 0.5) * computedVmin * -20 +
           windowSize[0] / 2
         }px`,
       }}
