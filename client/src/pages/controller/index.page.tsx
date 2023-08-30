@@ -3,6 +3,7 @@ import type { PlayerModel } from 'commonTypesWithClient/models';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
 import GameDisplay from 'src/components/GameDisplay/GameDisplay';
+import { GameOver } from 'src/components/GameOver/GameOver';
 import { Loading } from 'src/components/Loading/Loading';
 import LoginModal from 'src/components/LoginModal/LoginModal';
 import type { ActionModel, BoardModel } from 'src/types/types';
@@ -111,8 +112,12 @@ const Controller = () => {
       setPlayer(res);
     };
 
+    const isFailed = () => true;
+    // board.flat().find((cell) => TYPE_IS(cell, 'bomb')) !== undefined;
+
     return (
       <div className={styles.controller}>
+        {isFailed() && <GameOver userId={player.id} />}
         <div className={styles.moveButton}>
           {actions.map((action, i) => (
             <button key={i} onClick={() => clickButton(action)} className={styles.button}>

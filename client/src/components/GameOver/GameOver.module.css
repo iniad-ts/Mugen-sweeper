@@ -1,0 +1,41 @@
+.container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  background-color: #000c;
+}
+
+.message {
+  display: flex;
+  flex-direction: column;
+  gap: 1vmin;
+  align-items: center;
+  justify-content: center;
+  width: 50vw;
+  height: 50vh;
+  color: #fff;
+  background-color: #111112;
+  border: 2vmin solid #400;
+  border-radius: 10vmin;
+}
+
+.message > button {
+  width: 20vw;
+  height: 7vh;
+  color: #bbb;
+  background-color: #18181a;
+  border: #423 1vmin solid;
+  border-radius: 2vmin;
+}
+
+.message > button:active {
+  transition: transform 0.1s ease-out;
+  transform: scale(0.9);
+}
