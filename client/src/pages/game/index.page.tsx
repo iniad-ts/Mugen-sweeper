@@ -1,9 +1,10 @@
 import type { PlayerModel } from 'commonTypesWithClient/models';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Webcam from 'react-webcam';
 import { Loading } from 'src/components/Loading/Loading';
 import { staticPath } from 'src/utils/$path';
 import { apiClient } from 'src/utils/apiClient';
+import { CELL_FLAGS } from 'src/utils/flag';
 import { minesweeperUtils } from 'src/utils/minesweeperUtils';
 import { numbers } from 'src/utils/nums';
 import styles from './index.module.css';
@@ -24,70 +25,65 @@ const Number = ({ value }: { value: number }) => {
     value === 0
       ? [...Array(5)].map((_, j) => [...Array(5)].map((_, i) => (j + i) % 2))
       : numbers[value - 1];
-  return useMemo(
-    () => (
-      <div className={styles['numberMain']}>
-        <div className={styles.border} style={{ gridArea: 't' }} />
-        <div className={styles.border} style={{ gridArea: 'l' }} />
-        {board.map((row, y) =>
-          row.map((num, x) => (
-            <div
-              className={styles.number}
-              key={`${y}-${x}`}
-              style={{ backgroundColor: num === 0 ? '#0000' : '#000' }}
-            />
-          ))
-        )}
-        <div className={styles.border} style={{ gridArea: 'r' }} />
-        <div className={styles.border} style={{ gridArea: 'u' }} />
-      </div>
-    ),
-    [board]
+  return (
+    <div className={styles['numberMain']}>
+      <div className={styles.border} style={{ gridArea: 't' }} />
+      <div className={styles.border} style={{ gridArea: 'l' }} />
+      {board.map((row, y) =>
+        row.map((num, x) => (
+          <div
+            className={styles.number}
+            key={`${y}-${x}`}
+            style={{ backgroundColor: num === 0 ? '#0000' : '#000' }}
+          />
+        ))
+      )}
+      <div className={styles.border} style={{ gridArea: 'r' }} />
+      <div className={styles.border} style={{ gridArea: 'u' }} />
+    </div>
   );
 };
 
 const ProfileBoard = ({ player, index }: { player: PlayerModel; index: number }) => {
-  return useMemo(() => {
-    const baseSize = 35;
-    const imageSize = baseSize * (8 - Math.min(index, 3) * 2) * 0.3;
-    const scoreColor = getScoreColor(player.score);
-    const rankTextFontSize = index >= 3 ? '1.5em' : '1em';
-    return (
-      <div
-        className={styles.prof}
-        style={{
-          backgroundColor: player.isAlive ? '#8f8' : '#f88',
-          borderColor: player.isAlive ? '#8f8' : '#f88',
-        }}
-      >
-        <div className={styles.rank}>
-          {index < 3 ? (
-            <img
-              src={MEDAL_IMAGES[index]}
-              alt={`Rank ${index + 1} Medal`}
-              className={styles.rankImage}
-              style={{
-                width: `${imageSize}px`,
-                height: `${imageSize}px`,
-              }}
-            />
-          ) : (
-            <span style={{ fontSize: rankTextFontSize }}>{index + 1}</span>
-          )}
-        </div>
-        <div className={styles.name}>{player.name}</div>
-        <div className={styles.score} style={{ color: scoreColor }}>
-          {player.score}
-        </div>
+  const baseSize = 35;
+  const imageSize = baseSize * (8 - Math.min(index, 3) * 2) * 0.3;
+  const scoreColor = getScoreColor(player.score);
+  const rankTextFontSize = index >= 3 ? '1.5em' : '1em';
+  return (
+    <div
+      className={styles.prof}
+      style={{
+        backgroundColor: player.isAlive ? '#8f8' : '#f88',
+        borderColor: player.isAlive ? '#8f8' : '#f88',
+      }}
+    >
+      <div className={styles.rank}>
+        {index < 3 ? (
+          <img
+            src={MEDAL_IMAGES[index]}
+            alt={`Rank ${index + 1} Medal`}
+            className={styles.rankImage}
+            style={{
+              width: `${imageSize}px`,
+              height: `${imageSize}px`,
+            }}
+          />
+        ) : (
+          <span style={{ fontSize: rankTextFontSize }}>{index + 1}</span>
+        )}
       </div>
-    );
-  }, [player, index]);
+      <div className={styles.name}>{player.name}</div>
+      <div className={styles.score} style={{ color: scoreColor }}>
+        {player.score}
+      </div>
+    </div>
+  );
 };
 
 const Game = () => {
   const [bombMap, setBombMap] = useState<(0 | 1)[][]>(); //TODO bombMapの必要性をかんがえる
   const [userInputs, setUserInputs] = useState<(0 | 1)[][]>();
-  const [ranking, setRanking] = useState<PlayerModel[]>();
+  const [ranking, setRanking] = useState<PlayerModel[]>([]);
 
   useEffect(() => {
     const cancelId = setInterval(() => {
@@ -127,7 +123,7 @@ const Game = () => {
   const board = minesweeperUtils.makeBoard(
     bombMap,
     userInputs,
-    bombMap.map((row) => row.map(() => -1))
+    bombMap.map((row) => row.map(() => CELL_FLAGS['block']))
   );
 
   return (
