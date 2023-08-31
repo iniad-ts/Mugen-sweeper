@@ -38,9 +38,7 @@ const GameDisplay = ({ player, board }: { player: PlayerModel; board: BoardModel
         newBoard[y][x] = val | CELL_FLAGS['select'];
       }
       if (displayPos?.[0] === x && displayPos?.[1] === y) {
-        // console.log(x, y);
         newBoard[y][x] = val | CELL_FLAGS['user'];
-        console.log(newBoard[y][x]);
       }
     })
   );
