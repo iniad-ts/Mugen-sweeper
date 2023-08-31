@@ -149,10 +149,9 @@ const Game = () => {
         </div>
       </div>
       <div className={styles.ranking}>
-        {ranking.map(
-          (player, index) =>
-            player && <ProfileBoard key={player.id} player={player} index={index} />
-        )}
+        {ranking.map((player, index) => (
+          <ProfileBoard key={player.id} player={player} index={index} />
+        ))}
       </div>
     </div>
   );
