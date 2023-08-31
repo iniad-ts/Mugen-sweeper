@@ -14,8 +14,8 @@ export const handleMove = async (action: ActionModel, board: BoardModel, player:
     if (
       [board[player.y] !== undefined, board[newPlayer.y] !== undefined].every(Boolean) &&
       [
-        TYPE_IS(board[player.y][player.x], 'block'),
-        TYPE_IS(board[newPlayer.y][newPlayer.x], 'block'),
+        TYPE_IS('block', board[player.y][player.x]),
+        TYPE_IS('block', board[newPlayer.y][newPlayer.x]),
       ].every(Boolean)
     ) {
       return player;

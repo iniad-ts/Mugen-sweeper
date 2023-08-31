@@ -20,7 +20,7 @@ const GameDisplay = ({ player, board }: { player: PlayerModel; board: BoardModel
   const [displayPos, setDisplayPos] = useState<PlayerPos>();
   useEffect(() => {
     setPlayerPos([player.x, player.y]);
-    if (board[player.y] === undefined || TYPE_IS(board[player.y][player.x], 'block')) {
+    if (board[player.y] === undefined || TYPE_IS('block', board[player.y][player.x])) {
       return;
     }
     setDisplayPos([player.x, player.y]);

@@ -18,7 +18,7 @@ export const minesweeperUtils = {
     directions
       .map((direction) => ({ x: x + direction[0], y: y + direction[1] }))
       .filter(
-        (nextPos) => board[nextPos.y] !== undefined && TYPE_IS(board[nextPos.y][nextPos.x], 'block')
+        (nextPos) => board[nextPos.y] !== undefined && TYPE_IS('block', board[nextPos.y][nextPos.x])
       ),
 
   countAroundBombsNum: (bombMap: BoardModel, x: number, y: number) =>

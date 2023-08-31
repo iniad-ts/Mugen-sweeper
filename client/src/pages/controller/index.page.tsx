@@ -86,7 +86,7 @@ const Controller = () => {
         alert('you are dead');
         setTimeout(() => router.push('/controller'), 5000);
       }
-      if (!TYPE_IS(board[y][x], 'block')) return;
+      if (!TYPE_IS('block', board[y][x])) return;
       const newBoard = deepCopy<BoardModel>(board);
       const newOpenCells = new Set(openCells);
       const openSurroundingCells = (x: number, y: number, isUserInput: boolean) => {
@@ -105,7 +105,7 @@ const Controller = () => {
 
     const flag = () => {
       const [x, y] = [player.x, player.y];
-      if (!TYPE_IS(board[y][x], 'block')) return;
+      if (!TYPE_IS('block', board[y][x])) return;
       const newBoard = deepCopy<BoardModel>(board);
       newBoard[y][x] = CHANGE_FLAG(newBoard[y][x], 'flag');
       setBoard(newBoard);
