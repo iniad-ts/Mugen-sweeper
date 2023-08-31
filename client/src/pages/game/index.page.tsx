@@ -1,9 +1,10 @@
 import type { PlayerModel } from 'commonTypesWithClient/models';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Webcam from 'react-webcam';
 import { Loading } from 'src/components/Loading/Loading';
 import { staticPath } from 'src/utils/$path';
 import { apiClient } from 'src/utils/apiClient';
+import { CELL_FLAGS } from 'src/utils/flag';
 import { hslToHex } from 'src/utils/hueToRGB';
 import { minesweeperUtils } from 'src/utils/minesweeperUtils';
 import { numbers } from 'src/utils/nums';
@@ -25,13 +26,10 @@ const getScoreColor = (score: number): string => {
 };
 
 const Number = ({ value }: { value: number }) => {
-  const board = useMemo(
-    () =>
-      value === 0
-        ? [...Array(5)].map((_, j) => [...Array(5)].map((_, i) => (j + i) % 2))
-        : numbers[value - 1],
-    [value]
-  );
+  const board =
+    value === 0
+      ? [...Array(5)].map((_, j) => [...Array(5)].map((_, i) => (j + i) % 2))
+      : numbers[value - 1];
   return (
     <div className={styles['numberMain']}>
       <div className={styles.border} style={{ gridArea: 't' }} />
@@ -132,7 +130,7 @@ const Game = () => {
   const board = minesweeperUtils.makeBoard(
     bombMap,
     userInputs,
-    bombMap.map((row) => row.map(() => -1))
+    bombMap.map((row) => row.map(() => CELL_FLAGS['block']))
   );
 
   return (
