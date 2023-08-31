@@ -2,6 +2,7 @@ import type { GameModel } from '$/commonTypesWithClient/models';
 import { cellsRepository } from '$/repository/cellsRepository';
 import { gameRepository } from '$/repository/gameRepository';
 import { playersRepository } from '$/repository/playersRepository';
+import { deepCopy } from '$/service/deepCopy';
 import { gameIdParser } from '$/service/idParsers';
 import { make2DArray } from '$/service/make2DArray';
 import { randomUUID } from 'crypto';
@@ -37,11 +38,12 @@ export const gameUseCase = {
   },
 
   save: async () => {
-    const res = await cellsRepository.findAllUserInputted();
-    const game = await gameRepository.find();
-    if (game === null || res === null) return;
-    res.forEach((cell) => (game.userInputs[cell.y][cell.x] = 1));
-    return await gameRepository.save({ ...game, userInputs: game.userInputs });
+    const resCells = await cellsRepository.findAllUserInputted();
+    const resGame = await gameRepository.find();
+    if (resGame === null || resCells === null) return;
+    const newUserInputs = deepCopy<(0 | 1)[][]>(resGame.userInputs);
+    resCells.forEach((cell) => (newUserInputs[cell.y][cell.x] = 1));
+    return await gameRepository.save({ ...resGame, userInputs: newUserInputs });
   },
 
   getBoard: async () => {
