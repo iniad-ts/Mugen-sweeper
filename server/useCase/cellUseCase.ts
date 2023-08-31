@@ -1,7 +1,6 @@
 import type { UserId } from '$/commonTypesWithClient/branded';
 import { cellsRepository } from '$/repository/cellsRepository';
 import { deepCopy } from '$/service/deepCopy';
-import { sliceWithTime } from '$/service/sliceWithTime';
 
 export const cellUseCase = {
   delete: async (userId: UserId) => {
@@ -11,7 +10,8 @@ export const cellUseCase = {
   restore: async () => {
     const res = await cellsRepository.findAllOrderByWhenOpenedDesc();
     if (res === null) return;
-    const moreOldCells = sliceWithTime(new Date().getTime() - 1000000, res);
+    const sliceIndex = res.findIndex((cell) => cell.whenOpened < Date.now() - 3000000);
+    const moreOldCells = res.slice(0, sliceIndex);
     moreOldCells.forEach((cell) => cellsRepository.delete(cell.x, cell.y, cell.whoOpened));
   },
 
