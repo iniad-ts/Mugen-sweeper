@@ -9,6 +9,10 @@
   border-radius: 10px;
 }
 
+.display * {
+  background-position-x: -7.67%;
+}
+
 .number {
   display: flex;
   align-items: center;
