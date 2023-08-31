@@ -43,7 +43,7 @@ export const playersRepository = {
 
   findAllOrderByScoreDesc: async (): Promise<PlayerModel[]> => {
     const prismaPlayers = await prismaClient.player.findMany({
-      orderBy: { score: 'desc' }, 
+      orderBy: { score: 'desc' },
     });
     return prismaPlayers.map(toPlayerModel);
   },

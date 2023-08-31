@@ -7,9 +7,9 @@ import { playerUseCase } from './playerUseCase';
 
 export const playerActionUseCase = {
   dig: async (cells: CellModel[]) => {
-    const resLength = await Promise.all(cells.map((cell) => cellsRepository.create({ ...cell }))).then(
-      (results) => results.filter((result) => result !== null).length
-    );
+    const resLength = await Promise.all(
+      cells.map((cell) => cellsRepository.create({ ...cell }))
+    ).then((results) => results.filter((result) => result !== null).length);
     const playerId = cells[0].whoOpened;
     const player = await playersRepository.find(playerId);
     if (player === null) return null;
