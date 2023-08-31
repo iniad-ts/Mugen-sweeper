@@ -100,7 +100,7 @@ const GameDisplay = ({ player, board }: { player: PlayerModel; board: BoardModel
                     backgroundPositionX: `${7.65 * (CELL_NUMBER(val) - 1)}%`,
                     width: `${cellSize}svmin`,
                   }
-                : {}
+                : { width: `${cellSize}svmin` }
             }
           />
         ))
