@@ -1,7 +1,7 @@
 .container {
   position: relative;
   height: 100vh;
-  aspect-ratio: 16 /9; /* 一旦 */
+  aspect-ratio: 16 /9;
 }
 
 .game {
@@ -54,6 +54,7 @@
 .ranking {
   position: fixed;
   top: 0;
+  right: 0;
   display: grid;
   flex-direction: row;
   grid-template-rows: 250px 150fr 100fr repeat(7, 80px);
@@ -62,12 +63,15 @@
   height: 100%;
   padding: 10px;
   overflow: hidden;
-  transition: 1000ms;
+
+  /* 開発時に消えると開発しづらいので一旦コメントアウト */
+
+  /* transition: 1000ms;
   transform: translateX(0);
   animation-name: animation;
   animation-duration: 20s;
   animation-timing-function: linear;
-  animation-iteration-count: infinite;
+  animation-iteration-count: infinite; */
 }
 
 @keyframes animation {
@@ -101,7 +105,7 @@
   grid-template-columns: 25% 1fr 5px;
   width: 100%;
   height: 100%;
-  background-color: #fffe;
+  background-color: #fffffff4;
   border: solid 10px #fff;
   border-radius: 30px;
 }
@@ -131,4 +135,15 @@
 
 .rankImage {
   aspect-ratio: 1;
+  background-color: #fff;
+  border-radius: 0 0 20% 20%;
+  box-shadow: 0 0 20px #fff;
+}
+
+.rank > p,
+.score > p,
+.name > p {
+  background-color: #fff;
+  border-radius: 20%;
+  box-shadow: 0 0 20px #fff;
 }

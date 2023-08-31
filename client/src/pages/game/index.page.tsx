@@ -53,13 +53,14 @@ const Number = ({ value }: { value: number }) => {
 
 const ProfileBoard = ({ player, index }: { player: PlayerModel; index: number }) => {
   const imageSize = 65 - index * 10 - 5;
-  const fontSize = 2 - Math.min(index, 3) * 0.3;
+  const fontSize = 2 - Math.min(index, 2) * 0.6;
   const scoreColor = getScoreColor(player.score);
   return (
     <div
       className={styles.prof}
       style={{
         borderColor: player.isAlive ? '#8f8' : '#f88',
+        boxShadow: player.isAlive ? '0 0 10px #8f8' : ' 0 0 10px#f88',
       }}
     >
       <div className={styles.rank}>
@@ -73,14 +74,16 @@ const ProfileBoard = ({ player, index }: { player: PlayerModel; index: number })
             }}
           />
         ) : (
-          <div className={styles.rank}>{index + 1}</div>
+          <div className={styles.rank}>
+            <p>{index + 1}</p>
+          </div>
         )}
       </div>
       <div className={styles.name} style={{ fontSize: `${fontSize}em` }}>
-        {player.name}
+        <p>{player.name}</p>
       </div>
       <div className={styles.score} style={{ color: scoreColor, fontSize: `${fontSize * 1.5}em` }}>
-        {player.score}
+        <p>{player.score}</p>
       </div>
     </div>
   );
