@@ -1,6 +1,7 @@
 .container {
   display: grid;
-  grid-template-columns: 27fr 5fr; /* 動画が3：2になる */
+
+  /* grid-template-columns: 27fr 5fr; 動画が3：2になる */
   width: 100vw;
   height: 100vh;
   aspect-ratio: 16 / 9; /* 一旦 */

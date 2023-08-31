@@ -24,25 +24,22 @@ const Number = ({ value }: { value: number }) => {
     value === 0
       ? [...Array(5)].map((_, j) => [...Array(5)].map((_, i) => (j + i) % 2))
       : numbers[value - 1];
-  return useMemo(
-    () => (
-      <div className={styles['numberMain']}>
-        <div className={styles.border} style={{ gridArea: 't' }} />
-        <div className={styles.border} style={{ gridArea: 'l' }} />
-        {board.map((row, y) =>
-          row.map((num, x) => (
-            <div
-              className={styles.number}
-              key={`${y}-${x}`}
-              style={{ backgroundColor: num === 0 ? '#0000' : '#000' }}
-            />
-          ))
-        )}
-        <div className={styles.border} style={{ gridArea: 'r' }} />
-        <div className={styles.border} style={{ gridArea: 'u' }} />
-      </div>
-    ),
-    [board]
+  return (
+    <div className={styles['numberMain']}>
+      <div className={styles.border} style={{ gridArea: 't' }} />
+      <div className={styles.border} style={{ gridArea: 'l' }} />
+      {board.map((row, y) =>
+        row.map((num, x) => (
+          <div
+            className={styles.number}
+            key={`${y}-${x}`}
+            style={{ backgroundColor: num === 0 ? '#0000' : '#000' }}
+          />
+        ))
+      )}
+      <div className={styles.border} style={{ gridArea: 'r' }} />
+      <div className={styles.border} style={{ gridArea: 'u' }} />
+    </div>
   );
 };
 
@@ -153,9 +150,9 @@ const Game = () => {
         </div>
       </div>
       <div className={styles.ranking}>
-        {ranking.map((player, index) => (
+        {/* {ranking.map((player, index) => (
           <ProfileBoard key={player.id} player={player} index={index} />
-        ))}
+        ))} */}
       </div>
     </div>
   );
