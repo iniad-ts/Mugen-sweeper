@@ -5,7 +5,7 @@
   grid-column: 2 / 5;
   background-color: #c6c6c6;
   border: solid #808080 2svmin;
-  transition: inset 0.5s ease-out;
+  transition: transform 0.5s linear;
 }
 
 .cell {
@@ -31,8 +31,8 @@
 
 .player {
   position: fixed;
-  top: calc(50% - 12svmin - 1px);
-  left: calc(50% - 12svmin - 1px);
+  top: calc(50svh - 10svmin);
+  left: calc(50vw - 10svmin);
   width: 20svmin;
   aspect-ratio: 1;
   border: solid #f008 8px;
