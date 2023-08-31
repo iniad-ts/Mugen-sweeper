@@ -6,58 +6,56 @@
 
 .moveButton {
   position: fixed;
-  bottom: 5svmin;
-  left: 5svmin;
+  bottom: 2vmax;
+  left: 2vmax;
   z-index: 1;
   display: grid;
   grid-template: repeat(3, 1fr) / repeat(3, 1fr);
-  gap: 2.5svmin;
-  width: 45svmin;
+  gap: 1vmax;
+  width: 18vmax;
   aspect-ratio: 1;
 }
 
+.button {
+  font-size: 3vmin;
+  font-size: 2vmax;
+  border: 0.3vmax solid #e9e9f1;
+  border-radius: 2vmax;
+}
+
+.flagButton,
+.openButton,
 .button {
   display: flex;
   align-items: center;
   justify-content: center;
   aspect-ratio: 1;
-  font-size: 3vmin;
-  font-size: 4svmin;
+  touch-action: manipulation;
+  user-select: none;
   background-color: #f5f5f9;
-  border: 1svmin solid #e9e9f1;
-  border-radius: 4svmin;
-  box-shadow: 0 0 2svmin #0006;
+  box-shadow: 0 0 1vmax #000;
   transition: transform 0.1s ease-out;
+}
+
+.flagButton,
+.openButton {
+  position: fixed;
+  z-index: 1;
+  width: 8vmax;
+  aspect-ratio: 1;
+  font-size: 4vmax;
+  border: 0.5vmax solid #e9e9f1;
+  border-radius: 2vmax;
 }
 
 .flagButton {
-  position: fixed;
-  right: 5svmin;
-  bottom: 30svmin;
-  z-index: 1;
-  width: 20svmin;
-  aspect-ratio: 1;
-  font-size: 8svmin;
-  background-color: #f5f5f9;
-  border: 1.5svmin solid #e9e9f1;
-  border-radius: 4svmin;
-  box-shadow: 0 0 2svmin #0006;
-  transition: transform 0.1s ease-out;
+  right: 2vmax;
+  bottom: 12vmax;
 }
 
 .openButton {
-  position: fixed;
-  right: 30svmin;
-  bottom: 5svmin;
-  z-index: 1;
-  width: 20svmin;
-  aspect-ratio: 1;
-  font-size: 8svmin;
-  background-color: #f5f5f9;
-  border: 1.5svmin solid #e9e9f1;
-  border-radius: 4svmin;
-  box-shadow: 0 0 2svmin #0006;
-  transition: transform 0.1s ease-out;
+  right: 12vmax;
+  bottom: 2vmax;
 }
 
 .button:active,
