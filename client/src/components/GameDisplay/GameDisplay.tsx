@@ -55,9 +55,7 @@ const GameDisplay = ({ player, board }: { player: PlayerModel; board: BoardModel
                   }
                 : {}
             }
-          >
-            {val}
-          </div>
+          />
         ))
       )}
     </div>
