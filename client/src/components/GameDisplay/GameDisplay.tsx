@@ -2,7 +2,13 @@ import type { PlayerModel } from 'commonTypesWithClient/models';
 import { useEffect, useState } from 'react';
 import type { BoardModel } from 'src/types/types';
 import { deepCopy } from 'src/utils/deepCopy';
-import { CELL_FLAGS, CELL_NUMBER, CELL_STYLE_HANDLER, HAS_FLAG, TYPE_IS } from 'src/utils/flag';
+import {
+  CELL_FLAGS,
+  CELL_NUMBER,
+  CELL_STYLE_HANDLER,
+  IS_BLANK_CELL,
+  TYPE_IS,
+} from 'src/utils/flag';
 import styles from './GameDisplay.module.css';
 
 const CLASS_NAMES = {
@@ -49,7 +55,7 @@ const GameDisplay = ({ player, board }: { player: PlayerModel; board: BoardModel
             className={CELL_STYLE_HANDLER(val, CLASS_NAMES)}
             key={`${y}-${x}`}
             style={
-              !HAS_FLAG(val)
+              !IS_BLANK_CELL(val)
                 ? {
                     backgroundPositionX: `${7.65 * (CELL_NUMBER(val) - 1)}%`,
                   }
