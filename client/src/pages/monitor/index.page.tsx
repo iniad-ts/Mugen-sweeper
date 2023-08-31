@@ -108,7 +108,7 @@ const Monitor = () => {
     const resGame = await apiClient.game.$get();
     if (resGame === null) return;
     const newBoard = minesweeperUtils.makeBoard(resGame.bombMap, resGame.userInputs, board);
-    const newFocusedPlayer = resPlayers.find((player) => player && player.id === focusedPlayer?.id);
+    const newFocusedPlayer = resPlayers.find((player) => player.id === focusedPlayer?.id);
     setBoard(newBoard);
     setPlayers(resPlayers);
     setFocusedPlayer(newFocusedPlayer);
