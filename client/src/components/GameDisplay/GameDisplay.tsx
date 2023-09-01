@@ -69,9 +69,9 @@ const GameDisplay = ({ player, board }: { player: PlayerModel; board: BoardModel
     })
   );
 
-  const VERTICAL_DISTANCE_FROM_CENTER = Math.floor(windowSize[1] / (20 * computedVmin)) + 2;
+  const VERTICAL_DISTANCE_FROM_CENTER = Math.ceil(windowSize[0] / (20 * computedVmin) / 2) + 1;
 
-  const HORIZONTAL_DISTANCE_FROM_CENTER = Math.ceil(windowSize[0] / (20 * computedVmin) / 4);
+  const HORIZONTAL_DISTANCE_FROM_CENTER = Math.ceil(windowSize[1] / (20 * computedVmin) / 2) + 1;
 
   const displayLeft = player.x - VERTICAL_DISTANCE_FROM_CENTER + 1;
 
@@ -116,10 +116,7 @@ const GameDisplay = ({ player, board }: { player: PlayerModel; board: BoardModel
                   }
                 : {}
             }
-          >
-            {correctionX}
-            {VERTICAL_DISTANCE_FROM_CENTER}
-          </div>
+          />
         ))
       )}
     </div>
