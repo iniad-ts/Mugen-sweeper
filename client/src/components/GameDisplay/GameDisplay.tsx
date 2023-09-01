@@ -1,14 +1,8 @@
 import type { PlayerModel } from 'commonTypesWithClient/models';
 import { useEffect, useState } from 'react';
-import type { BoardModel } from 'src/types/types';
+import type { BoardModel, Pos } from 'src/types/types';
 import { deepCopy } from 'src/utils/deepCopy';
-import {
-  CELL_FLAGS,
-  CELL_NUMBER,
-  CELL_STYLE_HANDLER,
-  IS_BLANK_CELL,
-  TYPE_IS,
-} from 'src/utils/flag';
+import { CELL_FLAGS, CELL_NUMBER, CELL_STYLE_HANDLER, IS_BLANK_CELL } from 'src/utils/flag';
 import styles from './GameDisplay.module.css';
 
 const CLASS_NAMES = {
@@ -21,16 +15,21 @@ const CLASS_NAMES = {
 };
 type PlayerPos = [number, number];
 
-const GameDisplay = ({ player, board }: { player: PlayerModel; board: BoardModel }) => {
+const GameDisplay = ({
+  player,
+  board,
+  display,
+}: {
+  player: PlayerModel;
+  board: BoardModel;
+  display: Pos;
+}) => {
   const [playerPos, setPlayerPos] = useState<PlayerPos>();
   const [displayPos, setDisplayPos] = useState<PlayerPos>();
   useEffect(() => {
     setPlayerPos([player.x, player.y]);
-    if (board[player.y] === undefined || TYPE_IS('block', board[player.y][player.x])) {
-      return;
-    }
-    setDisplayPos([player.x, player.y]);
-  }, [player.x, player.y, board]);
+    setDisplayPos([display.x, display.y]);
+  }, [player.x, player.y, display]);
   const newBoard = deepCopy<BoardModel>(board);
   newBoard.forEach((row, y) =>
     row.map((val, x) => {
