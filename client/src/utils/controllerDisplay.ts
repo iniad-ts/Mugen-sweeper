@@ -2,26 +2,25 @@ import type { BoardModel } from '../types/types';
 
 export const controllerDisplay = (
   board: BoardModel,
-  verticalDistance: number,
-  horizontalDistance: number,
   x: number,
-  y: number
+  y: number,
+  VERTICAL_DISTANCE_FROM_CENTER: number,
+  HORIZONTAL_DISTANCE_FROM_CENTER: number
 ) => {
-  const correctionX = x - horizontalDistance < 0 ? -(x - horizontalDistance) : 0;
-  const correctionY = y - horizontalDistance < 0 ? -(y - horizontalDistance) : 0;
-  const correctionOverX = board[0].length - x - horizontalDistance < 0 ? x - horizontalDistance : 0;
-  const correctionOverY = board.length - y - horizontalDistance < 0 ? y - horizontalDistance : 0;
+  const displayLeft = x - VERTICAL_DISTANCE_FROM_CENTER + 1;
+
+  const displayTop = y - HORIZONTAL_DISTANCE_FROM_CENTER + 1;
+
+  const displayRight = x + VERTICAL_DISTANCE_FROM_CENTER;
+
+  const displayBottom = y + HORIZONTAL_DISTANCE_FROM_CENTER;
+
+  const correctionX = -Math.min(displayLeft, 0) - Math.max(displayRight - board[0].length, 0);
+
+  const correctionY = -Math.min(displayTop, 0) - Math.max(displayBottom - board.length, 0);
 
   const slicedBoard = board
-    .map((row) =>
-      row.slice(
-        x - horizontalDistance + correctionX + correctionOverX,
-        x + horizontalDistance + 1 + correctionX + correctionOverX
-      )
-    )
-    .slice(
-      y - verticalDistance + correctionY + correctionOverY,
-      y + verticalDistance + 1 + correctionY + correctionOverY
-    );
+    .map((row) => row.slice(displayLeft + correctionX, displayRight + correctionX))
+    .slice(displayTop + correctionY, displayBottom + correctionY);
   return slicedBoard;
 };

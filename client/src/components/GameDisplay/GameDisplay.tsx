@@ -1,8 +1,15 @@
 import type { PlayerModel } from 'commonTypesWithClient/models';
 import { useEffect, useMemo, useState } from 'react';
 import type { BoardModel, Pos } from 'src/types/types';
+import { controllerDisplay as toControllerDisplay } from 'src/utils/controllerDisplay';
 import { deepCopy } from 'src/utils/deepCopy';
-import { CELL_FLAGS, CELL_NUMBER, CELL_STYLE_HANDLER, IS_BLANK_CELL } from 'src/utils/flag';
+import {
+  CELL_FLAGS,
+  CELL_NUMBER,
+  CELL_STYLE_HANDLER,
+  IS_BLANK_CELL,
+  TYPE_IS,
+} from 'src/utils/flag';
 import { maxMin } from 'src/utils/maxMIn';
 import styles from './GameDisplay.module.css';
 
@@ -31,6 +38,18 @@ const GameDisplay = ({
     window.innerWidth,
     window.innerHeight,
   ]);
+  const [transform, setTransform] = useState<Pos>({ x: 0, y: 0 });
+  const [oldPlayerPos, setOldPlayerPos] = useState<PlayerPos>();
+  const [displayBoard, setDisplayBoard] = useState<BoardModel>();
+
+  const computed20Vmin = useMemo(
+    () => (20 * Math.min(windowSize[0], windowSize[1])) / 100,
+    [windowSize]
+  );
+
+  const VERTICAL_DISTANCE_FROM_CENTER = Math.ceil(windowSize[0] / computed20Vmin / 2);
+
+  const HORIZONTAL_DISTANCE_FROM_CENTER = Math.ceil(windowSize[1] / computed20Vmin / 2);
 
   useEffect(() => {
     const handleResize = () => {
@@ -44,10 +63,43 @@ const GameDisplay = ({
   useEffect(() => {
     setPlayerPos([player.x, player.y]);
     setDisplayPos([display.x, display.y]);
-  }, [player.x, player.y, display]);
-  const newBoard = deepCopy<BoardModel>(board);
+  }, [player.x, player.y, display.x, display.y]);
 
-  const computedVmin = useMemo(() => Math.min(windowSize[0], windowSize[1]) / 100, [windowSize]);
+  useEffect(() => {
+    if (playerPos !== undefined) {
+      setOldPlayerPos([...playerPos]);
+    }
+  }, [playerPos]);
+
+  useEffect(() => {
+    if (playerPos === undefined || oldPlayerPos === undefined) return;
+    setTransform({ x: playerPos[0] - oldPlayerPos[0], y: playerPos[1] - oldPlayerPos[1] });
+    setDisplayBoard(
+      toControllerDisplay(
+        board,
+        player.x,
+        player.y,
+        VERTICAL_DISTANCE_FROM_CENTER,
+        HORIZONTAL_DISTANCE_FROM_CENTER
+      )
+    );
+  }, [
+    oldPlayerPos,
+    playerPos,
+    board,
+    player.x,
+    player.y,
+    HORIZONTAL_DISTANCE_FROM_CENTER,
+    VERTICAL_DISTANCE_FROM_CENTER,
+  ]);
+
+  useEffect(() => {
+    if ([transform.x, transform.y].some(Boolean)) {
+      setTimeout(() => setTransform({ x: 0, y: 0 }), 500);
+    }
+  }, [transform.x, transform.y]);
+
+  const newBoard = deepCopy<BoardModel>(board);
 
   newBoard.forEach((row, y) =>
     row.map((val, x) => {
@@ -60,57 +112,88 @@ const GameDisplay = ({
     })
   );
 
-  const VERTICAL_DISTANCE_FROM_CENTER = Math.ceil(windowSize[0] / (20 * computedVmin) / 2) + 1;
-
-  const HORIZONTAL_DISTANCE_FROM_CENTER = Math.ceil(windowSize[1] / (20 * computedVmin) / 2) + 1;
-
-  const displayLeft = player.x - VERTICAL_DISTANCE_FROM_CENTER + 1;
-
-  const displayTop = player.y - HORIZONTAL_DISTANCE_FROM_CENTER + 1;
-
-  const displayRight = player.x + VERTICAL_DISTANCE_FROM_CENTER;
-
-  const displayBottom = player.y + HORIZONTAL_DISTANCE_FROM_CENTER;
-
-  const correctionX = -Math.min(displayLeft, 0) - Math.max(displayRight - board[0].length, 0);
-
-  const correctionY = -Math.min(displayTop, 0) - Math.max(displayBottom - board.length, 0);
-
-  const cattedBoard = newBoard
-    .map((row) => row.slice(displayLeft + correctionX, displayRight + correctionX))
-    .slice(displayTop + correctionY, displayBottom + correctionY);
+  const playerDisplay = toControllerDisplay(
+    newBoard,
+    player.x,
+    player.y,
+    VERTICAL_DISTANCE_FROM_CENTER,
+    HORIZONTAL_DISTANCE_FROM_CENTER
+  );
+  if (displayBoard === undefined) {
+    setDisplayBoard(
+      toControllerDisplay(
+        board,
+        player.x,
+        player.y,
+        VERTICAL_DISTANCE_FROM_CENTER,
+        HORIZONTAL_DISTANCE_FROM_CENTER
+      )
+    );
+    return;
+  }
   return (
-    <div
-      className={styles.display}
-      style={{
-        gridTemplate: `repeat(${cattedBoard.length}, 1fr) / repeat(${cattedBoard[0].length}, 1fr)`,
-        transform: `translateY(${maxMin(
-          0,
-          -20 * computedVmin * cattedBoard.length + windowSize[1],
-          windowSize[1] / 2 - (20 * computedVmin * cattedBoard.length) / 2 + correctionY * 80
-        )}px) translateX(${maxMin(
-          0,
-          -20 * computedVmin * cattedBoard[0].length + windowSize[0],
-          windowSize[0] / 2 - (20 * computedVmin * cattedBoard[0].length) / 2 + correctionX * 80
-        )}px)`,
-      }}
-    >
-      {cattedBoard.map((row, y) =>
-        row.map((val, x) => (
-          <div
-            className={CELL_STYLE_HANDLER(val, CLASS_NAMES)}
-            key={`${y}-${x}`}
-            style={
-              !IS_BLANK_CELL(val)
-                ? {
-                    backgroundPositionX: `${7.65 * (CELL_NUMBER(val) - 1)}%`,
-                  }
-                : {}
-            }
-          />
-        ))
-      )}
-    </div>
+    <>
+      <div
+        className={styles.display}
+        style={{
+          gridTemplate: `repeat(${displayBoard.length}, 1fr) / repeat(${displayBoard[0].length}, 1fr)`,
+          transform: `translateY(${maxMin(
+            -computed20Vmin * transform.y,
+            -computed20Vmin * displayBoard.length + windowSize[1] + computed20Vmin * transform.y,
+            windowSize[1] / 2 -
+              (computed20Vmin * displayBoard.length) / 2 +
+              -Math.min(player.y - HORIZONTAL_DISTANCE_FROM_CENTER + 1, 0) -
+              Math.max(player.y + HORIZONTAL_DISTANCE_FROM_CENTER - board.length, 0) * 80 +
+              -transform.y * -computed20Vmin
+          )}px) translateX(${maxMin(
+            -computed20Vmin * transform.x,
+            -computed20Vmin * displayBoard[0].length + windowSize[0] + computed20Vmin * transform.x,
+            windowSize[0] / 2 -
+              (computed20Vmin * displayBoard[0].length) / 2 +
+              -Math.min(player.x - VERTICAL_DISTANCE_FROM_CENTER + 1, 0) -
+              Math.max(player.x + VERTICAL_DISTANCE_FROM_CENTER - board[0].length, 0) * 80 +
+              -transform.x * -computed20Vmin
+          )}px)`,
+          transition: ![transform.x, transform.y].some(Boolean) ? '1s' : '0s',
+        }}
+      >
+        {displayBoard.map((row, y) =>
+          row.map((val, x) => (
+            <div
+              className={
+                ![transform.x, transform.y].some(Boolean)
+                  ? CELL_STYLE_HANDLER(val, CLASS_NAMES)
+                  : ''
+              }
+              key={`${y}-${x}`}
+              style={
+                !IS_BLANK_CELL(val)
+                  ? {
+                      backgroundPositionX: `${7.65 * (CELL_NUMBER(val) - 1)}%`,
+                    }
+                  : {}
+              }
+            />
+          ))
+        )}
+      </div>
+      <div
+        className={styles.display}
+        style={{
+          gridTemplate: `repeat(${displayBoard.length}, 1fr) / repeat(${displayBoard[0].length}, 1fr)`,
+          backgroundColor: '#0000',
+        }}
+      >
+        {![transform.x, transform.y].some(Boolean) &&
+          playerDisplay.map((row, y) =>
+            row.map((val, x) => (
+              <div key={`${y}-${x}`} style={{ backgroundColor: '#0000', border: 'none' }}>
+                {Boolean(TYPE_IS('user', val)) && <>a</>}
+              </div>
+            ))
+          )}
+      </div>
+    </>
   );
 };
 
