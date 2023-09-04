@@ -8,8 +8,8 @@
   grid-template-columns: 20px 2fr 8fr 20px;
   align-items: center;
   justify-content: center;
-  width: 100vw;
-  height: 100vh;
+  width: 1920px;
+  height: 1080px;
 }
 
 .main {

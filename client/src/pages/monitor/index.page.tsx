@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Loading } from 'src/components/Loading/Loading';
 import type { BoardModel } from 'src/types/types';
 import { apiClient } from 'src/utils/apiClient';
+import { TYPE_IS } from 'src/utils/flag';
 import { hslToHex } from 'src/utils/hueToRGB';
 import { minesweeperUtils } from 'src/utils/minesweeperUtils';
 import styles from './index.module.css';
@@ -33,7 +34,7 @@ const viewWhoDigged = (
   board: BoardModel,
   players: (PlayerModel | null)[]
 ) => {
-  const newBoard = board.map((row) => row.map(() => '#000'));
+  const newBoard = board.map((row) => row.map(() => '#000000'));
   cells.forEach(
     (cell) => cell && (newBoard[cell.y][cell.x] = returnValue(colorList(players), cell.whoOpened))
   );
@@ -54,7 +55,6 @@ const PlayerInfo = ({
       className={styles.player}
       style={{
         borderColor: thisPlayer.isAlive ? '#0ff8' : '#f008',
-        /* stylelint-disable-next-line */
         backgroundColor: returnValue(colorList(players), thisPlayer.id),
       }}
     >
@@ -88,7 +88,10 @@ const InfoCell = ({
 }) => (
   <div
     className={styles.cell}
-    style={{ backgroundColor: typeof val === 'string' ? `${val}88` : val === -1 ? '#000' : '#fff' }}
+    style={{
+      backgroundColor:
+        typeof val === 'string' ? `${val}88` : TYPE_IS('block', val) ? '#000' : '#fff',
+    }}
     onClick={() => onClick(thisPlayer)}
   >
     <PlayerInfo thisPlayer={thisPlayer} isView={isView} players={players} />
@@ -135,11 +138,11 @@ const Monitor = () => {
   if (board === undefined) return <Loading visible />;
   return (
     <div className={styles.container}>
-      <div className={styles['focusInfo']}>
-        <div className={styles['focusInfoRow']}>{focusedPlayer?.id}</div>
-        <div className={styles['focusInfoRow']}>{focusedPlayer?.name}</div>
-        <div className={styles['focusInfoRow']}>{focusedPlayer?.score}</div>
-        <div className={styles['focusInfoRow']}>
+      <div className={styles.focusInfo}>
+        <div className={styles.focusInfoRow}>{focusedPlayer?.id}</div>
+        <div className={styles.focusInfoRow}>{focusedPlayer?.name}</div>
+        <div className={styles.focusInfoRow}>{focusedPlayer?.score}</div>
+        <div className={styles.focusInfoRow}>
           {focusedPlayer?.isAlive === true ? 'alive' : focusedPlayer?.isAlive === false && 'dead'}
         </div>
         <button className={styles.button} onClick={handleDelete}>
