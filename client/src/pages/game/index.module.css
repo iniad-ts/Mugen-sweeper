@@ -1,15 +1,7 @@
 .container {
-  display: grid;
-  grid-template-columns: 27fr 5fr; /* 動画が3：2になる */
-  width: 100vw;
-  height: 100vh;
-  aspect-ratio: 16 / 9; /* 一旦 */
-}
-
-.main {
   position: relative;
-  width: 100%;
-  height: 100%;
+  height: 100vh;
+  aspect-ratio: 16 /9;
 }
 
 .game {
@@ -60,56 +52,98 @@
 }
 
 .ranking {
+  position: fixed;
+  top: 0;
+  right: 0;
   display: grid;
   flex-direction: row;
-  grid-template-rows: 3fr 2fr 2fr repeat(7, 1fr);
-  gap: 1vmin;
+  grid-template-rows: 250px 150fr 100fr repeat(7, 80px);
+  gap: 10px;
+  width: 300px;
+  height: 100%;
+  padding: 10px;
+  overflow: hidden;
 
-  /* padding: 1vmin;
-  border-left: solid 1px; */
+  /* 開発時に消えると開発しづらいので一旦コメントアウト */
+
+  /* transition: 1000ms;
+  transform: translateX(0);
+  animation-name: animation;
+  animation-duration: 20s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite; */
+}
+
+@keyframes animation {
+  0% {
+    transform: translateX(100vw);
+  }
+
+  10% {
+    transform: translateX(calc(100vw - 300px));
+  }
+
+  20% {
+    transform: translateX(calc(100vw - 300px));
+  }
+
+  30% {
+    transform: translateX(100vw);
+  }
+
+  100% {
+    transform: translateX(100vw);
+  }
 }
 
 .prof {
   display: grid;
-  grid-template: 'rank name' 'rank score ';
+  grid-template:
+    'rank name  .'
+    'rank score .';
   grid-template-rows: 50% 50%;
-  grid-template-columns: 10% 90%;
+  grid-template-columns: 25% 1fr 5px;
   width: 100%;
   height: 100%;
-  border-radius: 10px;
+  background-color: #fffffff4;
+  border: solid 10px #fff;
+  border-radius: 30px;
+}
 
-  /* border-right: solid 1vmin; */
+.prof * {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .rank {
-  display: flex;
   grid-area: rank;
-  align-items: center;
-  justify-content: center;
+  font-size: 1.2em;
+  text-shadow: 0 0 5px #fff;
 }
 
 .name {
-  display: flex;
   grid-area: name;
-  align-items: center;
-  justify-content: center;
-
-  /* font-family: 'Ozwald Regular'; */
+  text-shadow: 0 0 5px #fff;
   border-bottom: solid 1px;
 }
 
 .score {
-  display: flex;
   grid-area: score;
-  align-items: center;
-  justify-content: center;
-
-  /* font-family: 'Ozwald Regular'; */
-  font-size: 10em;
-  text-shadow: 0.5px 0.5px 1px #000;
+  text-shadow: 0 0 5px #fff;
 }
 
 .rankImage {
-  width: 50px;
-  height: 50px;
+  aspect-ratio: 1;
+  background-color: #fff;
+  border-radius: 0 0 20% 20%;
+  box-shadow: 0 0 20px #fff;
+}
+
+.rank > p,
+.score > p,
+.name > p {
+  background-color: #fff;
+  border-radius: 20%;
+  box-shadow: 0 0 20px #fff;
 }
