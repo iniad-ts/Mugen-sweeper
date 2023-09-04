@@ -7,3 +7,5 @@ export type Pos = {
   y: number;
 };
 export type BoardModel = number[][];
+
+export type Num = { num: string; divide: number };

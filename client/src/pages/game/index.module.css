@@ -4,6 +4,13 @@
   aspect-ratio: 16 /9;
 }
 
+.cam {
+  width: 1920px;
+  height: 1080px;
+  vertical-align: bottom;
+  transform: scaleX(-1);
+}
+
 .game {
   position: absolute;
   top: 0;
@@ -40,6 +47,13 @@
   grid-template-columns: repeat(7, 1fr);
 }
 
+.numberMain2 {
+  display: grid;
+  grid-template: '.';
+  grid-template-rows: repeat(7, 1fr);
+  grid-template-columns: repeat(7, 1fr);
+}
+
 .border {
   width: 100%;
   height: 100%;
@@ -54,7 +68,6 @@
 .ranking {
   position: fixed;
   top: 0;
-  right: 0;
   display: grid;
   flex-direction: row;
   grid-template-rows: 250px 150fr 100fr repeat(7, 80px);
@@ -66,12 +79,12 @@
 
   /* 開発時に消えると開発しづらいので一旦コメントアウト */
 
-  /* transition: 1000ms;
-  transform: translateX(0);
+  transition: 1000ms;
+  transform: translateX(calc(100vw - 300px));
   animation-name: animation;
-  animation-duration: 20s;
+  animation-duration: 5s;
   animation-timing-function: linear;
-  animation-iteration-count: infinite; */
+  animation-iteration-count: infinite;
 }
 
 @keyframes animation {
@@ -140,10 +153,9 @@
   box-shadow: 0 0 20px #fff;
 }
 
-.rank > p,
-.score > p,
-.name > p {
-  background-color: #fff;
-  border-radius: 20%;
-  box-shadow: 0 0 20px #fff;
+.rank,
+.score,
+.name {
+  font-weight: bold;
+  text-shadow: 0 0 20px #fff;
 }
