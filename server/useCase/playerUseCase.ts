@@ -10,15 +10,33 @@ export const playerUseCase = {
     const game = await gameRepository.find();
 
     if (game === null) return null;
-    const gameSize = { width: game.bombMap[0].length, height: game.bombMap.length };
+
+    const safeCells = game.bombMap
+      .map((row, y) =>
+        row
+          .map((_, x) => x)
+          .filter(
+            (_, x) =>
+              ![
+                game.bombMap[y - 1]?.[x - 1],
+                game.bombMap[y - 1]?.[x],
+                game.bombMap[y - 1]?.[x + 1],
+                game.bombMap[y][x - 1],
+                game.bombMap[y][x],
+                game.bombMap[y][x + 1],
+                game.bombMap[y + 1]?.[x - 1],
+                game.bombMap[y + 1]?.[x],
+                game.bombMap[y + 1]?.[x + 1],
+              ].some(Boolean)
+          )
+      )
+      .map((row, y) => row.map((x) => [x, y]))
+      .flat()
+      .filter(Boolean);
 
     const choicePos = () => {
-      const x = Math.floor(Math.random() * gameSize.width);
-      const y = Math.floor(Math.random() * gameSize.height);
-      if (game.bombMap[y][x] === 1) {
-        choicePos();
-      }
-      return [x, y];
+      const index = Math.floor(Math.random() * safeCells.length);
+      return safeCells[index];
     };
     const [x, y] = choicePos();
     const newPlayerModel = {

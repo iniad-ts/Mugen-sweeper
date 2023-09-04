@@ -9,13 +9,17 @@ import styles from './index.module.css';
 
 type ColorList = Record<string, string>;
 
-const colorList = (players: PlayerModel[]) => {
+const colorList = (players: (PlayerModel | null)[]) => {
   const length = players.length;
-  const list = players.map(
-    (player, i): ColorList => ({
+  const list = players.map((player, i): ColorList => {
+    if (player === null)
+      return {
+        ['hoge']: hslToHex((360 / length) * i, 0.5, 0.5),
+      };
+    return {
       [player.id]: hslToHex((360 / length) * i, 0.5, 0.5),
-    })
-  );
+    };
+  });
   return list;
 };
 
@@ -24,11 +28,14 @@ const returnValue = (array: ColorList[], key: string) => {
   return foundItem ? foundItem[key] : '#000';
 };
 
-const viewWhoDigged = (cells: CellModel[], board: BoardModel, players: PlayerModel[]) => {
-  console.log(colorList(players));
+const viewWhoDigged = (
+  cells: (CellModel | null)[],
+  board: BoardModel,
+  players: (PlayerModel | null)[]
+) => {
   const newBoard = board.map((row) => row.map(() => '#000'));
   cells.forEach(
-    (cell) => (newBoard[cell.y][cell.x] = returnValue(colorList(players), cell.whoOpened))
+    (cell) => cell && (newBoard[cell.y][cell.x] = returnValue(colorList(players), cell.whoOpened))
   );
   return newBoard;
 };
@@ -38,11 +45,11 @@ const PlayerInfo = ({
   isView,
   players,
 }: {
-  thisPlayer: PlayerModel | undefined;
+  thisPlayer: PlayerModel | undefined | null;
   isView: boolean;
-  players: PlayerModel[];
+  players: (PlayerModel | null)[];
 }) =>
-  thisPlayer !== undefined && (
+  thisPlayer && (
     <div
       className={styles.player}
       style={{
@@ -73,11 +80,11 @@ const InfoCell = ({
   isView,
   players,
 }: {
-  thisPlayer: PlayerModel | undefined;
-  onClick: (value: PlayerModel | undefined) => void;
+  thisPlayer: PlayerModel | undefined | null;
+  onClick: (value: PlayerModel | undefined | null) => void;
   val: number | string;
   isView: boolean;
-  players: PlayerModel[];
+  players: (PlayerModel | null)[];
 }) => (
   <div
     className={styles.cell}
@@ -89,9 +96,9 @@ const InfoCell = ({
 );
 
 const Monitor = () => {
-  const [players, setPlayers] = useState<PlayerModel[]>([]);
-  const [focusedPlayer, setFocusedPlayer] = useState<PlayerModel>();
-  const [board, setBoard] = useState<BoardModel>();
+  const [players, setPlayers] = useState<(PlayerModel | null)[]>([]);
+  const [focusedPlayer, setFocusedPlayer] = useState<PlayerModel | null>();
+  const [board, setBoard] = useState<BoardModel | null>();
   const [isViewName, setIsViewName] = useState(false);
   const [isViewWhoDigged, setIsViewWhoDigged] = useState(false);
   const [isViewWhoDiggedBoard, setIsViewWhoDiggedBoard] = useState<string[][]>();
@@ -106,7 +113,7 @@ const Monitor = () => {
     setPlayers(resPlayers);
     setFocusedPlayer(newFocusedPlayer);
     if (isViewWhoDigged) {
-      const resCells: CellModel[] = await apiClient.cell.$get();
+      const resCells = await apiClient.cell.$get();
       const newIsViewWhoDigged = viewWhoDigged(resCells, newBoard, resPlayers);
       setIsViewWhoDiggedBoard(newIsViewWhoDigged);
     }
@@ -122,7 +129,7 @@ const Monitor = () => {
   const handleDelete = async () => {
     if (focusedPlayer === undefined) return;
     if (confirm('Are You Sure You Want To Ban This Player?')) {
-      await apiClient.player.delete({ body: focusedPlayer });
+      focusedPlayer && (await apiClient.player.delete({ body: focusedPlayer }));
     }
   };
   if (board === undefined) return <Loading visible />;
@@ -156,16 +163,17 @@ const Monitor = () => {
           view cells
         </button>
       </div>
+      (
       <div
         className={styles.main}
         style={{
-          gridTemplateColumns: `repeat(${board[0].length},1fr)`,
-          gridTemplateRows: `repeat(${board.length},1fr)`,
+          gridTemplateColumns: `repeat(${board?.map((row) => row.length)[0]},1fr)`,
+          gridTemplateRows: `repeat(${board?.length},1fr)`,
         }}
       >
         {(isViewWhoDigged ? isViewWhoDiggedBoard : board)?.map((row, y) =>
           row.map((val, x) => {
-            const thisPlayer = players.find((player) => player.x === x && player.y === y);
+            const thisPlayer = players.find((player) => player?.x === x && player?.y === y);
             return (
               <InfoCell
                 thisPlayer={thisPlayer}
@@ -179,6 +187,7 @@ const Monitor = () => {
           })
         )}
       </div>
+      )
     </div>
   );
 };
