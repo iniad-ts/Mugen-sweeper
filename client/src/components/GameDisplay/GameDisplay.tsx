@@ -1,5 +1,5 @@
 import type { PlayerModel } from 'commonTypesWithClient/models';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { BoardModel } from 'src/types/types';
 import { deepCopy } from 'src/utils/deepCopy';
 import {
@@ -9,6 +9,7 @@ import {
   IS_BLANK_CELL,
   TYPE_IS,
 } from 'src/utils/flag';
+import { maxMin } from 'src/utils/maxMIn';
 import styles from './GameDisplay.module.css';
 
 const CLASS_NAMES = {
@@ -24,14 +25,39 @@ type PlayerPos = [number, number];
 const GameDisplay = ({ player, board }: { player: PlayerModel; board: BoardModel }) => {
   const [playerPos, setPlayerPos] = useState<PlayerPos>();
   const [displayPos, setDisplayPos] = useState<PlayerPos>();
+  const [windowSize, setWindowSize] = useState<[number, number]>([
+    window.innerWidth,
+    window.innerHeight,
+  ]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowSize([window.innerWidth, window.innerHeight]);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   useEffect(() => {
     setPlayerPos([player.x, player.y]);
-    if (board[player.y] === undefined || TYPE_IS('block', board[player.y][player.x])) {
+    if (board[player.y] === undefined) {
+      if (TYPE_IS('block', board[maxMin(board.length - 1, 0, player.y)][player.x])) {
+        return;
+      }
+      setDisplayPos([player.x, maxMin(board.length - 1, 0, player.y)]);
+      return;
+    }
+    if (TYPE_IS('block', board[player.y][player.x])) {
       return;
     }
     setDisplayPos([player.x, player.y]);
   }, [player.x, player.y, board]);
+
   const newBoard = deepCopy<BoardModel>(board);
+
+  const computedVmin = useMemo(() => Math.min(windowSize[0], windowSize[1]) / 100, [windowSize]);
+
   newBoard.forEach((row, y) =>
     row.map((val, x) => {
       if (playerPos?.[0] === x && playerPos?.[1] === y) {
@@ -42,12 +68,43 @@ const GameDisplay = ({ player, board }: { player: PlayerModel; board: BoardModel
       }
     })
   );
+
+  const VERTICAL_DISTANCE_FROM_CENTER = Math.ceil(windowSize[0] / (20 * computedVmin) / 2) + 1;
+
+  const HORIZONTAL_DISTANCE_FROM_CENTER = Math.ceil(windowSize[1] / (20 * computedVmin) / 2) + 1;
+
+  const displayLeft = player.x - VERTICAL_DISTANCE_FROM_CENTER + 1;
+
+  const displayTop = player.y - HORIZONTAL_DISTANCE_FROM_CENTER + 1;
+
+  const displayRight = player.x + VERTICAL_DISTANCE_FROM_CENTER;
+
+  const displayBottom = player.y + HORIZONTAL_DISTANCE_FROM_CENTER;
+
+  const correctionX = -Math.min(displayLeft, 0) - Math.max(displayRight - board[0].length, 0);
+
+  const correctionY = -Math.min(displayTop, 0) - Math.max(displayBottom - board.length, 0);
+
+  const cattedBoard = newBoard
+    .map((row) => row.slice(displayLeft + correctionX, displayRight + correctionX))
+    .slice(displayTop + correctionY, displayBottom + correctionY);
   return (
     <div
       className={styles.display}
-      style={{ gridTemplate: `repeat(${board.length}, 1fr) / repeat(${board[0].length}, 1fr)` }}
+      style={{
+        gridTemplate: `repeat(${cattedBoard.length}, 1fr) / repeat(${cattedBoard[0].length}, 1fr)`,
+        transform: `translateY(${maxMin(
+          0,
+          -20 * computedVmin * cattedBoard.length + windowSize[1],
+          windowSize[1] / 2 - (20 * computedVmin * cattedBoard.length) / 2 + correctionY * 80
+        )}px) translateX(${maxMin(
+          0,
+          -20 * computedVmin * cattedBoard[0].length + windowSize[0],
+          windowSize[0] / 2 - (20 * computedVmin * cattedBoard[0].length) / 2 + correctionX * 80
+        )}px)`,
+      }}
     >
-      {newBoard.map((row, y) =>
+      {cattedBoard.map((row, y) =>
         row.map((val, x) => (
           <div
             className={CELL_STYLE_HANDLER(val, CLASS_NAMES)}
