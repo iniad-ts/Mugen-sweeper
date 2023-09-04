@@ -2,15 +2,15 @@ import type { Num } from 'src/types/types';
 
 const one: Num = {
   num: `
-  'a a a b c c c '
-  'a a a . c c c '
+  'a a a a a a a '
+  'b b b . c c c '
   'd d . . c c c '
-  'e e e . c c c '
-  'e e e . c c c '
-  'f f . . . g g '
-  'h h h h h h h '
+  'd d e . c c c '
+  'd d e . c c c '
+  'd d . . . g g '
+  'f f f f f f f '
 `,
-  divide: 8,
+  divide: 7,
 };
 
 const tow: Num = {
