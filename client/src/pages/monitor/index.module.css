@@ -63,7 +63,7 @@
 .focusInfo {
   display: grid;
   grid-area: info;
-  grid-template-rows: repeat(7, 1fr);
+  grid-template-rows: repeat(8, 1fr);
   grid-template-columns: 0 1fr 0;
   gap: 10px;
   width: 100%;
@@ -107,3 +107,4 @@
   border-color: #edd;
   transform: scale(0.95);
 }
+
