@@ -1,7 +1,9 @@
+/* eslint-disable max-lines */
 import type { Maybe, UserId } from 'commonTypesWithClient/branded';
 import type { PlayerModel } from 'commonTypesWithClient/models';
 import { useRouter } from 'next/router';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useBoard, useLeft, useTop } from 'src/Hooks/useBoard';
 import GameDisplay from 'src/components/GameDisplay/GameDisplay';
 import { GameOver } from 'src/components/GameOver/GameOver';
 import { Loading } from 'src/components/Loading/Loading';
@@ -9,12 +11,15 @@ import LoginModal from 'src/components/LoginModal/LoginModal';
 import type { ActionModel, BoardModel, Pos } from 'src/types/types';
 import { apiClient } from 'src/utils/apiClient';
 import { deepCopy } from 'src/utils/deepCopy';
-import { CHANGE_FLAG, IS_BLANK_CELL, TYPE_IS } from 'src/utils/flag';
+import { CELL_FLAGS, CHANGE_FLAG, IS_BLANK_CELL, TYPE_IS } from 'src/utils/flag';
 import { formatOpenCells } from 'src/utils/formatOpenCells';
 import { handleMove } from 'src/utils/handleMove';
+import { handleTransform } from 'src/utils/handleTransform';
 import { logoutWithLocalStorage } from 'src/utils/loginWithLocalStorage';
 import { minesweeperUtils } from 'src/utils/minesweeperUtils';
 import styles from './index.module.css';
+
+const directions = ['ul', 'left', 'dl', 'down', 'right', 'dr', 'up', 'ur', 'middle'];
 
 const arrowTexts = ['', '▲', '', '◀', '', '▶', '', '▼', ''];
 
@@ -35,6 +40,71 @@ const Controller = () => {
     const [openCells, setOpenCells] = useState<Set<string>>(new Set());
     const [player, setPlayer] = useState<PlayerModel>();
     const [displayPos, setDisplayPos] = useState<Pos>();
+    const [windowSize, setWindowSize] = useState<[number, number]>([
+      window.innerWidth,
+      window.innerHeight,
+    ]);
+    const [transform, setTransform] = useState({ x: 0, y: 0 });
+    const [dir, setDir] = useState(0);
+
+    const computed20Vmin = useMemo(
+      () => (20 * Math.min(windowSize[0], windowSize[1])) / 100,
+      [windowSize]
+    );
+
+    const newBoard = deepCopy<BoardModel | undefined>(board);
+
+    newBoard?.forEach((row, y) =>
+      row.map((val, x) => {
+        if (player?.x === x && player.y === y) {
+          newBoard[y][x] = val | CELL_FLAGS['select'];
+        }
+        if (displayPos?.x === x && displayPos?.y === y) {
+          newBoard[y][x] = val | CELL_FLAGS['user'];
+        }
+      })
+    );
+
+    const VERTICAL_DISTANCE_FROM_CENTER = Math.ceil(windowSize[0] / computed20Vmin / 2) + 1;
+
+    const HORIZONTAL_DISTANCE_FROM_CENTER = Math.ceil(windowSize[1] / computed20Vmin / 2) + 1;
+
+    const playerDisplay = useBoard(
+      newBoard,
+      displayPos?.x,
+      displayPos?.y,
+      VERTICAL_DISTANCE_FROM_CENTER,
+      HORIZONTAL_DISTANCE_FROM_CENTER
+    );
+
+    const cattedBoard = useBoard(
+      board,
+      displayPos?.x,
+      displayPos?.y,
+      VERTICAL_DISTANCE_FROM_CENTER,
+      HORIZONTAL_DISTANCE_FROM_CENTER
+    );
+
+    const left = useLeft(board, cattedBoard, computed20Vmin, player, windowSize);
+
+    const top = useTop(board, cattedBoard, computed20Vmin, player, windowSize);
+
+    useEffect(() => {
+      const handleResize = () => {
+        setWindowSize([window.innerWidth, window.innerHeight]);
+      };
+
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    useEffect(() => {
+      if ([transform.x, transform.y].some(Boolean)) {
+        setTimeout(() => {
+          setTransform({ x: 0, y: 0 });
+        }, 500);
+      }
+    }, [transform.x, transform.y]);
 
     const fetchGame = useCallback(async () => {
       if (player === undefined) return;
@@ -81,26 +151,25 @@ const Controller = () => {
       fetchBombMap();
     }, []);
 
-    if (
-      player === undefined ||
-      displayPos === undefined ||
-      board === undefined ||
-      bombMap === undefined
-    ) {
+    if (player === undefined || displayPos === undefined || board === undefined) {
       return <Loading visible />;
     }
 
     const dig = async () => {
       const [x, y] = [player.x, player.y];
-      if (bombMap[y][x] === 1) {
+
+      const newBoard = deepCopy<BoardModel>(board);
+
+      if (bombMap?.[y][x] === 1) {
+        newBoard[y][x] |= CELL_FLAGS['bomb'];
         await apiClient.player.bomb.post({ body: player });
+        setBoard(newBoard);
         logoutWithLocalStorage();
         alert('you are dead');
         setTimeout(() => router.push('/controller'), 5000);
       }
       if (!TYPE_IS('block', board[y][x])) return;
 
-      const newBoard = deepCopy<BoardModel>(board);
       const newOpenCells = new Set(openCells);
 
       const openSurroundingCells = (x: number, y: number, isUserInput: boolean) => {
@@ -134,10 +203,21 @@ const Controller = () => {
       const res = await handleMove(action, board, player, displayPos);
       setPlayer(res.player);
       setDisplayPos(res.displayPos);
+      setDir(Math.floor(directions.findIndex((a) => a === action) / 2) % 4);
+      setTransform(
+        handleTransform(
+          action,
+          res.displayPos,
+          displayPos,
+          player,
+          VERTICAL_DISTANCE_FROM_CENTER,
+          HORIZONTAL_DISTANCE_FROM_CENTER,
+          board
+        )
+      );
     };
 
-    const isFailed = () => true;
-    // board.flat().find((cell) => TYPE_IS(cell, 'bomb')) !== undefined;
+    const isFailed = () => board.flat().find((cell) => TYPE_IS('bomb', cell)) !== undefined;
 
     return (
       <div className={styles.controller}>
@@ -149,7 +229,15 @@ const Controller = () => {
             </button>
           ))}
         </div>
-        <GameDisplay player={player} board={board} display={displayPos} />
+        <GameDisplay
+          cattedBoard={cattedBoard}
+          transform={transform}
+          computed20Vmin={computed20Vmin}
+          playerDisplay={playerDisplay}
+          dir={dir}
+          top={top}
+          left={left}
+        />
         <button className={`${styles.button} ${styles.flagButton}`} onClick={flag}>
           🚩
         </button>
