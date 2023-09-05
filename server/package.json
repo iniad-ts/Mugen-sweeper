@@ -25,7 +25,6 @@
     "seed": "node -r esbuild-register prisma/seed.ts"
   },
   "dependencies": {
-    "@aspida/axios": "^1.14.0",
     "@fastify/cookie": "^9.0.4",
     "@fastify/cors": "^8.3.0",
     "@fastify/helmet": "^11.0.0",
@@ -34,12 +33,11 @@
     "date-fns": "^2.30.0",
     "dotenv": "^16.3.1",
     "fastify": "^4.21.0",
-    "firebase": "^10.3.1",
     "firebase-admin": "^11.10.1",
-    "vitest": "^0.34.3",
     "zod": "^3.22.2"
   },
   "devDependencies": {
+    "@aspida/axios": "^1.14.0",
     "@types/busboy": "^1.5.0",
     "@types/firebase": "^3.2.1",
     "@types/node": "^20.4.10",
@@ -47,11 +45,13 @@
     "esbuild": "^0.18.18",
     "esbuild-node-externals": "^1.8.0",
     "esbuild-register": "^3.4.2",
+    "firebase": "^10.3.1",
     "frourio": "^1.0.0",
     "node-dev": "^8.0.0",
     "notios": "^0.4.1",
     "prisma": "^5.1.1",
     "typescript": "^5.1.6",
+    "vitest": "^0.34.3",
     "vite-tsconfig-paths": "^4.2.0"
   },
   "engines": {
