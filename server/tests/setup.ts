@@ -28,4 +28,6 @@ afterEach(async (info) => {
   await prismaClient.$disconnect();
 
   cellUseCase.stop();
+
+  await server.close();
 });
