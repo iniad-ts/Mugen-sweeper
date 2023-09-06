@@ -6,56 +6,65 @@
 
 .moveButton {
   position: fixed;
-  bottom: 2vmax;
-  left: 2vmax;
+  bottom: 5svmin;
+  left: 5svmin;
   z-index: 1;
   display: grid;
   grid-template: repeat(3, 1fr) / repeat(3, 1fr);
-  gap: 1vmax;
-  width: 18vmax;
+  gap: 1svmin;
+  width: 36svmin;
   aspect-ratio: 1;
+  padding: 2svmin;
+  background-color: #f5f5f9;
+  border: 1.6svmin solid #e9e9f1;
+  border-radius: 4svmin;
+  box-shadow: 0 0 2svmin #666a;
 }
 
-.button {
-  font-size: 3vmin;
-  font-size: 2vmax;
-  border: 0.3vmax solid #e9e9f1;
-  border-radius: 2vmax;
-}
-
-.flagButton,
-.openButton,
 .button {
   display: flex;
   align-items: center;
   justify-content: center;
-  aspect-ratio: 1;
-  touch-action: manipulation;
-  user-select: none;
-  background-color: #f5f5f9;
-  box-shadow: 0 0 1vmax #000;
+  font-size: 3vmin;
+  color: #444;
+  cursor: pointer;
+  background-color: #e7e7f3;
+  border: 0;
+  border-radius: 1svmin;
   transition: transform 0.1s ease-out;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.flagButton,
-.openButton {
+.digButton {
   position: fixed;
+  right: 5svmin;
+  bottom: 5svmin;
   z-index: 1;
-  width: 8vmax;
+  width: 20svmin;
   aspect-ratio: 1;
-  font-size: 4vmax;
-  border: 0.5vmax solid #e9e9f1;
-  border-radius: 2vmax;
+  font-size: 8svmin;
+  background-color: #f5f5f9;
+  border: 1.6svmin solid #e9e9f1;
+  border-radius: 4svmin;
+  box-shadow: 0 0 2svmin #0006;
+  transition: transform 0.1s ease-out;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .flagButton {
-  right: 2vmax;
-  bottom: 12vmax;
-}
-
-.openButton {
-  right: 12vmax;
-  bottom: 2vmax;
+  position: fixed;
+  right: 5svmin;
+  bottom: 30svmin;
+  z-index: 1;
+  width: 20svmin;
+  aspect-ratio: 1;
+  font-size: 8svmin;
+  background-color: #f5f5f9;
+  border: 1.6svmin solid #e9e9f1;
+  border-radius: 4svmin;
+  box-shadow: 0 0 2svmin #0006;
+  transition: transform 0.1s ease-out;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .button:active,
