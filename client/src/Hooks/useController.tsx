@@ -54,14 +54,12 @@ export const useController = (playerIdStr: string | null) => {
   }, [transform.x, transform.y]);
 
   const fetchGame = useCallback(async () => {
-    console.log('fetchGame');
     if (player === undefined) return;
 
     if (openCells?.size > 0) {
       const postCells = formatOpenCells(openCells, player.id);
       const resPlayer = await apiClient.game.$post({ body: postCells });
       setOpenCells(new Set());
-      console.log(resPlayer);
       if (resPlayer === null) return;
 
       const newPlayer: PlayerModel = { ...player, score: resPlayer.score };
@@ -70,7 +68,6 @@ export const useController = (playerIdStr: string | null) => {
 
     const resGame = await apiClient.game.$get();
 
-    console.log(resGame);
     if (resGame === null) return;
 
     const newBoard = minesweeperUtils.makeBoard(resGame.bombMap, resGame.userInputs, board);
@@ -78,14 +75,12 @@ export const useController = (playerIdStr: string | null) => {
   }, [openCells, player, board]);
 
   const fetchBombMap = useCallback(async () => {
-    console.log('fetchBombMap');
     if (playerIdStr === null) return;
     const resGame = await apiClient.game.$get();
     const resPlayer = await apiClient.player.config.$post({
       body: { playerId: playerIdStr as Maybe<UserId> },
     });
-    console.log(resGame);
-    console.log(resPlayer);
+
     if (resGame !== null) {
       setBombMap(resGame.bombMap);
     }

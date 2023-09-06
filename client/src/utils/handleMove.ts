@@ -19,7 +19,7 @@ export const handleMove = async (
         player.x - displayPos.x === moveX,
       ].every(Boolean)
     ) {
-      return jumps()[action];
+      return await jumps[action]();
     }
     const newPlayer = {
       ...player,
@@ -37,6 +37,7 @@ export const handleMove = async (
 
     return { player: res, displayPos: newDisplayPos };
   };
+
   const jump = async (moveX: number, moveY: number) => {
     const newPlayer = {
       ...player,
@@ -58,28 +59,30 @@ export const handleMove = async (
 
     return { player: res, displayPos: newDisplayPos };
   };
-  const moves = () => ({
-    left: move(-1, 0),
-    right: move(1, 0),
-    up: move(0, -1),
-    down: move(0, 1),
-    ur: move(1, -1),
-    ul: move(-1, -1),
-    dr: move(1, 1),
-    dl: move(-1, 1),
-    middle: move(0, 0),
-  });
 
-  const jumps = () => ({
-    left: jump(-1, 0),
-    right: jump(1, 0),
-    up: jump(0, -1),
-    down: jump(0, 1),
-    ur: jump(1, -1),
-    ul: jump(-1, -1),
-    dr: jump(1, 1),
-    dl: jump(-1, 1),
-    middle: jump(0, 0),
-  });
-  return moves()[action];
+  const moves = {
+    left: () => move(-1, 0),
+    right: () => move(1, 0),
+    up: () => move(0, -1),
+    down: () => move(0, 1),
+    ur: () => move(1, -1),
+    ul: () => move(-1, -1),
+    dr: () => move(1, 1),
+    dl: () => move(-1, 1),
+    middle: () => move(0, 0),
+  };
+
+  const jumps = {
+    left: () => jump(-1, 0),
+    right: () => jump(1, 0),
+    up: () => jump(0, -1),
+    down: () => jump(0, 1),
+    ur: () => jump(1, -1),
+    ul: () => jump(-1, -1),
+    dr: () => jump(1, 1),
+    dl: () => jump(-1, 1),
+    middle: () => jump(0, 0),
+  };
+
+  return await moves[action]();
 };
