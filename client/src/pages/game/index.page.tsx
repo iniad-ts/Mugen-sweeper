@@ -7,7 +7,7 @@ import { apiClient } from 'src/utils/apiClient';
 import { CELL_FLAGS } from 'src/utils/flag';
 import { hslToHex } from 'src/utils/hueToRGB';
 import { minesweeperUtils } from 'src/utils/minesweeperUtils';
-import { numbers } from 'src/utils/nums';
+import { numbers2 } from 'src/utils/nums2';
 import styles from './index.module.css';
 
 const MEDAL_IMAGES = [
@@ -26,25 +26,33 @@ const getScoreColor = (score: number): string => {
 };
 
 const Number = ({ value }: { value: number }) => {
-  const board =
-    value === 0
-      ? [...Array(5)].map((_, j) => [...Array(5)].map((_, i) => (j + i) % 2))
-      : numbers[value - 1];
+  if (value === 0) {
+    return (
+      <div className={styles['numberMain']}>
+        <div className={styles.border} style={{ gridArea: 't' }} />
+        <div className={styles.border} style={{ gridArea: 'l' }} />
+        {[...Array(5)]
+          .map((_, j) => [...Array(5)].map((_, i) => (j + i) % 2))
+          .map((row, y) =>
+            row.map((num, x) => (
+              <div
+                className={styles.number}
+                key={`${y}-${x}`}
+                style={{ backgroundColor: num === 0 ? '#0000' : '#000' }}
+              />
+            ))
+          )}
+        <div className={styles.border} style={{ gridArea: 'r' }} />
+        <div className={styles.border} style={{ gridArea: 'u' }} />
+      </div>
+    );
+  }
+  const board = numbers2[value - 1];
   return (
-    <div className={styles['numberMain']}>
-      <div className={styles.border} style={{ gridArea: 't' }} />
-      <div className={styles.border} style={{ gridArea: 'l' }} />
-      {board.map((row, y) =>
-        row.map((num, x) => (
-          <div
-            className={styles.number}
-            key={`${y}-${x}`}
-            style={{ backgroundColor: num === 0 ? '#0000' : '#000' }}
-          />
-        ))
-      )}
-      <div className={styles.border} style={{ gridArea: 'r' }} />
-      <div className={styles.border} style={{ gridArea: 'u' }} />
+    <div className={styles.numberMain2} style={{ gridTemplateAreas: board.num }}>
+      {[...Array(board.divide)].map((_, i) => (
+        <div className={styles.border} style={{ gridArea: `${'abcdefghijklmn'[i]}` }} key={i} />
+      ))}
     </div>
   );
 };
@@ -72,16 +80,14 @@ const ProfileBoard = ({ player, index }: { player: PlayerModel; index: number })
             }}
           />
         ) : (
-          <div className={styles.rank}>
-            <p>{index + 1}</p>
-          </div>
+          <div className={styles.rank}>{index + 1}</div>
         )}
       </div>
       <div className={styles.name} style={{ fontSize: `${fontSize}em` }}>
-        <p>{player.name}</p>
+        {player.name}
       </div>
       <div className={styles.score} style={{ color: scoreColor, fontSize: `${fontSize * 1.5}em` }}>
-        <p>{player.score}</p>
+        {player.score}
       </div>
     </div>
   );
@@ -91,7 +97,7 @@ const Game = () => {
   const [bombMap, setBombMap] = useState<(0 | 1)[][]>(); //TODO bombMapの必要性をかんがえる
   const [userInputs, setUserInputs] = useState<(0 | 1)[][]>();
   const [ranking, setRanking] = useState<PlayerModel[]>([]);
-
+  console.log('end..', Date.now());
   useEffect(() => {
     const cancelId = setInterval(() => {
       fetchGame();
@@ -132,10 +138,10 @@ const Game = () => {
     userInputs,
     bombMap.map((row) => row.map(() => CELL_FLAGS['block']))
   );
-
+  console.log('start', Date.now());
   return (
     <div className={styles.container}>
-      <Webcam width={1920} style={{ transform: 'scaleX(-1)' }} />
+      <Webcam className={styles.cam} />
       <div
         className={styles.game}
         style={{
@@ -143,6 +149,11 @@ const Game = () => {
           gridTemplateRows: `repeat(${board.length},1fr)`,
         }}
       >
+        <div className={styles.ranking}>
+          {ranking.map((player, index) => (
+            <ProfileBoard key={player.id} player={player} index={index} />
+          ))}
+        </div>
         {board.map((row, y) =>
           row.map((value, x) =>
             [value < 0, value > 8].some(Boolean) ? (
@@ -152,11 +163,6 @@ const Game = () => {
             )
           )
         )}
-        <div className={styles.ranking}>
-          {ranking.map((player, index) => (
-            <ProfileBoard key={player.id} player={player} index={index} />
-          ))}
-        </div>
       </div>
     </div>
   );
