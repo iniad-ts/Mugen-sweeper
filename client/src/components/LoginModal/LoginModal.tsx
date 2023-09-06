@@ -26,8 +26,8 @@ const LoginModal: React.FC = () => {
     if (username.length === 0) return;
     const player = await apiClient.player.create.$post({ body: { name: username } });
     if (player === null) return <p>game is not found</p>;
-    loginWithLocalStorage(player.id);
-    router.push({ query: { playerId: player.id } });
+    const userIdFromStorage = loginWithLocalStorage(player.id);
+    router.push({ query: { playerId: userIdFromStorage } });
   };
   const onChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(e.target.value);
@@ -35,7 +35,6 @@ const LoginModal: React.FC = () => {
 
   return (
     <div>
-      {/* <button onClick={() => setIsModalOpen(true)}>モーダルを開く</button> */}
       <Modal isOpen onClose={() => null}>
         <div className={styles.modalContent}>
           <h2>Mugen Sweeper</h2>

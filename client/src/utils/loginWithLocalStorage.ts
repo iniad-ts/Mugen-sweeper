@@ -9,20 +9,13 @@ export const getUserIdFromLocalStorage = (): UserId | null => {
   return null;
 };
 export const loginWithLocalStorage = (userId: UserId) => {
-  if (localStorage.getItem('userId') !== null) {
-    throw new Error('User is already logged in');
+  const storage = localStorage.getItem('userId');
+  if (storage === null) {
+    localStorage.setItem('userId', userId);
   }
-  localStorage.setItem('userId', userId);
+  return userId;
 };
 
 export const logoutWithLocalStorage = () => {
   localStorage.clear();
 };
-
-// export const RedirectToLogin = () => {
-//   const router = useRouter();
-
-//   if (localStorage.getItem('userId') === null) {
-//     router.push('/login');
-//   }
-// };
