@@ -73,31 +73,6 @@ const PlayerInfo = ({
     </div>
   );
 
-const InfoCell = ({
-  thisPlayer,
-  onClick,
-  val,
-  isView,
-  players,
-}: {
-  thisPlayer: PlayerModel | undefined | null;
-  onClick: (value: PlayerModel | undefined | null) => void;
-  val: number | string;
-  isView: boolean;
-  players: (PlayerModel | null)[];
-}) => (
-  <div
-    className={styles.cell}
-    style={{
-      backgroundColor:
-        typeof val === 'string' ? `${val}88` : TYPE_IS('block', val) ? '#000' : '#fff',
-    }}
-    onClick={() => onClick(thisPlayer)}
-  >
-    <PlayerInfo thisPlayer={thisPlayer} isView={isView} players={players} />
-  </div>
-);
-
 const Monitor = () => {
   const [players, setPlayers] = useState<(PlayerModel | null)[]>([]);
   const [focusedPlayer, setFocusedPlayer] = useState<PlayerModel | null>();
@@ -158,12 +133,16 @@ const Monitor = () => {
         <button
           className={styles.button}
           style={{ backgroundColor: '#44c' }}
-          onClick={() => {
-            console.table(isViewWhoDiggedBoard);
-            setIsViewWhoDigged(!isViewWhoDigged);
-          }}
+          onClick={() => setIsViewWhoDigged(!isViewWhoDigged)}
         >
           view cells
+        </button>
+        <button
+          className={styles.button}
+          style={{ backgroundColor: '#c4c' }}
+          onClick={() => apiClient.cell.post()}
+        >
+          restore
         </button>
       </div>
       (
@@ -178,14 +157,17 @@ const Monitor = () => {
           row.map((val, x) => {
             const thisPlayer = players.find((player) => player?.x === x && player?.y === y);
             return (
-              <InfoCell
-                thisPlayer={thisPlayer}
-                onClick={setFocusedPlayer}
-                val={val}
-                isView={isViewName}
-                players={players}
+              <div
+                className={styles.cell}
+                style={{
+                  backgroundColor:
+                    typeof val === 'string' ? `${val}88` : TYPE_IS('block', val) ? '#000' : '#fff',
+                }}
+                onClick={() => setFocusedPlayer(thisPlayer)}
                 key={`${y}-${x}`}
-              />
+              >
+                <PlayerInfo thisPlayer={thisPlayer} isView={isViewName} players={players} />
+              </div>
             );
           })
         )}

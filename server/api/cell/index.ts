@@ -5,4 +5,7 @@ export type Methods = DefineMethods<{
   get: {
     resBody: CellModel[];
   };
+  post: {
+    resBody: void;
+  };
 }>;

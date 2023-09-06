@@ -2,6 +2,8 @@ import type { UserId } from '$/commonTypesWithClient/branded';
 import { cellsRepository } from '$/repository/cellsRepository';
 import { deepCopy } from '$/service/deepCopy';
 
+let intervalId: NodeJS.Timeout | null = null;
+
 export const cellUseCase = {
   delete: async (userId: UserId) => {
     await cellsRepository.deleteWithPlayer(userId);
@@ -13,6 +15,20 @@ export const cellUseCase = {
     const sliceIndex = res.findIndex((cell) => cell.whenOpened < Date.now() - 3000000);
     const moreOldCells = res.slice(0, sliceIndex);
     moreOldCells.forEach((cell) => cellsRepository.delete(cell.x, cell.y, cell.whoOpened));
+  },
+
+  init: () => {
+    intervalId = setInterval(() => {
+      cellUseCase.restore();
+      console.log('restore');
+    }, 2000);
+  },
+
+  stop: () => {
+    if (intervalId) {
+      clearInterval(intervalId);
+      intervalId = null;
+    }
   },
 
   updateUserInputs: async (userInputs: (0 | 1)[][]) => {
