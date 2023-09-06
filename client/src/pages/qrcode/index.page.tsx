@@ -57,7 +57,7 @@ const QRCode = () => {
       </h1>
       {ip !== '' && (
         <Canvas
-          text={`${ip}/login`}
+          text={`${ip}/controller`}
           options={{
             type: 'image/png',
             errorCorrectionLevel: 'L',
