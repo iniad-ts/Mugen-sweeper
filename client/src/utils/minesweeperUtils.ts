@@ -21,12 +21,18 @@ export const minesweeperUtils = {
         (nextPos) => board[nextPos.y] !== undefined && TYPE_IS('block', board[nextPos.y][nextPos.x])
       ),
 
-  countAroundBombsNum: (bombMap: BoardModel, x: number, y: number) =>
-    bombMap
-      .slice(Math.max(0, y - 1), Math.min(y + 2, bombMap.length))
-      .map((row) => row.slice(Math.max(0, x - 1), Math.min(x + 2, row.length)))
-      .flat()
-      .filter((b) => b === 1).length ?? 0,
+  countAroundBombsNum: (bombMap: BoardModel | undefined, x: number, y: number) => {
+    if (bombMap === undefined) {
+      return -1;
+    }
+    return (
+      bombMap
+        .slice(Math.max(0, y - 1), Math.min(y + 2, bombMap.length))
+        .map((row) => row.slice(Math.max(0, x - 1), Math.min(x + 2, row.length)))
+        .flat()
+        .filter((b) => b === 1).length ?? 0
+    );
+  },
 
   makeBoard: (
     bombMap: BoardModel,
