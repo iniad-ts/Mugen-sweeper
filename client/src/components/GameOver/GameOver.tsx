@@ -1,11 +1,13 @@
 import type { UserId } from 'commonTypesWithClient/branded';
 import type { PlayerModel } from 'commonTypesWithClient/models';
+import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
 import { apiClient } from 'src/utils/apiClient';
 import styles from './GameOver.module.css';
 
 export const GameOver = ({ userId }: { userId: UserId }) => {
   const [players, setPlayers] = useState<PlayerModel[]>();
+  const router = useRouter();
 
   const fetchPlayer = useCallback(async () => {
     const res = await apiClient.player.$get();
@@ -17,7 +19,7 @@ export const GameOver = ({ userId }: { userId: UserId }) => {
   }, [fetchPlayer]);
 
   const tryAgain = () => {
-    //TODO - どうするか決める
+    router.push('controller');
   };
   const playerRank = players?.findIndex((player) => (player.id = userId));
 

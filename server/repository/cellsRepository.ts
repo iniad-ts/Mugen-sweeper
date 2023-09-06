@@ -53,7 +53,7 @@ export const cellsRepository = {
   },
 
   deleteWithPlayer: async (userId: UserId) => {
-    await prismaClient.cell.deleteMany({ where: { whenOpened: userId } });
+    await prismaClient.cell.deleteMany({ where: { whoOpened: userId } });
     return null;
   },
 
