@@ -114,7 +114,7 @@ const GameDisplay = ({
             boardTransform.x * computed20Svmin
           }px)`,
           transition: [boardTransform.x === 0, boardTransform.y === 0].every(Boolean)
-            ? '0.25s'
+            ? '0.1s'
             : '0s',
           top,
           left,
@@ -142,16 +142,11 @@ const GameDisplay = ({
           gridTemplate: `repeat(${cattedBoard.length}, 1fr) / repeat(${cattedBoard[0].length}, 1fr)`,
           backgroundColor: '#0000',
 
-          transform: `translateY(${
-            displayTransform.y * computed20Svmin +
-            ((top * (cattedBoard.length * computed20Svmin - windowSize[1])) / 2) * transform.y ** 2
-          }px) translateX(${
-            displayTransform.x * computed20Svmin +
-            (left - (cattedBoard[0].length * computed20Svmin - windowSize[0]) / 2) *
-              transform.x ** 2
+          transform: `translateY(${displayTransform.y * computed20Svmin}px) translateX(${
+            displayTransform.x * computed20Svmin
           }px)`,
           transition: [displayTransform.x === 0, displayTransform.y === 0].every(Boolean)
-            ? '0.25s'
+            ? '0.1s'
             : '0s',
           top,
           left,
