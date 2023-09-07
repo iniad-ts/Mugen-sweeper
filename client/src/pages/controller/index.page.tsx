@@ -1,4 +1,3 @@
-/* eslint-disable max-lines */
 import { useRouter } from 'next/router';
 import type { MouseEvent, TouchEvent } from 'react';
 import { useState } from 'react';
@@ -8,7 +7,7 @@ import { GameOver } from 'src/components/GameOver/GameOver';
 import { Loading } from 'src/components/Loading/Loading';
 import LoginModal from 'src/components/LoginModal/LoginModal';
 import type { ActionModel } from 'src/types/types';
-import { isFailed } from 'src/utils/gameUtils';
+import { isFailed } from 'src/utils/isFailed';
 import styles from './index.module.css';
 
 const arrowTexts = ['', '▲', '', '◀', '', '▶', '', '▼', ''];
