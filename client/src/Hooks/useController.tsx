@@ -1,6 +1,6 @@
 import type { Maybe, UserId } from 'commonTypesWithClient/branded';
 import type { PlayerModel, Pos } from 'commonTypesWithClient/models';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import type { ActionModel, BoardModel } from 'src/types/types';
 import { apiClient } from 'src/utils/apiClient';
 import { deepCopy } from 'src/utils/deepCopy';
@@ -21,29 +21,6 @@ export const useController = (playerIdStr: string | null) => {
   const [displayPos, setDisplayPos] = useState<Pos>();
   const [transform, setTransform] = useState({ x: 0, y: 0 });
   const [dir, setDir] = useState(0);
-
-  const [windowSize, setWindowSize] = useState<[number, number]>([
-    window.innerWidth,
-    window.innerHeight,
-  ]);
-
-  const computed20Svmin = useMemo(
-    () => (20 * Math.min(windowSize[0], windowSize[1])) / 100,
-    [windowSize]
-  );
-
-  const TO_CENTER_WIDTH = Math.ceil(windowSize[0] / computed20Svmin / 2) + 1;
-
-  const TO_CENTER_HEIGHT = Math.ceil(windowSize[1] / computed20Svmin / 2) + 1;
-
-  useEffect(() => {
-    const handleResize = () => {
-      setWindowSize([window.innerWidth, window.innerHeight]);
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   useEffect(() => {
     if ([transform.x, transform.y].some(Boolean)) {
@@ -151,17 +128,7 @@ export const useController = (playerIdStr: string | null) => {
     setPlayer(res.player);
     setDisplayPos(res.displayPos);
     setDir(Math.floor(directions.findIndex((a) => a === action) / 2) % 4);
-    setTransform(
-      handleTransform(
-        action,
-        res.displayPos,
-        displayPos,
-        player,
-        TO_CENTER_WIDTH,
-        TO_CENTER_HEIGHT,
-        board
-      )
-    );
+    setTransform(handleTransform(action, res.displayPos, displayPos));
   };
   return { board, player, clickButton, transform, dir, displayPos, flag, dig };
 };

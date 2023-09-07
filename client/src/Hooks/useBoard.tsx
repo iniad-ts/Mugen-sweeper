@@ -1,6 +1,5 @@
-import type { PlayerModel } from 'commonTypesWithClient/models';
 import { useMemo } from 'react';
-import type { BoardModel } from '../types/types';
+import type { BoardModel, Pos } from '../types/types';
 
 export const useBoard = (
   board: BoardModel | undefined,
@@ -32,50 +31,50 @@ export const useBoard = (
 export const useLeft = (
   board: BoardModel | undefined,
   cattedBoard: BoardModel | null,
-  computed20Vmin: number,
-  player: PlayerModel | undefined,
+  computed20Svmin: number,
+  displayPos: Pos | undefined,
   windowSize: [number, number]
 ) =>
   useMemo(() => {
     const left = (
       boardNotUndefined: BoardModel,
       cattedBoardXLength: number,
-      playerNotUndefined: PlayerModel,
+      displayPosNotUndefined: Pos,
       windowSizeX: number
     ) =>
-      playerNotUndefined.x <= 1
+      displayPosNotUndefined.x === 0
         ? 0
-        : playerNotUndefined.x >= boardNotUndefined[0].length - 2
-        ? -(cattedBoardXLength * computed20Vmin - windowSizeX)
-        : -(cattedBoardXLength * computed20Vmin - windowSizeX) / 2;
+        : displayPosNotUndefined.x === boardNotUndefined[0].length - 1
+        ? -(cattedBoardXLength * computed20Svmin - windowSizeX)
+        : -(cattedBoardXLength * computed20Svmin - windowSizeX) / 2;
 
-    if (player === undefined || cattedBoard === null || board === undefined) {
+    if (displayPos === undefined || cattedBoard === null || board === undefined) {
       return 0;
     }
-    return left(board, cattedBoard[0].length, player, windowSize[0]);
-  }, [board, cattedBoard, computed20Vmin, player, windowSize]);
+    return left(board, cattedBoard[0].length, displayPos, windowSize[0]);
+  }, [board, cattedBoard, computed20Svmin, displayPos, windowSize]);
 
 export const useTop = (
   board: BoardModel | undefined,
   cattedBoard: BoardModel | null,
-  computed20Vmin: number,
-  player: PlayerModel | undefined,
+  computed20Svmin: number,
+  displayPos: Pos | undefined,
   windowSize: [number, number]
 ) =>
   useMemo(() => {
     const top = (
       boardNotUndefined: BoardModel,
       cattedBoardYLength: number,
-      playerNotUndefined: PlayerModel,
+      displayPosNotUndefined: Pos,
       windowSizeY: number
     ) =>
-      playerNotUndefined.y <= 1
+      displayPosNotUndefined.y === 0
         ? 0
-        : playerNotUndefined.y >= boardNotUndefined.length - 2
-        ? -(cattedBoardYLength * computed20Vmin - windowSizeY)
-        : -(cattedBoardYLength * computed20Vmin - windowSizeY) / 2;
-    if (player === undefined || cattedBoard === null || board === undefined) {
+        : displayPosNotUndefined.y === boardNotUndefined.length - 1
+        ? -(cattedBoardYLength * computed20Svmin - windowSizeY)
+        : -(cattedBoardYLength * computed20Svmin - windowSizeY) / 2;
+    if (displayPos === undefined || cattedBoard === null || board === undefined) {
       return 0;
     }
-    return top(board, cattedBoard.length, player, windowSize[1]);
-  }, [board, cattedBoard, computed20Vmin, player, windowSize]);
+    return top(board, cattedBoard.length, displayPos, windowSize[1]);
+  }, [board, cattedBoard, computed20Svmin, displayPos, windowSize]);
