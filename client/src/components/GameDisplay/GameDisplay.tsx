@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useBoard, useLeft, useTop } from 'src/Hooks/useBoard';
 import type { BoardModel, Pos } from 'src/types/types';
 import { deepCopy } from 'src/utils/deepCopy';
+import { fixTransform } from 'src/utils/fixTransform';
 import {
   CELL_FLAGS,
   CELL_NUMBER,
@@ -10,6 +11,7 @@ import {
   IS_BLANK_CELL,
   TYPE_IS,
 } from 'src/utils/flag';
+import { yushaColorList, yushaImages } from 'src/utils/yushaImage';
 import { Loading } from '../Loading/Loading';
 import styles from './GameDisplay.module.css';
 
@@ -21,26 +23,6 @@ const CLASS_NAMES = {
   bomb: styles.bomb,
   number: styles.number,
 };
-
-const yushaImages = [
-  '0002380009333380090777800907770011122247074444200004442200990990',
-  '0022220009333330097777800977770011122240074444202244442209900990',
-  '0083209008333390087770900077711102222470744440002244400009909900',
-  '0088889008888880088888800077771100222240072332202222322209900990',
-];
-
-const yuushColorList = [
-  '#0000',
-  'red',
-  'purple',
-  'blue',
-  'green',
-  'yellow',
-  'orange',
-  'brown',
-  'gray',
-  '#fff',
-];
 
 const GameDisplay = ({
   transform,
@@ -74,9 +56,9 @@ const GameDisplay = ({
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const TO_CENTER_WIDTH = Math.ceil(windowSize[0] / computed20Svmin / 2) + 1;
+  const TO_CENTER_WIDTH = Math.ceil((windowSize[0] / computed20Svmin + 1) / 2);
 
-  const TO_CENTER_HEIGHT = Math.ceil(windowSize[1] / computed20Svmin / 2) + 1;
+  const TO_CENTER_HEIGHT = Math.ceil((windowSize[1] / computed20Svmin + 1) / 2);
 
   const newBoard = deepCopy<BoardModel | undefined>(board);
 
@@ -107,9 +89,17 @@ const GameDisplay = ({
     TO_CENTER_HEIGHT
   );
 
-  const left = useLeft(board, cattedBoard, computed20Svmin, player, windowSize);
+  const { boardTransform, displayTransform } = fixTransform(
+    displayPos,
+    TO_CENTER_WIDTH,
+    TO_CENTER_HEIGHT,
+    board,
+    transform
+  );
 
-  const top = useTop(board, cattedBoard, computed20Svmin, player, windowSize);
+  const left = useLeft(board, cattedBoard, computed20Svmin, displayPos, windowSize);
+
+  const top = useTop(board, cattedBoard, computed20Svmin, displayPos, windowSize);
 
   if (cattedBoard === null || playerDisplay === null) {
     return <Loading visible />;
@@ -120,10 +110,12 @@ const GameDisplay = ({
         className={styles.display}
         style={{
           gridTemplate: `repeat(${cattedBoard.length}, 1fr) / repeat(${cattedBoard[0]?.length}, 1fr)`,
-          transform: `translateY(${transform.y * computed20Svmin}px) translateX(${
-            transform.x * computed20Svmin
+          transform: `translateY(${boardTransform.y * computed20Svmin}px) translateX(${
+            boardTransform.x * computed20Svmin
           }px)`,
-          transition: transform.x === 0 && transform.y === 0 ? '0.25s' : '0s',
+          transition: [boardTransform.x === 0, boardTransform.y === 0].every(Boolean)
+            ? '0.25s'
+            : '0s',
           top,
           left,
         }}
@@ -149,6 +141,18 @@ const GameDisplay = ({
         style={{
           gridTemplate: `repeat(${cattedBoard.length}, 1fr) / repeat(${cattedBoard[0].length}, 1fr)`,
           backgroundColor: '#0000',
+
+          transform: `translateY(${
+            displayTransform.y * computed20Svmin +
+            ((top * (cattedBoard.length * computed20Svmin - windowSize[1])) / 2) * transform.y ** 2
+          }px) translateX(${
+            displayTransform.x * computed20Svmin +
+            (left - (cattedBoard[0].length * computed20Svmin - windowSize[0]) / 2) *
+              transform.x ** 2
+          }px)`,
+          transition: [displayTransform.x === 0, displayTransform.y === 0].every(Boolean)
+            ? '0.25s'
+            : '0s',
           top,
           left,
         }}
@@ -162,7 +166,7 @@ const GameDisplay = ({
                     <div
                       key={y}
                       className={styles.pixel}
-                      style={{ backgroundColor: yuushColorList[Number(color)], border: 'none' }}
+                      style={{ backgroundColor: yushaColorList[Number(color)], border: 'none' }}
                     />
                   ))}
                 </div>
