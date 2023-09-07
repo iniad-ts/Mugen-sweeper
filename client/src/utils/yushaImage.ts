@@ -5,7 +5,7 @@ export const yushaImages = [
   '0088889008888880088888800077771100222240072332202222322209900990',
 ];
 
-export const yushColorList = [
+export const yushaColorList = [
   '#0000',
   'red',
   'purple',
